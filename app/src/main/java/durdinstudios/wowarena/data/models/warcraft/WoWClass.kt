@@ -1,25 +1,51 @@
 package durdinstudios.wowarena.data.models.warcraft
 
 
-sealed class WoWClass<T : WoWClass<T>>(clazz: Class<T>) {
+sealed class WoWClass {
     abstract val id: Int
-    val specs : List<Spec<*>> = Spec::class.nestedClasses.filterIsInstance(Spec)
+    inline fun <reified T> specs() : List<Spec<T : WoWClass>>
 
-    class Warrior(override val id: Int = 1) : WoWClass<Warrior>()
-    class Paladin(override val id: Int = 2) : WoWClass<Paladin>()
-    class Hunter(override val id: Int = 3) : WoWClass<Hunter>()
-    class Rogue(override val id: Int = 4) : WoWClass<Rogue>()
-    class Priest(override val id: Int = 5) : WoWClass<Priest>()
-    class DeathKnight(override val id: Int = 6) : WoWClass<DeathKnight>()
-    class Shaman(override val id: Int = 7) : WoWClass<Shaman>()
-    class Mague(override val id: Int = 8) : WoWClass<Mague>()
-    class Warlock(override val id: Int = 9) : WoWClass<Warlock>()
-    class Monk (override val id: Int = 10): WoWClass<Monk>()
-    class Druid(override val id: Int = 11): WoWClass<Druid>()
-    class DemonHunter (override val id: Int = 12): WoWClass<DemonHunter>()
+    class Warrior(override val id: Int = 1) : WoWClass<Warrior>() {
+        override val specs: List<Spec<Warrior>> = listOf(Spec.Arms(), Spec.Fury(), Spec.ProtectionWarrior())
+    }
+
+    class Paladin(override val id: Int = 2) : WoWClass<Paladin>(){
+        override val specs: List<Spec<Paladin>> = listOf(Spec.HolyPaladin(), Spec.ProtectionPaladin(), Spec.Retribution())
+    }
+    class Hunter(override val id: Int = 3) : WoWClass<Hunter>(){
+        override val specs: List<Spec<Hunter>> = listOf(Spec.BeastMastery(), Spec.Marksmanship(), Spec.Survival())
+    }
+    class Rogue(override val id: Int = 4) : WoWClass<Rogue>(){
+        override val specs: List<Spec<Rogue>> = listOf(Spec.Assassination(), Spec.Outlaw(), Spec.Subtetly())
+    }
+    class Priest(override val id: Int = 5) : WoWClass<Priest>(){
+        override val specs: List<Spec<Priest>> = listOf(Spec.Discipline(), Spec.HolyPriest(), Spec.Shadow())
+    }
+    class DeathKnight(override val id: Int = 6) : WoWClass<DeathKnight>(){
+        override val specs: List<Spec<DeathKnight>> = listOf(Spec.Blood(), Spec.FrostDk(), Spec.Unholy())
+    }
+    class Shaman(override val id: Int = 7) : WoWClass<Shaman>(){
+        override val specs: List<Spec<Shaman>> = listOf(Spec.Elemental(), Spec.Enhancement(), Spec.RestorationShamn())
+    }
+    class Mague(override val id: Int = 8) : WoWClass<Mague>(){
+        override val specs: List<Spec<Mague>> = listOf(Spec.FrostMague(), Spec.Fire(), Spec.Arcane())
+    }
+    class Warlock(override val id: Int = 9) : WoWClass<Warlock>(){
+        override val specs: List<Spec<Warlock>> = listOf(Spec.Affliction(), Spec.Demonology(), Spec.Destruction())
+    }
+    class Monk (override val id: Int = 10): WoWClass<Monk>(){
+        override val specs: List<Spec<Monk>> = listOf(Spec.Brewmaster(), Spec.Mistweaver(), Spec.Windwalker())
+    }
+    class Druid(override val id: Int = 11): WoWClass<Druid>(){
+        override val specs: List<Spec<Druid>> = listOf(Spec.Balance(), Spec.Guardian(), Spec.Feral(), Spec.Restoration())
+    }
+    class DemonHunter (override val id: Int = 12): WoWClass<DemonHunter>(){
+        override val specs: List<Spec<DemonHunter>> = listOf(Spec.Havoc(), Spec.Vengeance())
+    }
 }
 sealed class Spec<T : WoWClass<T>> {
     abstract val id: Int
+
     class Arms(override val id: Int = 71) : Spec<WoWClass.Warrior>()
     class Fury(override val id: Int = 72) : Spec<WoWClass.Warrior>()
     class ProtectionWarrior(override val id: Int = 73) : Spec<WoWClass.Warrior>()
@@ -56,6 +82,11 @@ sealed class Spec<T : WoWClass<T>> {
     class Demonology(override val id: Int = 266) : Spec<WoWClass.Warlock>()
     class Destruction(override val id: Int = 267) : Spec<WoWClass.Warlock>()
 
+    class Brewmaster(override val id: Int = 268) : Spec<WoWClass.Monk>()
+    class Mistweaver(override val id: Int = 270) : Spec<WoWClass.Monk>()
+    class Windwalker(override val id: Int = 269) : Spec<WoWClass.Monk>()
+
+
     class Balance(override val id: Int = 102) : Spec<WoWClass.Druid>()
     class Feral(override val id: Int = 103) : Spec<WoWClass.Druid>()
     class Guardian(override val id: Int = 104) : Spec<WoWClass.Druid>()
@@ -63,8 +94,6 @@ sealed class Spec<T : WoWClass<T>> {
 
     class Havoc(override val id: Int = 577) : Spec<WoWClass.DemonHunter>()
     class Vengeance(override val id: Int = 581) : Spec<WoWClass.DemonHunter>()
-
-
 }
 
 
