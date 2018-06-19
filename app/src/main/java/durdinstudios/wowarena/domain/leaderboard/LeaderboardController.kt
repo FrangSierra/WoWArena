@@ -2,7 +2,7 @@ package durdinstudios.wowarena.domain.leaderboard
 
 import com.bq.masmov.reflux.dagger.AppScope
 import durdinstudios.wowarena.data.Service
-import durdinstudios.wowarena.data.models.ArenaBracket
+import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import mini.Dispatcher
 import javax.inject.Inject
 

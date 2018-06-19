@@ -2,7 +2,7 @@ package durdinstudios.wowarena.domain.user
 
 import com.bq.masmov.reflux.dagger.AppScope
 import durdinstudios.wowarena.data.Service
-import durdinstudios.wowarena.data.network.PlayerInfo
+import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.data.network.WarcraftApi
 import durdinstudios.wowarena.domain.user.token.TokenController
 import durdinstudios.wowarena.misc.taskSuccess

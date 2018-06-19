@@ -1,4 +1,4 @@
-package durdinstudios.wowarena.data.models
+package durdinstudios.wowarena.data.models.warcraft.pvp
 
 enum class ArenaBracket {
     BRACKET_2_VS_2,
