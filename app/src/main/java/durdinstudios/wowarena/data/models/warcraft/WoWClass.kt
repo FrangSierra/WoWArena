@@ -1,3 +1,4 @@
+/*
 package durdinstudios.wowarena.data.models.warcraft
 
 
@@ -97,3 +98,4 @@ sealed class Spec<T : WoWClass<T>> {
 }
 
 
+*/

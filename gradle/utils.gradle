@@ -1,0 +1,57 @@
+/**
+ * Get the version name from the latest Git tag.
+ * e.g. last tag v3.0.1 -> versionName 3.0.1
+ */
+def computeVersionName() {
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', "--git-dir=${rootProject.rootDir}/.git", "--work-tree=${rootProject.rootDir}", 'describe', '--abbrev=0', '--tags'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim().replaceAll('v', '')
+}
+
+/**
+ * Generate the version code by combining in integer format [targetSDKVersion][versionName].
+ * [VersionName] follows the pattern: XYYZZ taking into account that
+ * when minor/patch is only a one digit number, we complete the pattern with zeros.
+ *
+ * e.g. targetSdkVersion 25 and versionName 3.1.3 -> versionCode 2530103
+ *
+ * NOTE: the maximum versionCode allowed by Google Play is 2100000000
+ */
+def computeVersionCode() {
+    def versionArray = computeVersionName().split('\\.')
+    String major = versionArray[0]
+    String minor = versionArray[1].length() < 2 ? "0" + versionArray[1] : versionArray[1]
+    String patch = versionArray[2].length() < 2 ? "0" + versionArray[2] : versionArray[2]
+
+    String versionCode = "$project.properties.target_sdk_version" + major + minor + patch
+    return versionCode.toInteger()
+}
+
+/**
+ * Utility method that loads a Properties object from a given file name.
+ *
+ * @param fileName name of the properties file
+ * @return a Properties object if the file exists and can be read, null otherwise
+ */
+def loadPropertiesFile(fileName) {
+    try {
+        Properties properties = new Properties();
+        properties.load(new FileInputStream(rootProject.file(fileName)));
+
+        return properties
+    }
+    catch (ignored) {
+        return null
+    }
+}
+
+ext {
+    gitSha = 'git rev-parse --short HEAD'.execute([], projectDir).text.trim()
+    buildTime = new Date().format("yyyy-MM-dd HH:mm z", TimeZone.getTimeZone("GMT"))
+    computeVersionName = this.&computeVersionName
+    computeVersionCode = this.&computeVersionCode
+    loadPropertiesFile = this.&loadPropertiesFile
+}
