@@ -1,7 +1,10 @@
 package durdinstudios.wowarena.data.network
 
 import com.bq.masmov.reflux.dagger.AppScope
-import durdinstudios.wowarena.data.models.ArenaBracket
+import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
+import durdinstudios.wowarena.data.models.common.Locale
+import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
+import durdinstudios.wowarena.data.models.warcraft.pvp.Ranking
 import mini.Grove
 import retrofit2.HttpException
 import retrofit2.Retrofit
@@ -15,17 +18,15 @@ class NetworkDataSource @Inject constructor(private val warcraftApi: WarcraftApi
                                             private val retrofit: Retrofit) {
 
     @Throws(DataServiceException::class)
-    fun getPvpLeaderboard(bracket: ArenaBracket): List<PlayerStats> =
+    fun getPvpLeaderboard(bracket: ArenaBracket, locale: Locale): List<Ranking> =
         BattleNetCall {
-            val body = LeaderboardBody("en_ES")
-            warcraftApi.getPvPLeaderboard(bracket.value, body).execute().body()!!
+            warcraftApi.getPvPLeaderboard(bracket.value, locale.name).execute().body()!!
         }
 
     @Throws(DataServiceException::class)
     fun getPlayerPvpInformation(realm: String, characterName: String, locale: String): PlayerInfo =
         BattleNetCall {
-            val body = PlayerPvpBody(locale = locale)
-            warcraftApi.getPlayerPvpInfo(characterName, realm, body).execute().body()!!
+            warcraftApi.getPlayerPvpInfo(characterName, realm, locale = locale).execute().body()!!
         }
 
     private fun parseError(throwable: HttpException): ApiError {

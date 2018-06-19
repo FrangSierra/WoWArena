@@ -6,10 +6,15 @@ import com.google.gson.Gson
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
-import durdinstudios.wowarena.data.models.ArenaBracket
+import durdinstudios.wowarena.R
+import durdinstudios.wowarena.core.app
+import durdinstudios.wowarena.data.models.common.Locale
+import durdinstudios.wowarena.data.models.common.Region
+import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
+import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
+import durdinstudios.wowarena.data.models.warcraft.pvp.Ranking
 import durdinstudios.wowarena.data.network.NetworkDataSource
-import durdinstudios.wowarena.data.network.PlayerInfo
-import durdinstudios.wowarena.data.network.PlayerStats
+import durdinstudios.wowarena.data.network.UrlUtils.getBaseUrl
 import durdinstudios.wowarena.data.network.WarcraftApi
 import durdinstudios.wowarena.data.network.client.AuthorizationInterceptor
 import durdinstudios.wowarena.data.persistence.DiskDataSource
@@ -17,6 +22,7 @@ import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.domain.user.token.PreferencesTokenPersistenceImpl
 import durdinstudios.wowarena.domain.user.token.TokenController
 import mini.Dispatcher
+import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -41,8 +47,8 @@ class DataService @Inject constructor(private val diskDataSource: DiskDataSource
         return networkDataSource.getPlayerPvpInformation(realm, characterName, locale)
     }
 
-    override fun getPvpLeaderboard(bracket: ArenaBracket): List<PlayerStats> {
-        return networkDataSource.getPvpLeaderboard(bracket)
+    override fun getPvpLeaderboard(bracket: ArenaBracket): List<Ranking> {
+        return networkDataSource.getPvpLeaderboard(bracket, Locale.SPANISH)
     }
 
 }
@@ -56,13 +62,16 @@ class UserNotAvailableException : Throwable()
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
 class RepositoryModule(private val endpoint: String) {
 
+    private val AUTHORIZATION = "Authorization"
+
     @Provides
     @AppScope
     fun provideDataRepository(diskDataSource: DiskDataSource,
                               networkDataSource: NetworkDataSource): Service =
         DataService(diskDataSource, networkDataSource)
 
-    @Provides @AppScope
+    @Provides
+    @AppScope
     fun provideTokenController(context: Context, gson: Gson): TokenController =
         TokenController(PreferencesTokenPersistenceImpl(context))
 
@@ -71,6 +80,17 @@ class RepositoryModule(private val endpoint: String) {
     fun provideHttpClient(userStore: Lazy<UserStore>,
                           dispatcher: Dispatcher): OkHttpClient {
         val interceptor = AuthorizationInterceptor(userStore, dispatcher)
+        val client = OkHttpClient.Builder()
+        client.addInterceptor(interceptor)
+        client.authenticator { route, response ->
+            val clientId = app.getString(R.string.BATTLE_NET_KEY)
+            val clientSecret = app.getString(R.string.BATTLE_NET_SECRET)
+            val credential = Credentials.basic(clientId, clientSecret)
+
+            response.request().newBuilder()
+                .header(AUTHORIZATION, credential)
+                .build()
+        }
 
         return OkHttpClient.Builder()
             .addInterceptor(interceptor)
@@ -79,10 +99,10 @@ class RepositoryModule(private val endpoint: String) {
 
     @Provides
     @AppScope
-    fun provideRetrofit(client : OkHttpClient): Retrofit {
+    fun provideRetrofit(client: OkHttpClient): Retrofit {
 
         return Retrofit.Builder()
-            .baseUrl(endpoint)
+            .baseUrl(getBaseUrl(Region.EU)) //TODO make multi region
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.bq.masmov.reflux.dagger.AppScope
 import com.google.gson.Gson
-import durdinstudios.wowarena.data.network.PlayerInfo
+import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import javax.inject.Inject
 
 private const val DEFAULT_PREFERENCES_FILE = "arena_persistence"

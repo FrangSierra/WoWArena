@@ -37,7 +37,7 @@ class App : DaggerApplication() {
             if (componentInstance == null) {
                 componentInstance = DaggerAppComponent.builder()
                     .appModule(AppModule(app))
-                    .repositoryModule(RepositoryModule("http://eu.api.battle.net/wow/"))
+                    .repositoryModule(RepositoryModule("https://eu.api.battle.net/"))
                     .build()
                 componentInstance!!.dispatcher().actionReducer = MiniActionReducer(stores = componentInstance!!.stores())
                 componentInstance!!.dispatcher().addInterceptor(CustomLoggerInterceptor(componentInstance!!.stores().values))

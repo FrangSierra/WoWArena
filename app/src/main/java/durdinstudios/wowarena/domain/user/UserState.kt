@@ -1,6 +1,6 @@
 package durdinstudios.wowarena.domain.user
 
-import durdinstudios.wowarena.data.network.PlayerInfo
+import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.misc.Task
 import durdinstudios.wowarena.misc.taskIdle
 
