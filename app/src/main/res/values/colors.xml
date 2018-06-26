@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#f8b700</color>
+
+    <color name="textColorPrimary">@color/colorPrimary</color>
+    <color name="textColorSecondary">#ebdec2</color>
+
+    <color name="app_background_light">#171E26</color>
+    <color name="app_background_dark">#151C24</color>
+
+    <color name="wow_brown">#22150F</color>
+
+    <color name="color_alliance">#144587</color>
+    <color name="color_horde">#8C1616</color>
+
+    <color name="color_dk">#C41F3B</color>
+    <color name="color_dh">#A330C9</color>
+    <color name="color_druid">#FF7D0A</color>
+    <color name="color_hunter">#ABD473</color>
+    <color name="color_mage">#69CCF0</color>
+    <color name="color_monk">#00FF96</color>
+    <color name="color_paladin">#F58CBA</color>
+    <color name="color_priest">#FFFFFF</color>
+    <color name="color_rogue">#FFF569</color>
+    <color name="color_shaman">#0070DE</color>
+    <color name="color_warlock">#9482C9</color>
+    <color name="color_warrior">#C79C6E</color>
+
 </resources>

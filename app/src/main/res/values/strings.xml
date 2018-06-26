@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">WoW Arena</string>
+
+    <string name="bracket_2vs2">2 VS 2</string>
+    <string name="bracket_3vs3">3 VS 3</string>
+    <string name="bracket_rbg">RBG</string>
+
+    <string name="navigation_ranking">Ranking</string>
+    <string name="navigation_profile">Profile</string>
+    <string name="navigation_settings">Settings</string>
 </resources>

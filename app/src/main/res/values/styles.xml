@@ -1,11 +1,20 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/wow_brown</item>
+        <item name="colorPrimaryDark">@color/wow_brown</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:windowBackground">@drawable/background_gradient</item>
+    </style>
+
+    <!--toolbar-->
+    <style name="ToolBarStyle">
+        <item name="android:background">@color/wow_brown</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
+        <item name="actionMenuTextColor">@color/textColorPrimary</item>
     </style>
 
 </resources>

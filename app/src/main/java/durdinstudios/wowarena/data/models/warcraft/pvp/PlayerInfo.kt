@@ -3,13 +3,15 @@ package durdinstudios.wowarena.data.models.warcraft.pvp
 import com.google.gson.annotations.SerializedName
 import durdinstudios.wowarena.data.models.common.Faction
 import durdinstudios.wowarena.data.models.common.Gender
+import durdinstudios.wowarena.data.models.common.Race
+import durdinstudios.wowarena.data.models.common.WoWClass
 
 data class PlayerInfo(val lastModified: Long,
                       val name: String,
                       val realm: String,
                       val battlegroup: String,
-                      @SerializedName("class") val classId: Int,
-                      val race: Int,
+                      @SerializedName("class") val gameClass: WoWClass,
+                      val race: Race,
                       val level : Int,
                       val gender: Gender,
                       val achievementPoints: Int,
