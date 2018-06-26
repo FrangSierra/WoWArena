@@ -31,6 +31,7 @@ data class BracketsPvp(
     @SerializedName("ARENA_BRACKET_3v3_SKIRMISH") val arena3vs3Skirmish: BracketInfo?,
     @SerializedName("UNKNOWN") val unknown: BracketInfo?
 )
+
 data class BracketInfo(
     val slug: String,
     val rating: Int,

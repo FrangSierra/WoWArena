@@ -10,6 +10,21 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 
+
+fun ImageView.setCircularImage(url: String?) {
+    val requestOptions = RequestOptions
+        .circleCropTransform()
+        .override(width, height)
+
+    Glide.with(context)
+        .asDrawable()
+        .load(url)
+        .apply(requestOptions)
+        .into(this)
+        .waitForLayout()
+        .clearOnDetach()
+}
+
 fun ImageView.setThumnailImage(url: String) {
     val requestOptions = RequestOptions
             .centerCropTransform()
