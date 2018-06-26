@@ -12,12 +12,17 @@ import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
 import dagger.android.ContributesAndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
-import durdinstudios.wowarena.MainActivity
+import durdinstudios.wowarena.navigation.HomeActivity
 import durdinstudios.wowarena.core.App
 import durdinstudios.wowarena.core.flux.StoreHolderComponent
 import durdinstudios.wowarena.data.RepositoryModule
 import durdinstudios.wowarena.domain.leaderboard.LeaderboardModule
 import durdinstudios.wowarena.domain.user.UserModule
+import durdinstudios.wowarena.domain.user.UserRepositoryModule
+import durdinstudios.wowarena.profile.ProfileFragment
+import durdinstudios.wowarena.ranking.BracketFragment
+import durdinstudios.wowarena.ranking.RankingFragment
+import durdinstudios.wowarena.settings.SettingsFragment
 import mini.Dispatcher
 
 /**
@@ -28,6 +33,7 @@ import mini.Dispatcher
     ActivityBindingsModule::class,
     AndroidSupportInjectionModule::class,
     UserModule::class,
+    UserRepositoryModule::class,
     LeaderboardModule::class,
     RepositoryModule::class,
     AppModule::class
@@ -44,7 +50,23 @@ interface ActivityBindingsModule {
 
     @ActivityScope
     @ContributesAndroidInjector
-    fun mainActivity(): MainActivity
+    fun mainActivity(): HomeActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector
+    fun settingsFragment(): SettingsFragment
+
+    @ActivityScope
+    @ContributesAndroidInjector
+    fun profileFragment(): ProfileFragment
+
+    @ActivityScope
+    @ContributesAndroidInjector
+    fun bracketfragment(): BracketFragment
+
+    @ActivityScope
+    @ContributesAndroidInjector
+    fun rankingFragment(): RankingFragment
 }
 
 @Module

@@ -5,6 +5,11 @@ import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerBracketStats
 import durdinstudios.wowarena.misc.Task
 import mini.Action
 
-data class LoadLeaderboardAction(val bracket: ArenaBracket) : Action
+data class LoadLeaderboardAction(val reload: Boolean = true,
+                                 val bracket: ArenaBracket) : Action
 
-data class LoadLeaderboardCompleteAction(val stats: List<PlayerBracketStats>, val task: Task) : Action
+data class LoadLeaderboardCompleteAction(val bracket: ArenaBracket, val stats: List<PlayerBracketStats>, val task: Task) : Action{
+    override fun toString(): String {
+        return task.toString() + bracket.toString()
+    }
+}

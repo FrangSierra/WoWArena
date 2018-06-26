@@ -1,10 +1,11 @@
 buildscript {
     ext {
         target_sdk_version = 27
-        retrofit_version = "2.3.0"
-        dagger_version = "2.12"
+        retrofit_version = "2.4.0"
+        dagger_version = "2.15"
         okhttp_version = "3.9.0"
-        support_version = "27.0.2"
+        support_version = "27.1.1"
+        glide_version = "4.7.1"
         rx_version = "2.1.9"
         rx_android_version = "2.0.2"
     }
@@ -54,14 +55,21 @@ dependencies {
     //Support
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation "com.android.support:design:$support_version"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
     // Network
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+
+    //BottomBar
+    implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
+
+    //Glide
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
 
     //Mini
     implementation 'com.github.pabloogc:Mini:1.0.1'

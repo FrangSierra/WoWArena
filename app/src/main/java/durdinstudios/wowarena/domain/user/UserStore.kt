@@ -16,40 +16,29 @@ import javax.inject.Inject
 @AppScope
 class UserStore @Inject constructor(private val userController: UserController) : Store<UserState>() {
 
-    @Reducer
-    fun checkUserCredential(action: CheckUserCredentialsAction, userState: UserState): UserState {
-        if (state.checkCredentialsTask.isRunning()) return state
-        userController.hasUserCredentials(state)
-        return state.copy(checkCredentialsTask = taskRunning())
+    override fun initialState(): UserState {
+        return UserState(player = userController.restoreSession())
     }
 
     @Reducer
-    fun checkUserCredentialComplete(action: CheckUserCredentialsCompleteAction, userState: UserState): UserState {
-        if (!state.checkCredentialsTask.isRunning()) return state
-        return state.copy(
-            token = action.token,
-            player = action.playerInfo,
-            checkCredentialsTask = action.checkCredentialsTask
-        )
+    fun loadUser(action: LoadUserDataAction, userState: UserState): UserState {
+        if (state.loadUserTask.isRunning()) return state
+        userController.getUserData(action.nick, action.realm, state.currentRegion)
+        return state.copy(loadUserTask = taskRunning())
     }
 
     @Reducer
-    fun refreshToken(action: TokenRefreshedAction, userState: UserState): UserState {
-        if (action.refreshTask.isSuccessful()) {
-            userController.persist(token = action.token)
-        }
-        return state.copy(
-            token = action.token,
-            player = action.customer,
-            refreshTaskState = action.refreshTask
-        )
+    fun loadUserComplete(action: LoadUserDataCompleteAction, userState: UserState): UserState {
+        if (!state.loadUserTask.isRunning()) return state
+        return state.copy(player = action.info, loadUserTask = action.userDataTask)
     }
 }
 
 @Module
 interface UserModule {
     @Binds
-    @AppScope @IntoMap
+    @AppScope
+    @IntoMap
     @ClassKey(UserStore::class)
     fun storeToMap(store: UserStore): Store<*>
 

@@ -1,5 +1,7 @@
 package durdinstudios.wowarena.core
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import durdinstudios.wowarena.BuildConfig
@@ -19,7 +21,10 @@ import kotlin.properties.Delegates
  */
 
 private var appInstance: App by Delegates.notNull()
+private var gsonInstance: Gson by Delegates.notNull()
+
 val app: App get() = appInstance
+val gson: Gson get() = gsonInstance
 
 /**
  * Global application object.
@@ -36,9 +41,9 @@ class App : DaggerApplication() {
         get() {
             if (componentInstance == null) {
                 componentInstance = DaggerAppComponent.builder()
-                    .appModule(AppModule(app))
-                    .repositoryModule(RepositoryModule("https://eu.api.battle.net/"))
-                    .build()
+                        .appModule(AppModule(app))
+                        .repositoryModule(RepositoryModule())
+                        .build()
                 componentInstance!!.dispatcher().actionReducer = MiniActionReducer(stores = componentInstance!!.stores())
                 componentInstance!!.dispatcher().addInterceptor(CustomLoggerInterceptor(componentInstance!!.stores().values))
             }
@@ -49,6 +54,7 @@ class App : DaggerApplication() {
     override fun onCreate() {
         appInstance = this
         super.onCreate()
+        gsonInstance = GsonBuilder().create()
 
         if (BuildConfig.DEBUG) Grove.plant(DebugTree(true))
 
