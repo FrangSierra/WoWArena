@@ -7,4 +7,4 @@ import durdinstudios.wowarena.misc.taskIdle
 import durdinstudios.wowarena.profile.Character
 
 data class ArenaState(val arenaData: Map<Character, Map<ArenaBracket, List<ArenaInfo>>> = emptyMap(),
-                      val loadArenaInfoTask: Task = taskIdle())
+                      val downloadArenaStatsTask: Task = taskIdle())

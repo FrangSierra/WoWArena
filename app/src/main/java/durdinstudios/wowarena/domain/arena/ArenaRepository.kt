@@ -10,6 +10,7 @@ import dagger.Provides
 import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import durdinstudios.wowarena.domain.arena.model.ArenaInfo
 import durdinstudios.wowarena.profile.Character
+import mini.Grove
 import javax.inject.Inject
 
 
@@ -37,6 +38,10 @@ class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val 
             if (serializedMap == null) emptyMap()
             else gson.fromJson(serializedMap, type)
         } catch (ex: Throwable) {
+            Grove.e { ex }
+            prefs.edit()
+                    .remove(ARENA_STATS)
+                    .apply()
             emptyMap()
         }
     }
@@ -44,15 +49,22 @@ class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val 
     override fun saveArenaStats(character: Character, bracket: ArenaBracket, info: ArenaInfo) {
         val type = object : TypeToken<Map<Character, Map<ArenaBracket, List<ArenaInfo>>>>() {}.type
         val serializedMap = prefs.getString(ARENA_STATS, null)
-        val arenaMap: Map<Character, Map<ArenaBracket, List<ArenaInfo>>> = if (serializedMap == null) emptyMap()
-        else gson.fromJson(serializedMap, type)
-        val characterMap = arenaMap.getOrElse(character) { emptyMap() }
-        val bracketList: List<ArenaInfo> = characterMap.getOrElse(bracket) { emptyList() }
-        val newMap = arenaMap.plus(character to bracketList.plus(info))
+        try {
+            val arenaMap: Map<Character, Map<ArenaBracket, List<ArenaInfo>>> = if (serializedMap == null) emptyMap()
+            else gson.fromJson(serializedMap, type)
+            val characterMap = arenaMap.getOrElse(character) { emptyMap() }
+            val bracketList: List<ArenaInfo> = characterMap.getOrElse(bracket) { emptyList() }
+            val newMap = arenaMap.plus(character to mapOf(bracket to bracketList.plus(info)))
 
-        prefs.edit()
-                .putString(ARENA_STATS, gson.toJson(newMap, type))
-                .apply()
+            prefs.edit()
+                    .putString(ARENA_STATS, gson.toJson(newMap, type))
+                    .apply()
+        } catch (ex: Throwable) {
+            Grove.e { ex }
+            prefs.edit()
+                    .remove(ARENA_STATS)
+                    .apply()
+        }
     }
 
     override fun deleteCharacterArenaInfo(character: Character) {

@@ -26,6 +26,8 @@ interface UserController {
     fun getUsers(): List<Character>
 
     fun logout(user: Character)
+
+    fun shouldSetupArenaJob(): Boolean
 }
 
 @AppScope
@@ -60,4 +62,7 @@ class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
         userRepository.removeUser(user)
     }
 
+    override fun shouldSetupArenaJob(): Boolean {
+        return userRepository.shouldSetupArenaJob()
+    }
 }

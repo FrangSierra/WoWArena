@@ -5,6 +5,7 @@ import android.content.Context
 import com.bq.masmov.reflux.dagger.ActivityScope
 import com.bq.masmov.reflux.dagger.AppScope
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -104,5 +105,6 @@ class AppModule(val app: App) {
 
     @Provides
     @AppScope
-    fun provideGson() = Gson()
+    fun provideGson() = GsonBuilder().disableHtmlEscaping()
+            .create()
 }

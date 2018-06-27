@@ -6,8 +6,8 @@ import dagger.Module
 import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
 import durdinstudios.wowarena.domain.user.LoadUserDataCompleteAction
-import durdinstudios.wowarena.domain.user.UserState
 import durdinstudios.wowarena.domain.user.UserStore
+import durdinstudios.wowarena.misc.taskRunning
 import mini.Reducer
 import mini.Store
 import javax.inject.Inject
@@ -17,7 +17,7 @@ import javax.inject.Inject
  * Store that has the user info.
  */
 @AppScope
-class ArenaStore @Inject constructor(private val arenaController: ArenaController, private val userStore: UserStore) : Store<ArenaState>() {
+class ArenaStore @Inject constructor(private val arenaController: ArenaController) : Store<ArenaState>() {
 
     override fun initialState(): ArenaState {
         return ArenaState(arenaData = arenaController.getArenaStats())
@@ -27,6 +27,19 @@ class ArenaStore @Inject constructor(private val arenaController: ArenaControlle
     fun loadUserComplete(action: LoadUserDataCompleteAction, arenaState: ArenaState): ArenaState {
         if (action.task.isFailure()) return state
         return state.copy(arenaData = arenaController.getArenaStats())
+    }
+
+    @Reducer
+    fun downloadArenaData(action: DownloadArenaStats, arenaState: ArenaState): ArenaState {
+        if (state.downloadArenaStatsTask.isRunning()) return state
+        arenaController.downloadArenaStats(action.currentCharacters)
+        return state.copy(downloadArenaStatsTask = taskRunning())
+    }
+
+    @Reducer
+    fun downloadArenaDataComplete(action: DownloadArenaStatsComplete, arenaState: ArenaState): ArenaState {
+        if (!state.downloadArenaStatsTask.isRunning()) return state
+        return state.copy(downloadArenaStatsTask = action.task, arenaData = arenaController.getArenaStats())
     }
 }
 
