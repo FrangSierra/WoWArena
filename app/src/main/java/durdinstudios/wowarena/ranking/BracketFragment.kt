@@ -10,10 +10,7 @@ import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerBracketStats
 import durdinstudios.wowarena.domain.leaderboard.LeaderboardStore
 import durdinstudios.wowarena.domain.leaderboard.LoadLeaderboardAction
-import durdinstudios.wowarena.misc.argument
-import durdinstudios.wowarena.misc.filterOne
-import durdinstudios.wowarena.misc.makeGone
-import durdinstudios.wowarena.misc.setLinearLayoutManager
+import durdinstudios.wowarena.misc.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.bracket_fragment.*
 import mini.Dispatcher
@@ -50,8 +47,10 @@ class BracketFragment : BaseFragment() {
         initializeInterface()
         listenStoreChanges()
         if (leaderboardStore.state.rankingStats[currentBracket] == null
-                || leaderboardStore.state.rankingStats[currentBracket]!!.isEmpty())
+                || leaderboardStore.state.rankingStats[currentBracket]!!.isEmpty()) {
+            loading_progress?.makeVisible()
             reloadRanking(currentBracket)
+        }
     }
 
     private fun initializeInterface() {
@@ -78,7 +77,7 @@ class BracketFragment : BaseFragment() {
                     if (it.isFailure()) {
                         //manage
                     }
-                    loading_progress.makeGone()
+                    loading_progress?.makeGone()
                     ranking_swipe?.takeIf { it.isRefreshing }?.isRefreshing = false
                 }.track()
     }

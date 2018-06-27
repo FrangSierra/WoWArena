@@ -21,7 +21,9 @@ interface UserController {
 
     fun restoreSession(): PlayerInfo?
 
-    fun logout()
+    fun getUsers(): List<PlayerInfo>
+
+    fun logout(user: PlayerInfo)
 }
 
 @AppScope
@@ -45,11 +47,15 @@ class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
     }
 
     override fun restoreSession(): PlayerInfo? {
-        return userRepository.getUser()
+        return userRepository.getCurrentUser()
     }
 
-    override fun logout() {
-        userRepository.removeUser()
+    override fun getUsers(): List<PlayerInfo> {
+        return userRepository.getUsers()
+    }
+
+    override fun logout(user: PlayerInfo) {
+        userRepository.removeUser(user)
     }
 
 }

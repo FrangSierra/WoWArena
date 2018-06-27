@@ -7,13 +7,13 @@ import durdinstudios.wowarena.profile.ProfileFragment
 import durdinstudios.wowarena.ranking.RankingFragment
 import durdinstudios.wowarena.settings.SettingsFragment
 
-class NavigationAdapter {
+class NavigationAdapter() {
 
     private val fragmentMap = mutableMapOf<Int, NavigationFragment>()
 
     fun getItem(position: Int) = when (position) {
         0 -> fragmentMap.getOrPut(position) { RankingFragment.newInstance() }
-        1 -> fragmentMap.getOrPut(position) { ProfileFragment.newInstance("Soulex", "Sanguino") }
+        1 -> fragmentMap.getOrPut(position) { ProfileFragment.newInstance() }
         2 -> fragmentMap.getOrPut(position) { SettingsFragment.newInstance() }
         else -> throw IllegalAccessError("No Fragment for the given position")
     }

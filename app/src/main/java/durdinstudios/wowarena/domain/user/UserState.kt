@@ -8,6 +8,7 @@ import durdinstudios.wowarena.misc.taskIdle
 @Suppress("UndocumentedPublicClass")
 data class UserState(
         val player: PlayerInfo? = null,
+        val currentCharacters : List<PlayerInfo> = emptyList(),
         val currentRegion: Region = Region.EU,
         val loadUserTask: Task = taskIdle()) {
 
