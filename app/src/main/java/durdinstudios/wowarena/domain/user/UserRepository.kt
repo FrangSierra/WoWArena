@@ -7,16 +7,16 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.Module
 import dagger.Provides
-import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
+import durdinstudios.wowarena.profile.Character
 import javax.inject.Inject
 
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
 interface UserPersistence {
-    fun saveUser(user: PlayerInfo)
-    fun getUsers(): List<PlayerInfo>
-    fun getCurrentUser(): PlayerInfo?
-    fun deleteUser(user: PlayerInfo)
+    fun saveUser(user: Character)
+    fun getUsers(): List<Character>
+    fun getCurrentUser(): Character?
+    fun deleteUser(user: Character)
 }
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
@@ -29,14 +29,14 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val g
 
     private val prefs: SharedPreferences by lazy { context.getSharedPreferences(FILE, Context.MODE_PRIVATE) }
 
-    override fun saveUser(user: PlayerInfo) {
-        val listType = object : TypeToken<List<PlayerInfo>>() {}.type
+    override fun saveUser(user: Character) {
+        val listType = object : TypeToken<List<Character>>() {}.type
         val serializedList = prefs.getString(USER_LIST_KEY, null)
-        val list: List<PlayerInfo> = if (serializedList == null) emptyList()
+        val list: List<Character> = if (serializedList == null) emptyList()
         else gson.fromJson(serializedList, listType)
 
         if (!list.contains(user)) {
-            val playersList = list.plus(user).distinctBy { it.name to it.realm }
+            val playersList = list.plus(user).distinctBy { it.username to it.realm }
             prefs.edit()
                     .putString(USER_LIST_KEY, gson.toJson(playersList, listType))
                     .apply()
@@ -47,9 +47,9 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val g
                 .apply()
     }
 
-    override fun getUsers(): List<PlayerInfo> {
+    override fun getUsers(): List<Character> {
         val serialized = prefs.getString(USER_LIST_KEY, null) ?: return emptyList()
-        val listType = object : TypeToken<List<PlayerInfo>>() {}.type
+        val listType = object : TypeToken<List<Character>>() {}.type
         return try {
             gson.fromJson(serialized, listType)
         } catch (ex: Throwable) {
@@ -59,10 +59,10 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val g
         }
     }
 
-    override fun getCurrentUser(): PlayerInfo? {
+    override fun getCurrentUser(): Character? {
         val serialized = prefs.getString(CURRENT_USER_KEY, null) ?: return null
         return try {
-            gson.fromJson(serialized, PlayerInfo::class.java)
+            gson.fromJson(serialized, Character::class.java)
         } catch (ex: Throwable) {
             //Remove if parsing fails (essentially forced logout)
             prefs.edit().remove(CURRENT_USER_KEY).apply()
@@ -70,13 +70,13 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val g
         }
     }
 
-    override fun deleteUser(user: PlayerInfo) {
-        val listType = object : TypeToken<List<PlayerInfo>>() {}.type
+    override fun deleteUser(user: Character) {
+        val listType = object : TypeToken<List<Character>>() {}.type
         val serializedList = prefs.getString(USER_LIST_KEY, null)
-        val list: List<PlayerInfo> = if (serializedList == null) emptyList()
+        val list: List<Character> = if (serializedList == null) emptyList()
         else gson.fromJson(serializedList, listType)
 
-        val playersList = list.minus(user).distinctBy { it.name to it.realm }
+        val playersList = list.minus(user).distinctBy { it.username to it.realm }
         val currentUser = getCurrentUser()
 
         if (currentUser == user) {
@@ -86,7 +86,7 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val g
                         .apply()
             } else {
                 prefs.edit()
-                        .putString(CURRENT_USER_KEY, gson.toJson(playersList.first(), PlayerInfo::class.java))
+                        .putString(CURRENT_USER_KEY, gson.toJson(playersList.first(), Character::class.java))
                         .apply()
             }
         }
@@ -101,19 +101,19 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val g
  */
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
 class UserRepository(private val userPersistence: UserPersistence) {
-    fun saveUser(user: PlayerInfo) {
+    fun saveUser(user: Character) {
         userPersistence.saveUser(user)
     }
 
-    fun removeUser(user: PlayerInfo) {
+    fun removeUser(user: Character) {
         userPersistence.deleteUser(user)
     }
 
-    fun getUsers(): List<PlayerInfo> {
+    fun getUsers(): List<Character> {
         return userPersistence.getUsers()
     }
 
-    fun getCurrentUser(): PlayerInfo? {
+    fun getCurrentUser(): Character? {
         return userPersistence.getCurrentUser()
     }
 

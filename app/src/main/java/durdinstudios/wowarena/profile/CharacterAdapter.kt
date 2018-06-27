@@ -16,8 +16,8 @@ import durdinstudios.wowarena.misc.setCircularImage
 import kotlinx.android.synthetic.main.player_item.view.*
 
 
-class CharacterAdapter(private val onPlayerclick: (info: PlayerInfo) -> Unit) : RecyclerView.Adapter<CharacterAdapter.ViewHolder>() {
-    private val characters: MutableList<PlayerInfo> = ArrayList()
+class CharacterAdapter(private val onPlayerclick: (info: Character) -> Unit) : RecyclerView.Adapter<CharacterAdapter.ViewHolder>() {
+    private val characters: MutableList<Character> = ArrayList()
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
             ViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.player_item, viewGroup, false))
@@ -29,15 +29,15 @@ class CharacterAdapter(private val onPlayerclick: (info: PlayerInfo) -> Unit) : 
         val context = holder.itemView.context
         with(holder) {
             avatar.setCircularImage(info.getRenderUrl(Region.EU)) //TODO
-            nick.text = info.name
-            nick.setTextColor(context.colorCompat(info.gameClass.getClassColor()))
-            data.text = "${info.level} ${info.race.name} ${info.gameClass.name}"
+            nick.text = info.username
+            nick.setTextColor(context.colorCompat(info.klass.getClassColor()))
+            data.text = "${info.level} ${info.race.name} ${info.klass.name}"
             realm.text = info.realm
             itemView.setOnClickListener { onPlayerclick(info) }
         }
     }
 
-    fun updateCharacters(rankingList: List<PlayerInfo>) {
+    fun updateCharacters(rankingList: List<Character>) {
         val newSortedUsers = rankingList
         val diffResult = DiffUtil.calculateDiff(CharacterDiff(this.characters, newSortedUsers))
         this.characters.clear()
@@ -52,10 +52,10 @@ class CharacterAdapter(private val onPlayerclick: (info: PlayerInfo) -> Unit) : 
         val realm: TextView = itemView.realm
     }
 
-    inner class CharacterDiff(private val oldList: List<PlayerInfo>,
-                              private val newList: List<PlayerInfo>) : DiffUtil.Callback() {
+    inner class CharacterDiff(private val oldList: List<Character>,
+                              private val newList: List<Character>) : DiffUtil.Callback() {
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                oldList[oldItemPosition].name == newList[newItemPosition].name
+                oldList[oldItemPosition].username == newList[newItemPosition].username
                         && oldList[oldItemPosition].realm == newList[newItemPosition].realm
 
         override fun getOldListSize(): Int = oldList.size

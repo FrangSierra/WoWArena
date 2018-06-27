@@ -18,6 +18,7 @@ import durdinstudios.wowarena.data.models.warcraft.pvp.getRenderUrl
 import durdinstudios.wowarena.domain.user.LoadUserDataAction
 import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.misc.*
+import durdinstudios.wowarena.navigation.HomeActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.player_bracket_info.view.*
 import kotlinx.android.synthetic.main.profile_fragment.*
@@ -33,16 +34,27 @@ class ProfileFragment : NavigationFragment() {
     @Inject
     lateinit var userStore: UserStore
 
-    private lateinit var characterName: String
-    private lateinit var realm: String
     private val inflater: LayoutInflater by lazy {
         return@lazy activity!!.applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     }
+    private val characterName by argument<String>(CHARACTER_NAME)
+    private val characterRealm by argument<String>(CHARACTER_REALM)
+    private val characterRegion by argument<String>(CHARACTER_REGION)
+    private val region by lazy { Region.valueOf(characterRegion) }
 
     companion object {
         val TAG = "profile_fragment"
-        fun newInstance(): ProfileFragment {
-            return ProfileFragment()
+        const val CHARACTER_NAME = "name"
+        const val CHARACTER_REALM = "realm"
+        const val CHARACTER_REGION = "region"
+        fun newInstance(characterName: String, characterRealm: String, region: Region): ProfileFragment {
+            return ProfileFragment().apply {
+                arguments = Bundle().apply {
+                    putString(HomeActivity.CHARACTER_NAME, characterName)
+                    putString(HomeActivity.CHARACTER_REALM, characterRealm)
+                    putString(HomeActivity.CHARACTER_REGION, region.name)
+                }
+            }
         }
     }
 
@@ -57,8 +69,9 @@ class ProfileFragment : NavigationFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initializeInterface()
         listenStoreChanges()
-        characterName = userStore.state.player!!.name
-        realm = userStore.state.player!!.realm
+        if (!userStore.state.playersInfo.containsKey(characterName to characterRealm)) {
+            loading_progress.makeVisible()
+        }
         reloadUserData()
     }
 
@@ -68,7 +81,7 @@ class ProfileFragment : NavigationFragment() {
 
     private fun listenStoreChanges() {
         userStore.flowable()
-                .select { it.player }
+                .select { it.playersInfo[characterName to characterRealm] }
                 .subscribe { setUserData(it) }
                 .track()
     }
@@ -109,8 +122,7 @@ class ProfileFragment : NavigationFragment() {
     }
 
     private fun reloadUserData() {
-        //loading_progress.makeVisible()
-        dispatcher.dispatchOnUi(LoadUserDataAction(characterName, realm))
+        dispatcher.dispatchOnUi(LoadUserDataAction(characterName, characterRealm, region))
         userStore.flowable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .select { it.loadUserTask }
@@ -119,7 +131,7 @@ class ProfileFragment : NavigationFragment() {
                     if (it.isFailure()) {
                         //manage
                     }
-                    //loading_progress.makeGone()
+                    loading_progress?.makeGone()
                 }.track()
     }
 }

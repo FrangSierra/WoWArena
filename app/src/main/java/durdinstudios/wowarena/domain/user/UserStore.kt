@@ -17,12 +17,8 @@ import javax.inject.Inject
 class UserStore @Inject constructor(private val userController: UserController) : Store<UserState>() {
 
     override fun initialState(): UserState {
-        return UserState(player = userController.restoreSession(), currentCharacters = userController.getUsers())
-    }
-
-    @Reducer
-    fun setCharacter(action: SetCharacterAction, userState: UserState): UserState {
-        return state.copy(player = action.playerInfo)
+        return UserState(selectedCharacter = userController.restoreSession(),
+                currentCharacters = userController.getUsers())
     }
 
     @Reducer
@@ -33,19 +29,14 @@ class UserStore @Inject constructor(private val userController: UserController) 
     }
 
     @Reducer
-    fun searchUser(action: SearchUserDataAction, userState: UserState): UserState {
-        if (state.loadUserTask.isRunning()) return state
-        userController.getUserData(action.nick, action.realm, state.currentRegion)
-        return state.copy(loadUserTask = taskRunning())
-    }
-
-    @Reducer
     fun loadUserComplete(action: LoadUserDataCompleteAction, userState: UserState): UserState {
         if (!state.loadUserTask.isRunning()) return state
-        return state.copy(player = action.info, loadUserTask = action.userDataTask,
-                currentCharacters = if (action.userDataTask.isSuccessful())
-                    state.currentCharacters.plus(action.info!!).distinctBy { it.name to it.realm }
-                else state.currentCharacters)
+        if (action.task.isSuccessful()) {
+            val playersInfo = state.playersInfo.plus((action.info!!.name to action.info.realm) to action.info)
+            val characters = state.currentCharacters.plus(action.character!!).distinct()
+            return state.copy(playersInfo = playersInfo, loadUserTask = action.task, currentCharacters = characters)
+        }
+        return state.copy(loadUserTask = action.task)
     }
 
     @Reducer
