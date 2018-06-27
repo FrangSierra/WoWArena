@@ -4,17 +4,14 @@ import durdinstudios.wowarena.data.models.common.Region
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.misc.Task
 import durdinstudios.wowarena.misc.taskIdle
+import durdinstudios.wowarena.profile.Character
 
 @Suppress("UndocumentedPublicClass")
 data class UserState(
-        val player: PlayerInfo? = null,
-        val currentCharacters : List<PlayerInfo> = emptyList(),
+        val playersInfo: Map<CharacterInfo, PlayerInfo> = emptyMap(),
+        val selectedCharacter: Character?,
+        val currentCharacters: List<Character> = emptyList(),
         val currentRegion: Region = Region.EU,
-        val loadUserTask: Task = taskIdle()) {
+        val loadUserTask: Task = taskIdle())
 
-    /**
-     * Checks if user has local credentials.
-     */
-    val isLoggedIn get() = player != null
-
-}
+typealias CharacterInfo = Pair<String,String>

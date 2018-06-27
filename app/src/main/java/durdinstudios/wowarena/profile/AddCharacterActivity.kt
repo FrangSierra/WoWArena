@@ -6,8 +6,7 @@ import android.os.Bundle
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.dagger.BaseActivity
 import durdinstudios.wowarena.data.models.common.Region
-import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
-import durdinstudios.wowarena.domain.user.SearchUserDataAction
+import durdinstudios.wowarena.domain.user.LoadUserDataAction
 import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.misc.filterOne
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -52,7 +51,7 @@ class AddCharacterActivity : BaseActivity() {
     }
 
     private fun addCharacter() {
-        dispatcher.dispatchOnUi(SearchUserDataAction(username.text.toString(), realm.text.toString(), regions[nice_spinner.selectedIndex]))
+        dispatcher.dispatchOnUi(LoadUserDataAction(username.text.toString(), realm.text.toString(), regions[nice_spinner.selectedIndex]))
         userStore.flowable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .select { it.loadUserTask }
@@ -66,7 +65,7 @@ class AddCharacterActivity : BaseActivity() {
                 }.track()
     }
 
-    private fun onCharacterClick(info: PlayerInfo) {
+    private fun onCharacterClick(info: Character) {
 
     }
 }

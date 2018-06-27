@@ -5,8 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.dagger.BaseActivity
-import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
-import durdinstudios.wowarena.domain.user.SetCharacterAction
 import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.misc.setLinearLayoutManager
 import durdinstudios.wowarena.navigation.HomeActivity
@@ -54,8 +52,7 @@ class CharacterListActivity : BaseActivity() {
         startActivity(AddCharacterActivity.newIntent(this))
     }
 
-    private fun onCharacterClick(info: PlayerInfo) {
-        dispatcher.dispatchOnUi(SetCharacterAction(info))
-        startActivity(HomeActivity.newIntent(this))
+    private fun onCharacterClick(info: Character) {
+        startActivity(HomeActivity.newIntent(this, name = info.username, realm = info.realm, region = info.region))
     }
 }

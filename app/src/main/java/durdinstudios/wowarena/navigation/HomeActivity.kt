@@ -8,6 +8,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.dagger.BaseActivity
+import durdinstudios.wowarena.data.models.common.Region
 import durdinstudios.wowarena.misc.argument
 import durdinstudios.wowarena.misc.colorCompat
 import durdinstudios.wowarena.misc.withFade
@@ -15,18 +16,33 @@ import kotlinx.android.synthetic.main.home_navigation_activity.*
 
 class HomeActivity : BaseActivity() {
 
-    private val navAdapter by lazy { NavigationAdapter() }
+    private val navAdapter by lazy { NavigationAdapter(characterName, characterRealm, region) }
     var currentTab: Int = MAIN_HOME_TAB_POSITION
+
     private val fromNotification by argument<Boolean>(INTENT_FROM_NOTIFICATION)
+    private val characterName by argument<String>(CHARACTER_NAME)
+    private val characterRealm by argument<String>(CHARACTER_REALM)
+    private val characterRegion by argument<String>(CHARACTER_REGION)
+    private val region by lazy { Region.valueOf(characterRegion) }
 
     companion object {
         const val MAIN_HOME_TAB_POSITION = 1 //The one in the middle
         const val INTENT_FROM_NOTIFICATION = "from_notification"
+        const val CHARACTER_NAME = "name"
+        const val CHARACTER_REALM = "realm"
+        const val CHARACTER_REGION = "region"
         const val TAB_SELECTED = "navigation_tab_selected"
-        fun newIntent(context: Context, tabSelected: Int = MAIN_HOME_TAB_POSITION, fromNotification: Boolean = false): Intent =
+        fun newIntent(context: Context, tabSelected: Int = MAIN_HOME_TAB_POSITION,
+                      fromNotification: Boolean = false,
+                      name : String,
+                      realm : String,
+                      region : Region): Intent =
                 Intent(context, HomeActivity::class.java).apply {
                     putExtra(TAB_SELECTED, tabSelected)
                     putExtra(INTENT_FROM_NOTIFICATION, fromNotification)
+                    putExtra(CHARACTER_NAME, name)
+                    putExtra(CHARACTER_REALM, realm)
+                    putExtra(CHARACTER_REGION, region.name)
                 }
     }
 

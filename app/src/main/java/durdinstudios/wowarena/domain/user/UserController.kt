@@ -6,6 +6,8 @@ import durdinstudios.wowarena.data.models.common.Region
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.misc.taskFailure
 import durdinstudios.wowarena.misc.taskSuccess
+import durdinstudios.wowarena.profile.Character
+import durdinstudios.wowarena.profile.toCharacter
 import io.reactivex.schedulers.Schedulers
 import mini.Dispatcher
 import javax.inject.Inject
@@ -17,13 +19,13 @@ interface UserController {
 
     fun getUserData(username: String, realm: String, region: Region)
 
-    fun saveSession(user: PlayerInfo)
+    fun saveSession(user: Character)
 
-    fun restoreSession(): PlayerInfo?
+    fun restoreSession(): Character?
 
-    fun getUsers(): List<PlayerInfo>
+    fun getUsers(): List<Character>
 
-    fun logout(user: PlayerInfo)
+    fun logout(user: Character)
 }
 
 @AppScope
@@ -35,26 +37,26 @@ class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
         warcraftApi.apis[region]!!.getPlayerPvpInfo(username, realm)
                 .subscribeOn(Schedulers.io())
                 .subscribe({ user ->
-                    userRepository.saveUser(user)
-                    dispatcher.dispatchOnUi(LoadUserDataCompleteAction(user, taskSuccess()))
+                    userRepository.saveUser(user.toCharacter(region))
+                    dispatcher.dispatchOnUi(LoadUserDataCompleteAction(user, user.toCharacter(region), taskSuccess()))
                 }, { error ->
-                    dispatcher.dispatchOnUi(LoadUserDataCompleteAction(null, taskFailure(error)))
+                    dispatcher.dispatchOnUi(LoadUserDataCompleteAction(null, null, taskFailure(error)))
                 })
     }
 
-    override fun saveSession(user: PlayerInfo) {
+    override fun saveSession(user: Character) {
         userRepository.saveUser(user)
     }
 
-    override fun restoreSession(): PlayerInfo? {
+    override fun restoreSession(): Character? {
         return userRepository.getCurrentUser()
     }
 
-    override fun getUsers(): List<PlayerInfo> {
+    override fun getUsers(): List<Character> {
         return userRepository.getUsers()
     }
 
-    override fun logout(user: PlayerInfo) {
+    override fun logout(user: Character) {
         userRepository.removeUser(user)
     }
 

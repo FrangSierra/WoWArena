@@ -16,6 +16,8 @@ import durdinstudios.wowarena.core.App
 import durdinstudios.wowarena.core.SplashActivity
 import durdinstudios.wowarena.core.flux.StoreHolderComponent
 import durdinstudios.wowarena.data.RepositoryModule
+import durdinstudios.wowarena.domain.arena.ArenaModule
+import durdinstudios.wowarena.domain.arena.ArenaRepositoryModule
 import durdinstudios.wowarena.domain.leaderboard.LeaderboardModule
 import durdinstudios.wowarena.domain.user.UserModule
 import durdinstudios.wowarena.domain.user.UserRepositoryModule
@@ -36,6 +38,8 @@ import mini.Dispatcher
     ActivityBindingsModule::class,
     AndroidSupportInjectionModule::class,
     UserModule::class,
+    ArenaModule::class,
+    ArenaRepositoryModule::class,
     UserRepositoryModule::class,
     LeaderboardModule::class,
     RepositoryModule::class,

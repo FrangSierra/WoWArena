@@ -6,7 +6,6 @@ import durdinstudios.wowarena.core.dagger.BaseActivity
 import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.navigation.HomeActivity
 import durdinstudios.wowarena.profile.CharacterListActivity
-import mini.Dispatcher
 import javax.inject.Inject
 
 
@@ -21,7 +20,7 @@ class SplashActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (userStore.state.player != null) {
+        if (userStore.state.selectedCharacter != null) {
             goToHome()
         } else {
             goToCharacterList()
@@ -29,7 +28,9 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun goToHome() {
-        val intent = HomeActivity.newIntent(this)
+        val character = userStore.state.selectedCharacter!!
+        val intent = HomeActivity.newIntent(this, name = character.username,
+                realm = character.realm, region = character.region)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
