@@ -3,6 +3,7 @@
     package="durdinstudios.wowarena">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -31,6 +32,12 @@
         <activity
             android:name=".profile.CharacterListActivity"
             android:screenOrientation="portrait" />
+
+        <service
+            android:exported="true"
+            android:name=".domain.arena.service.ArenaJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
     </application>
 
 </manifest>

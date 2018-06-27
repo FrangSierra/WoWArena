@@ -1,10 +1,12 @@
 package durdinstudios.wowarena.domain.user
 
+import android.content.Context
 import com.bq.masmov.reflux.dagger.AppScope
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
+import durdinstudios.wowarena.domain.arena.service.scheduleJob
 import durdinstudios.wowarena.misc.taskRunning
 import mini.Reducer
 import mini.Store
@@ -14,11 +16,16 @@ import javax.inject.Inject
  * Store that has the user info.
  */
 @AppScope
-class UserStore @Inject constructor(private val userController: UserController) : Store<UserState>() {
+class UserStore @Inject constructor(private val userController: UserController,
+                                    private val context: Context) : Store<UserState>() {
 
     override fun initialState(): UserState {
         return UserState(selectedCharacter = userController.restoreSession(),
                 currentCharacters = userController.getUsers())
+    }
+
+    init {
+        if (userController.shouldSetupArenaJob()) scheduleJob(context)
     }
 
     @Reducer

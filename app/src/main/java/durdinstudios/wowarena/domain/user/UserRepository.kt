@@ -17,6 +17,7 @@ interface UserPersistence {
     fun getUsers(): List<Character>
     fun getCurrentUser(): Character?
     fun deleteUser(user: Character)
+    fun shouldSetupArenaJob(): Boolean
 }
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
@@ -24,6 +25,7 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val g
     companion object {
         const val FILE = "user_prefs"
         const val USER_LIST_KEY = "users"
+        const val JOB_SERVICE_ENABLE = "job_enabled"
         const val CURRENT_USER_KEY = "current_user"
     }
 
@@ -94,6 +96,14 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val g
                 .putString(USER_LIST_KEY, gson.toJson(playersList, listType))
                 .apply()
     }
+
+    override fun shouldSetupArenaJob(): Boolean {
+        //val jobScheduled = prefs.getBoolean(JOB_SERVICE_ENABLE, true)
+        //if (!jobScheduled) {
+        //    prefs.edit().putBoolean(JOB_SERVICE_ENABLE, false).apply()
+        //}
+        return true
+    }
 }
 
 /**
@@ -115,6 +125,10 @@ class UserRepository(private val userPersistence: UserPersistence) {
 
     fun getCurrentUser(): Character? {
         return userPersistence.getCurrentUser()
+    }
+
+    fun shouldSetupArenaJob(): Boolean {
+        return userPersistence.shouldSetupArenaJob()
     }
 
 }

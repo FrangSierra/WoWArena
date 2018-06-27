@@ -15,6 +15,7 @@ import durdinstudios.wowarena.data.models.common.Region
 import durdinstudios.wowarena.data.models.warcraft.pvp.BracketInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.getRenderUrl
+import durdinstudios.wowarena.domain.arena.ArenaStore
 import durdinstudios.wowarena.domain.user.LoadUserDataAction
 import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.misc.*
@@ -33,6 +34,8 @@ class ProfileFragment : NavigationFragment() {
     lateinit var dispatcher: Dispatcher
     @Inject
     lateinit var userStore: UserStore
+    @Inject
+    lateinit var arenaStore: ArenaStore
 
     private val inflater: LayoutInflater by lazy {
         return@lazy activity!!.applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
