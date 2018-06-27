@@ -12,13 +12,16 @@ import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
 import dagger.android.ContributesAndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
-import durdinstudios.wowarena.navigation.HomeActivity
 import durdinstudios.wowarena.core.App
+import durdinstudios.wowarena.core.SplashActivity
 import durdinstudios.wowarena.core.flux.StoreHolderComponent
 import durdinstudios.wowarena.data.RepositoryModule
 import durdinstudios.wowarena.domain.leaderboard.LeaderboardModule
 import durdinstudios.wowarena.domain.user.UserModule
 import durdinstudios.wowarena.domain.user.UserRepositoryModule
+import durdinstudios.wowarena.navigation.HomeActivity
+import durdinstudios.wowarena.profile.AddCharacterActivity
+import durdinstudios.wowarena.profile.CharacterListActivity
 import durdinstudios.wowarena.profile.ProfileFragment
 import durdinstudios.wowarena.ranking.BracketFragment
 import durdinstudios.wowarena.ranking.RankingFragment
@@ -51,6 +54,18 @@ interface ActivityBindingsModule {
     @ActivityScope
     @ContributesAndroidInjector
     fun mainActivity(): HomeActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector
+    fun characterList(): CharacterListActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector
+    fun addChar(): AddCharacterActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector
+    fun splash(): SplashActivity
 
     @ActivityScope
     @ContributesAndroidInjector

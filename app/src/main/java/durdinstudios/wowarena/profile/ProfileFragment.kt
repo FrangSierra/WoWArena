@@ -33,23 +33,16 @@ class ProfileFragment : NavigationFragment() {
     @Inject
     lateinit var userStore: UserStore
 
-    private val characterName by argument<String>(CHARACTER_NAME)
-    private val realm by argument<String>(REALM_NAME)
+    private lateinit var characterName: String
+    private lateinit var realm: String
     private val inflater: LayoutInflater by lazy {
         return@lazy activity!!.applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     }
 
     companion object {
         val TAG = "profile_fragment"
-        const val CHARACTER_NAME = "character"
-        const val REALM_NAME = "realm"
-        fun newInstance(characterName: String, realmName: String): ProfileFragment {
-            return ProfileFragment().apply {
-                val args = Bundle()
-                args.putString(CHARACTER_NAME, characterName)
-                args.putString(REALM_NAME, realmName)
-                arguments = args
-            }
+        fun newInstance(): ProfileFragment {
+            return ProfileFragment()
         }
     }
 
@@ -59,26 +52,25 @@ class ProfileFragment : NavigationFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = view
-        ?: inflater.inflate(R.layout.profile_fragment, container, false)
+            ?: inflater.inflate(R.layout.profile_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initializeInterface()
         listenStoreChanges()
-        //if (userStore.state.player == null)
+        characterName = userStore.state.player!!.name
+        realm = userStore.state.player!!.realm
         reloadUserData()
     }
 
     private fun initializeInterface() {
-
+        change_user.setOnClickListener { startActivity(CharacterListActivity.newIntent(activity!!)) }
     }
 
     private fun listenStoreChanges() {
         userStore.flowable()
-            .select { it.player }
-            .subscribe {
-                setUserData(it)
-            }
-            .track()
+                .select { it.player }
+                .subscribe { setUserData(it) }
+                .track()
     }
 
     private fun setUserData(playerInfo: PlayerInfo) {
@@ -117,17 +109,17 @@ class ProfileFragment : NavigationFragment() {
     }
 
     private fun reloadUserData() {
-        loading_progress.makeVisible()
+        //loading_progress.makeVisible()
         dispatcher.dispatchOnUi(LoadUserDataAction(characterName, realm))
         userStore.flowable()
-            .observeOn(AndroidSchedulers.mainThread())
-            .select { it.loadUserTask }
-            .filterOne { it.isTerminal() }
-            .subscribe {
-                if (it.isFailure()) {
-                    //manage
-                }
-                loading_progress.makeGone()
-            }.track()
+                .observeOn(AndroidSchedulers.mainThread())
+                .select { it.loadUserTask }
+                .filterOne { it.isTerminal() }
+                .subscribe {
+                    if (it.isFailure()) {
+                        //manage
+                    }
+                    //loading_progress.makeGone()
+                }.track()
     }
 }
