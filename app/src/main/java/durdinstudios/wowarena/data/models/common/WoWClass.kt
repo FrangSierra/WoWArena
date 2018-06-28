@@ -1,35 +1,39 @@
 package durdinstudios.wowarena.data.models.common
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.ToJson
 import durdinstudios.wowarena.R
 
 
-enum class WoWClass {
+class ClassAdapter {
+    @ToJson
+    fun toJson(wowClass: WoWClass): Int {
+        return wowClass.value
+    }
 
-    @SerializedName("1")
-    WARRIOR,
-    @SerializedName("2")
-    PALADIN,
-    @SerializedName("3")
-    HUNTER,
-    @SerializedName("4")
-    ROGUE,
-    @SerializedName("5")
-    PRIEST,
-    @SerializedName("6")
-    DEATH_KNIGHT,
-    @SerializedName("7")
-    SHAMAN,
-    @SerializedName("8")
-    MAGE,
-    @SerializedName("9")
-    WARLOCK,
-    @SerializedName("10")
-    MONK,
-    @SerializedName("11")
-    DRUID,
-    @SerializedName("12")
-    DEMON_HUNTER;
+    @FromJson
+    fun fromJson(value: Int): WoWClass {
+        return fromInt(value)
+    }
+
+    fun fromInt(value: Int): WoWClass {
+        return WoWClass.values().first { it.value == value }
+    }
+}
+
+enum class WoWClass(val value: Int) {
+    WARRIOR(1),
+    PALADIN(2),
+    HUNTER(3),
+    ROGUE(4),
+    PRIEST(5),
+    DEATH_KNIGHT(6),
+    SHAMAN(7),
+    MAGE(8),
+    WARLOCK(9),
+    MONK(10),
+    DRUID(11),
+    DEMON_HUNTER(12);
 
     fun getClassColor() = when (this) {
         WARRIOR -> R.color.color_warrior

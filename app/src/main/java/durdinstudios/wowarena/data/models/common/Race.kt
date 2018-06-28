@@ -1,44 +1,43 @@
 package durdinstudios.wowarena.data.models.common
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.ToJson
 
-enum class Race {
-    @SerializedName("1")
-    HUMAN,
-    @SerializedName("2")
-    ORC,
-    @SerializedName("3")
-    DWARF,
-    @SerializedName("4")
-    NIGHT_ELF,
-    @SerializedName("5")
-    UNDEAD,
-    @SerializedName("6")
-    TAUREN,
-    @SerializedName("7")
-    GNOME,
-    @SerializedName("8")
-    TROLL,
-    @SerializedName("9")
-    GOBLIN,
-    @SerializedName("10")
-    BLOOD_ELF,
-    @SerializedName("11")
-    DRAENEI,
-    @SerializedName("12")
-    WORGEN,
-    @SerializedName("24")
-    PANDAREN_N,
-    @SerializedName("25")
-    PANDAREN_A,
-    @SerializedName("26")
-    PANDAREN_H,
-    @SerializedName("27")
-    NIGHTBORNE,
-    @SerializedName("28")
-    HIGHMOUNTAIN_TAUREN,
-    @SerializedName("29")
-    VOID_ELF,
-    @SerializedName("30")
-    LIGHTFORGED_DRAENEI,
+enum class Race(val value: Int) {
+    HUMAN(1),
+    ORC(2),
+    DWARF(3),
+    NIGHT_ELF(4),
+    UNDEAD(5),
+    TAUREN(6),
+    GNOME(7),
+    TROLL(8),
+    GOBLIN(9),
+    BLOOD_ELF(10),
+    DRAENEI(11),
+    WORGEN(12),
+    PANDAREN_N(24),
+    PANDAREN_A(25),
+    PANDAREN_H(26),
+    NIGHTBORNE(27),
+    HIGHMOUNTAIN_TAUREN(28),
+    VOID_ELF(29),
+    LIGHTFORGED_DRAENEI(30),
+}
+
+
+class RaceAdapter {
+    @ToJson
+    fun toJson(region: Race): Int {
+        return region.value
+    }
+
+    @FromJson
+    fun fromJson(value: Int): Race {
+        return fromInt(value)
+    }
+
+    fun fromInt(value: Int): Race {
+        return Race.values().first { it.value == value }
+    }
 }

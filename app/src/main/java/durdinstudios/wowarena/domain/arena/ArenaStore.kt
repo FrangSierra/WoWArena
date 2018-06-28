@@ -6,7 +6,6 @@ import dagger.Module
 import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
 import durdinstudios.wowarena.domain.user.LoadUserDataCompleteAction
-import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.misc.taskRunning
 import mini.Reducer
 import mini.Store

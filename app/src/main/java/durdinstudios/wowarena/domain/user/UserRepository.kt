@@ -3,8 +3,9 @@ package durdinstudios.wowarena.domain.user
 import android.content.Context
 import android.content.SharedPreferences
 import com.bq.masmov.reflux.dagger.AppScope
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import dagger.Module
 import dagger.Provides
 import durdinstudios.wowarena.profile.Character
@@ -21,7 +22,7 @@ interface UserPersistence {
 }
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
-class SharedPrefsUserPersistence @Inject constructor(val context: Context, val gson: Gson) : UserPersistence {
+class SharedPrefsUserPersistence @Inject constructor(val context: Context, val moshi: Moshi) : UserPersistence {
     companion object {
         const val FILE = "user_prefs"
         const val USER_LIST_KEY = "users"
@@ -30,30 +31,32 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val g
     }
 
     private val prefs: SharedPreferences by lazy { context.getSharedPreferences(FILE, Context.MODE_PRIVATE) }
+    private val characterAdapter: JsonAdapter<Character> = moshi.adapter(Character::class.java)
+    private val characterListAdapter: JsonAdapter<List<Character>> =
+            moshi.adapter(Types.newParameterizedType(List::class.java, Character::class.java))
 
     override fun saveUser(user: Character) {
-        val listType = object : TypeToken<List<Character>>() {}.type
         val serializedList = prefs.getString(USER_LIST_KEY, null)
         val list: List<Character> = if (serializedList == null) emptyList()
-        else gson.fromJson(serializedList, listType)
+        else characterListAdapter.fromJson(serializedList) ?: emptyList()
+
 
         if (!list.contains(user)) {
             val playersList = list.plus(user).distinctBy { it.username to it.realm }
             prefs.edit()
-                    .putString(USER_LIST_KEY, gson.toJson(playersList, listType))
+                    .putString(USER_LIST_KEY, characterListAdapter.toJson(playersList))
                     .apply()
 
         }
         prefs.edit()
-                .putString(CURRENT_USER_KEY, gson.toJson(user))
+                .putString(CURRENT_USER_KEY, characterAdapter.toJson(user))
                 .apply()
     }
 
     override fun getUsers(): List<Character> {
         val serialized = prefs.getString(USER_LIST_KEY, null) ?: return emptyList()
-        val listType = object : TypeToken<List<Character>>() {}.type
         return try {
-            gson.fromJson(serialized, listType)
+            characterListAdapter.fromJson(serialized) ?: emptyList()
         } catch (ex: Throwable) {
             //Remove if parsing fails (essentially forced logout)
             prefs.edit().remove(USER_LIST_KEY).apply()
@@ -64,7 +67,7 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val g
     override fun getCurrentUser(): Character? {
         val serialized = prefs.getString(CURRENT_USER_KEY, null) ?: return null
         return try {
-            gson.fromJson(serialized, Character::class.java)
+            characterAdapter.fromJson(serialized)
         } catch (ex: Throwable) {
             //Remove if parsing fails (essentially forced logout)
             prefs.edit().remove(CURRENT_USER_KEY).apply()
@@ -73,10 +76,9 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val g
     }
 
     override fun deleteUser(user: Character) {
-        val listType = object : TypeToken<List<Character>>() {}.type
         val serializedList = prefs.getString(USER_LIST_KEY, null)
         val list: List<Character> = if (serializedList == null) emptyList()
-        else gson.fromJson(serializedList, listType)
+        else characterListAdapter.fromJson(serializedList) ?: emptyList()
 
         val playersList = list.minus(user).distinctBy { it.username to it.realm }
         val currentUser = getCurrentUser()
@@ -88,12 +90,12 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val g
                         .apply()
             } else {
                 prefs.edit()
-                        .putString(CURRENT_USER_KEY, gson.toJson(playersList.first(), Character::class.java))
+                        .putString(CURRENT_USER_KEY, characterAdapter.toJson(playersList.first()))
                         .apply()
             }
         }
         prefs.edit()
-                .putString(USER_LIST_KEY, gson.toJson(playersList, listType))
+                .putString(USER_LIST_KEY, characterListAdapter.toJson(playersList))
                 .apply()
     }
 

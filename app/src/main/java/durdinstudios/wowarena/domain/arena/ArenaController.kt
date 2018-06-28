@@ -2,8 +2,7 @@ package durdinstudios.wowarena.domain.arena
 
 import com.bq.masmov.reflux.dagger.AppScope
 import durdinstudios.wowarena.data.WarcraftAPIInstances
-import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
-import durdinstudios.wowarena.domain.arena.model.ArenaInfo
+import durdinstudios.wowarena.domain.arena.model.CharacterArenaStats
 import durdinstudios.wowarena.domain.arena.model.toArenaInfo
 import durdinstudios.wowarena.misc.taskFailure
 import durdinstudios.wowarena.misc.taskSuccess
@@ -16,8 +15,8 @@ import javax.inject.Inject
 
 interface ArenaController {
 
-    fun getArenaStats(): Map<Character, Map<ArenaBracket, List<ArenaInfo>>>
-    fun saveArenaStats(character: Character, bracket: ArenaBracket, info: ArenaInfo)
+    fun getArenaStats(): List<CharacterArenaStats>
+    fun saveArenaStats(stats: CharacterArenaStats)
     fun deleteCharacterArenaInfo(character: Character)
     fun downloadArenaStats(currentCharacters: List<Character>)
 }
@@ -36,15 +35,11 @@ class ArenaControllerImpl @Inject constructor(private val dispatcher: Dispatcher
                     data.forEach { playerInfo ->
                         val character = currentCharacters
                                 .first { it.username == playerInfo.name && it.realm == playerInfo.realm }
-                        playerInfo.pvp.brackets.arena2v2?.let {
-                            arenaRepository.saveArenaStats(character, ArenaBracket.BRACKET_2_VS_2, it.toArenaInfo())
-                        }
-                        playerInfo.pvp.brackets.arena3v3?.let {
-                            arenaRepository.saveArenaStats(character, ArenaBracket.BRACKET_3_VS_3, it.toArenaInfo())
-                        }
-                        playerInfo.pvp.brackets.arenaRbg?.let {
-                            arenaRepository.saveArenaStats(character, ArenaBracket.RBG, it.toArenaInfo())
-                        }
+                        val stats = CharacterArenaStats(character, playerInfo.pvp.brackets.arena2v2?.toArenaInfo(),
+                                playerInfo.pvp.brackets.arena3v3?.toArenaInfo(),
+                                playerInfo.pvp.brackets.arenaRbg?.toArenaInfo(),
+                                System.currentTimeMillis())
+                        saveArenaStats(stats)
                     }
                     dispatcher.dispatchOnUi(DownloadArenaStatsComplete(taskSuccess()))
                 }, { error ->
@@ -52,12 +47,12 @@ class ArenaControllerImpl @Inject constructor(private val dispatcher: Dispatcher
                 })
     }
 
-    override fun getArenaStats(): Map<Character, Map<ArenaBracket, List<ArenaInfo>>> {
+    override fun getArenaStats(): List<CharacterArenaStats> {
         return arenaRepository.getArenaStats()
     }
 
-    override fun saveArenaStats(character: Character, bracket: ArenaBracket, info: ArenaInfo) {
-        arenaRepository.saveArenaStats(character, bracket, info)
+    override fun saveArenaStats(stats: CharacterArenaStats) {
+        arenaRepository.saveArenaStats(stats)
     }
 
     override fun deleteCharacterArenaInfo(character: Character) {

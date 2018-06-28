@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import com.bq.masmov.reflux.dagger.ActivityScope
 import com.bq.masmov.reflux.dagger.AppScope
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -17,6 +17,7 @@ import durdinstudios.wowarena.core.App
 import durdinstudios.wowarena.core.SplashActivity
 import durdinstudios.wowarena.core.flux.StoreHolderComponent
 import durdinstudios.wowarena.data.RepositoryModule
+import durdinstudios.wowarena.data.models.common.*
 import durdinstudios.wowarena.domain.arena.ArenaModule
 import durdinstudios.wowarena.domain.arena.ArenaRepositoryModule
 import durdinstudios.wowarena.domain.leaderboard.LeaderboardModule
@@ -103,8 +104,17 @@ class AppModule(val app: App) {
     @Provides
     fun provideAppContext(): Context = app
 
+
     @Provides
     @AppScope
-    fun provideGson() = GsonBuilder().disableHtmlEscaping()
-            .create()
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder()
+                .add(KotlinJsonAdapterFactory())
+                .add(ClassAdapter())
+                .add(RegionAdapter())
+                .add(FactionAdapter())
+                .add(RaceAdapter())
+                .add(GenderAdapter())
+                .build()
+    }
 }

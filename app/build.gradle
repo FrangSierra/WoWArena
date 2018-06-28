@@ -7,6 +7,7 @@ buildscript {
         support_version = "27.1.1"
         glide_version = "4.7.1"
         rx_version = "2.1.9"
+        moshi_version = '1.6.0'
         rx_android_version = "2.0.2"
     }
 }
@@ -58,11 +59,16 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
     // Network
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+
+    //moshi
+    implementation "com.squareup.moshi:moshi:$moshi_version"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
 
     //BottomBar
     implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'

@@ -1,13 +1,13 @@
 package durdinstudios.wowarena.data.models.warcraft.pvp
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 enum class ArenaBracket {
-    @SerializedName("2v2")
+    @Json(name = "2v2")
     BRACKET_2_VS_2,
-    @SerializedName("3v3")
+    @Json(name = "3v3")
     BRACKET_3_VS_3,
-    @SerializedName("rbg")
+    @Json(name = "rbg")
     RBG;
 
     val value: String
