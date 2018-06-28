@@ -1,6 +1,7 @@
 package durdinstudios.wowarena.profile
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.TypedValue
@@ -9,6 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.Legend.LegendForm
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.utils.ColorTemplate
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.flux.NavigationFragment
 import durdinstudios.wowarena.data.models.common.Region
@@ -16,6 +21,7 @@ import durdinstudios.wowarena.data.models.warcraft.pvp.BracketInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.getRenderUrl
 import durdinstudios.wowarena.domain.arena.ArenaStore
+import durdinstudios.wowarena.domain.arena.model.CharacterArenaStats
 import durdinstudios.wowarena.domain.user.LoadUserDataAction
 import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.misc.*
@@ -27,6 +33,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import mini.Dispatcher
 import mini.select
 import javax.inject.Inject
+
 
 class ProfileFragment : NavigationFragment() {
 
@@ -87,6 +94,10 @@ class ProfileFragment : NavigationFragment() {
                 .select { it.playersInfo[characterName to characterRealm] }
                 .subscribe { setUserData(it) }
                 .track()
+        arenaStore.flowable()
+                .select { it.arenaData }
+                .subscribe { setChartData(it) }
+                .track()
     }
 
     private fun setUserData(playerInfo: PlayerInfo) {
@@ -136,5 +147,88 @@ class ProfileFragment : NavigationFragment() {
                     }
                     loading_progress?.makeGone()
                 }.track()
+    }
+
+    private fun inflateChart() {
+        rating_chart.run {
+            // no description text
+            getDescription().setEnabled(false)
+
+            // enable touch gestures
+            setTouchEnabled(true)
+
+            setDragDecelerationFrictionCoef(0.9f)
+
+            // enable scaling and dragging
+            setDragEnabled(true)
+            setScaleEnabled(true)
+            setDrawGridBackground(false)
+            setHighlightPerDragEnabled(true)
+
+            // if disabled, scaling can be done on x- and y-axis separately
+            setPinchZoom(true)
+
+            // set an alternative background color
+            setBackgroundColor(Color.LTGRAY)
+
+            animateX(2500)
+
+            // get the legend (only possible after setting data)
+            val l = getLegend()
+
+            // modify the legend ...
+            l.setForm(LegendForm.LINE)
+            // l.setTypeface(mTfLight)
+            l.setTextSize(11f)
+            l.setTextColor(Color.WHITE)
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM)
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT)
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL)
+            l.setDrawInside(false)
+//        l.setYOffset(11f);
+
+            val xAxis = getXAxis()
+            //xAxis.setTypeface(mTfLight)
+            xAxis.setTextSize(11f)
+            xAxis.setTextColor(Color.WHITE)
+            xAxis.setDrawGridLines(false)
+            xAxis.setDrawAxisLine(false)
+
+            val leftAxis = getAxisLeft()
+            // leftAxis.setTypeface(mTfLight)
+            leftAxis.setTextColor(ColorTemplate.getHoloBlue())
+            leftAxis.setAxisMaximum(200f)
+            leftAxis.setAxisMinimum(0f)
+            leftAxis.setDrawGridLines(true)
+            leftAxis.setGranularityEnabled(true)
+
+            val rightAxis = getAxisRight()
+            // rightAxis.setTypeface(mTfLight)
+            rightAxis.setTextColor(Color.RED)
+            rightAxis.setAxisMaximum(900f)
+            rightAxis.setAxisMinimum(-200f)
+            rightAxis.setDrawGridLines(false)
+            rightAxis.setDrawZeroLine(false)
+            rightAxis.setGranularityEnabled(false)
+        }
+    }
+
+    fun setChartData(arenaStats: List<CharacterArenaStats>) {
+        val characterStats = arenaStats.filter {
+            it.character.username == characterName
+                    && it.character.realm == characterRealm
+        }
+
+        val vs2Stats = characterStats.filter { it.vs2 != null }.map { it.vs2 to it.timestamp }
+        val vs3Stats = characterStats.filter { it.vs3 != null }.map { it.vs3 to it.timestamp }
+        val rbgStats = characterStats.filter { it.vs3 != null }.map { it.rbg to it.timestamp }
+
+        val vs2 = ArrayList<Entry>()
+        vs2Stats.forEach {
+            vs2.add(Entry())
+        }
+        val vs3 = ArrayList<Entry>()
+        val rbg = ArrayList<Entry>()
+
     }
 }
