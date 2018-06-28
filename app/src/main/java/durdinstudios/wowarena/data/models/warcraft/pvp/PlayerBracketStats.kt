@@ -1,12 +1,12 @@
 package durdinstudios.wowarena.data.models.warcraft.pvp
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 import durdinstudios.wowarena.data.models.common.Faction
 import durdinstudios.wowarena.data.models.common.Gender
 import durdinstudios.wowarena.data.models.common.Race
 import durdinstudios.wowarena.data.models.common.WoWClass
 
-data class Ranking(@SerializedName("rows") val ranking: List<PlayerBracketStats>)
+data class Ranking(@Json(name = "rows") val ranking: List<PlayerBracketStats>)
 
 data class PlayerBracketStats(
         val ranking: Int,
@@ -15,11 +15,11 @@ data class PlayerBracketStats(
         val realmId: Int,
         val realmName: String,
         val realmSlug: String,
-        @SerializedName("raceId") val race: Race,
-        @SerializedName("classId") val gameClass: WoWClass,
+        @Json(name = "raceId") val race: Race,
+        @Json(name = "classId") val gameClass: WoWClass,
         val specId: Int,
-        @SerializedName("factionId") val faction: Faction,
-        @SerializedName("genderId") val gender: Gender,
+        @Json(name = "factionId") val faction: Faction,
+        @Json(name = "genderId") val gender: Gender,
         val seasonWins: Int,
         val seasonLosses: Int,
         val weeklyWins: Int,

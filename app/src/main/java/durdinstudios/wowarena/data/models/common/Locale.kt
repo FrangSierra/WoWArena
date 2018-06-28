@@ -1,19 +1,19 @@
 package durdinstudios.wowarena.data.models.common
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 enum class Locale(val value: String) {
-    @SerializedName("GB") ENGLISH("en_GB"),
-    @SerializedName("DE") GERMAN("de_DE"),
-    @SerializedName("ES") SPANISH("es_ES"),
-    @SerializedName("FR") FRENCH("fr_FR"),
-    @SerializedName("IT") ITALIAN("it_IT"),
-    @SerializedName("PL") POLISH("pl_PL"),
-    @SerializedName("PT") PORTUGUESE("pt_PT"),
-    @SerializedName("RU") RUSSIAN("ru_RU"),
-    @SerializedName("KR") KOREAN("ko_KR"),
-    @SerializedName("TW") TAIWAN("zh_TW"),
-    @SerializedName("US") USA("en_US"),
-    @SerializedName("BR") BRASIL("pt_BR"),
-    @SerializedName("MX") MEXICO("es_MX")
+    @Json(name ="GB") ENGLISH("en_GB"),
+    @Json(name ="DE") GERMAN("de_DE"),
+    @Json(name ="ES") SPANISH("es_ES"),
+    @Json(name ="FR") FRENCH("fr_FR"),
+    @Json(name ="IT") ITALIAN("it_IT"),
+    @Json(name ="PL") POLISH("pl_PL"),
+    @Json(name ="PT") PORTUGUESE("pt_PT"),
+    @Json(name ="RU") RUSSIAN("ru_RU"),
+    @Json(name ="KR") KOREAN("ko_KR"),
+    @Json(name ="TW") TAIWAN("zh_TW"),
+    @Json(name ="US") USA("en_US"),
+    @Json(name ="BR") BRASIL("pt_BR"),
+    @Json(name ="MX") MEXICO("es_MX")
 }

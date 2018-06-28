@@ -1,6 +1,7 @@
 package durdinstudios.wowarena.data
 
 import com.bq.masmov.reflux.dagger.AppScope
+import com.squareup.moshi.Moshi
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
@@ -16,7 +17,7 @@ import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 @Module
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
@@ -54,12 +55,15 @@ class RepositoryModule {
     @Provides
     @AppScope
     @JvmSuppressWildcards
-    fun provideRetrofitMap(client: OkHttpClient): Map<Region, Retrofit> {
+    fun provideRetrofitMap(client: OkHttpClient, moshi: Moshi): Map<Region, Retrofit> {
         val map = hashMapOf<Region, Retrofit>()
         Region.values().forEach { region ->
-            map.plusAssign(region to Retrofit.Builder().baseUrl(getBaseUrl(region))
-                    .client(client).addConverterFactory(GsonConverterFactory.create())
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build())
+            map.plusAssign(region to Retrofit.Builder()
+                    .baseUrl(getBaseUrl(region))
+                    .client(client)
+                    .addConverterFactory(MoshiConverterFactory.create(moshi))
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .build())
         }
         return map
     }

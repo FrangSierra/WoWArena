@@ -1,6 +1,5 @@
 package durdinstudios.wowarena.core
 
-import com.google.gson.Gson
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import durdinstudios.wowarena.BuildConfig

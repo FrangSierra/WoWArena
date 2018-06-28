@@ -3,12 +3,15 @@ package durdinstudios.wowarena.domain.arena
 import android.content.Context
 import android.content.SharedPreferences
 import com.bq.masmov.reflux.dagger.AppScope
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import dagger.Module
 import dagger.Provides
 import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import durdinstudios.wowarena.domain.arena.model.ArenaInfo
+import durdinstudios.wowarena.domain.arena.model.CharacterArenaStats
+import durdinstudios.wowarena.domain.user.SharedPrefsUserPersistence
 import durdinstudios.wowarena.profile.Character
 import mini.Grove
 import javax.inject.Inject
@@ -16,13 +19,13 @@ import javax.inject.Inject
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
 interface ArenaPersistence {
-    fun getArenaStats(): Map<Character, Map<ArenaBracket, List<ArenaInfo>>>
-    fun saveArenaStats(character: Character, bracket: ArenaBracket, info: ArenaInfo)
+    fun getArenaStats(): List<CharacterArenaStats>
+    fun saveArenaStats(stats: CharacterArenaStats)
     fun deleteCharacterArenaInfo(character: Character)
 }
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
-class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val gson: Gson) : ArenaPersistence {
+class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val moshi: Moshi) : ArenaPersistence {
 
     companion object {
         const val FILE = "arena_prefs"
@@ -30,34 +33,34 @@ class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val 
     }
 
     private val prefs: SharedPreferences by lazy { context.getSharedPreferences(FILE, Context.MODE_PRIVATE) }
+    private val arenaAdapter: JsonAdapter<List<CharacterArenaStats>> =
+            moshi.adapter(Types.newParameterizedType(List::class.java, CharacterArenaStats::class.java))
 
-    override fun getArenaStats(): Map<Character, Map<ArenaBracket, List<ArenaInfo>>> {
-        val type = object : TypeToken<Map<Character, Map<ArenaBracket, List<ArenaInfo>>>>() {}.type
+    override fun getArenaStats(): List<CharacterArenaStats> {
         val serializedMap = prefs.getString(ARENA_STATS, null)
         return try {
-            if (serializedMap == null) emptyMap()
-            else gson.fromJson(serializedMap, type)
+            if (serializedMap == null) emptyList()
+            else {
+                arenaAdapter.fromJson(serializedMap) ?: emptyList()
+            }
         } catch (ex: Throwable) {
             Grove.e { ex }
             prefs.edit()
                     .remove(ARENA_STATS)
                     .apply()
-            emptyMap()
+            emptyList()
         }
     }
 
-    override fun saveArenaStats(character: Character, bracket: ArenaBracket, info: ArenaInfo) {
-        val type = object : TypeToken<Map<Character, Map<ArenaBracket, List<ArenaInfo>>>>() {}.type
+    override fun saveArenaStats(stats: CharacterArenaStats) {
         val serializedMap = prefs.getString(ARENA_STATS, null)
         try {
-            val arenaMap: Map<Character, Map<ArenaBracket, List<ArenaInfo>>> = if (serializedMap == null) emptyMap()
-            else gson.fromJson(serializedMap, type)
-            val characterMap = arenaMap.getOrElse(character) { emptyMap() }
-            val bracketList: List<ArenaInfo> = characterMap.getOrElse(bracket) { emptyList() }
-            val newMap = arenaMap.plus(character to mapOf(bracket to bracketList.plus(info)))
+            val list: List<CharacterArenaStats> = if (serializedMap == null) emptyList()
+            else arenaAdapter.fromJson(serializedMap) ?: emptyList()
 
+            val playersList = list.plus(stats)
             prefs.edit()
-                    .putString(ARENA_STATS, gson.toJson(newMap, type))
+                    .putString(ARENA_STATS, arenaAdapter.toJson(playersList))
                     .apply()
         } catch (ex: Throwable) {
             Grove.e { ex }
@@ -68,14 +71,16 @@ class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val 
     }
 
     override fun deleteCharacterArenaInfo(character: Character) {
-        val type = object : TypeToken<Map<Character, Map<ArenaBracket, List<ArenaInfo>>>>() {}.type
         val serializedMap = prefs.getString(ARENA_STATS, null)
-        val arenaMap: Map<Character, Map<ArenaBracket, List<ArenaInfo>>> = if (serializedMap == null) emptyMap()
-        else gson.fromJson(serializedMap, type)
-        val deletedMap = arenaMap.minus(character)
+        val arenaMap: List<CharacterArenaStats> = if (serializedMap == null) emptyList()
+        else arenaAdapter.fromJson(serializedMap) ?: emptyList()
+        val deletedList = arenaMap.filterNot {
+            it.character.username == character.username &&
+                    it.character.realm == character.realm
+        }
 
         prefs.edit()
-                .putString(ARENA_STATS, gson.toJson(deletedMap, type))
+                .putString(ARENA_STATS, arenaAdapter.toJson(deletedList))
                 .apply()
     }
 
@@ -85,12 +90,12 @@ class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
 class ArenaRepository(private val arenaPersistence: ArenaPersistence) {
 
-    fun getArenaStats(): Map<Character, Map<ArenaBracket, List<ArenaInfo>>> {
+    fun getArenaStats(): List<CharacterArenaStats> {
         return arenaPersistence.getArenaStats()
     }
 
-    fun saveArenaStats(character: Character, bracket: ArenaBracket, info: ArenaInfo) {
-        arenaPersistence.saveArenaStats(character, bracket, info)
+    fun saveArenaStats(stats: CharacterArenaStats) {
+        arenaPersistence.saveArenaStats(stats)
     }
 
     fun deleteCharacterArenaInfo(character: Character) {
