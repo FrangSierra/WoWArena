@@ -1,7 +1,6 @@
 package durdinstudios.wowarena.profile
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.TypedValue
@@ -10,17 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.components.Legend.LegendForm
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.utils.ColorTemplate
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.flux.NavigationFragment
 import durdinstudios.wowarena.data.models.common.Region
+import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import durdinstudios.wowarena.data.models.warcraft.pvp.BracketInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.getRenderUrl
 import durdinstudios.wowarena.domain.arena.ArenaStore
+import durdinstudios.wowarena.domain.arena.model.ArenaInfo
 import durdinstudios.wowarena.domain.arena.model.CharacterArenaStats
 import durdinstudios.wowarena.domain.user.LoadUserDataAction
 import durdinstudios.wowarena.domain.user.UserStore
@@ -30,10 +27,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.player_bracket_info.view.*
 import kotlinx.android.synthetic.main.profile_fragment.*
 import kotlinx.android.synthetic.main.toolbar.*
+import lecho.lib.hellocharts.gesture.ContainerScrollType
+import lecho.lib.hellocharts.gesture.ZoomType
+import lecho.lib.hellocharts.model.Axis
+import lecho.lib.hellocharts.model.Line
+import lecho.lib.hellocharts.model.LineChartData
+import lecho.lib.hellocharts.model.PointValue
+import lecho.lib.hellocharts.util.ChartUtils
 import mini.Dispatcher
 import mini.select
+import java.util.*
 import javax.inject.Inject
-
 
 class ProfileFragment : NavigationFragment() {
 
@@ -74,11 +78,13 @@ class ProfileFragment : NavigationFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = view
-            ?: inflater.inflate(R.layout.profile_fragment, container, false)
+        ?: inflater.inflate(R.layout.profile_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initializeInterface()
         listenStoreChanges()
+        inflateChart()
+        arenaStore.state.arenaData.takeIf { it.isNotEmpty() }?.let { setChartData(it) }
         if (!userStore.state.playersInfo.containsKey(characterName to characterRealm)) {
             loading_progress.makeVisible()
         }
@@ -91,13 +97,13 @@ class ProfileFragment : NavigationFragment() {
 
     private fun listenStoreChanges() {
         userStore.flowable()
-                .select { it.playersInfo[characterName to characterRealm] }
-                .subscribe { setUserData(it) }
-                .track()
+            .select { it.playersInfo[characterName to characterRealm] }
+            .subscribe { setUserData(it) }
+            .track()
         arenaStore.flowable()
-                .select { it.arenaData }
-                .subscribe { setChartData(it) }
-                .track()
+            .select { it.arenaData }
+            .subscribe { setChartData(it) }
+            .track()
     }
 
     private fun setUserData(playerInfo: PlayerInfo) {
@@ -138,97 +144,63 @@ class ProfileFragment : NavigationFragment() {
     private fun reloadUserData() {
         dispatcher.dispatchOnUi(LoadUserDataAction(characterName, characterRealm, region))
         userStore.flowable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .select { it.loadUserTask }
-                .filterOne { it.isTerminal() }
-                .subscribe {
-                    if (it.isFailure()) {
-                        //manage
-                    }
-                    loading_progress?.makeGone()
-                }.track()
+            .observeOn(AndroidSchedulers.mainThread())
+            .select { it.loadUserTask }
+            .filterOne { it.isTerminal() }
+            .subscribe {
+                if (it.isFailure()) {
+                    //manage
+                }
+                loading_progress?.makeGone()
+            }.track()
     }
 
     private fun inflateChart() {
-        rating_chart.run {
-            // no description text
-            getDescription().setEnabled(false)
-
-            // enable touch gestures
-            setTouchEnabled(true)
-
-            setDragDecelerationFrictionCoef(0.9f)
-
-            // enable scaling and dragging
-            setDragEnabled(true)
-            setScaleEnabled(true)
-            setDrawGridBackground(false)
-            setHighlightPerDragEnabled(true)
-
-            // if disabled, scaling can be done on x- and y-axis separately
-            setPinchZoom(true)
-
-            // set an alternative background color
-            setBackgroundColor(Color.LTGRAY)
-
-            animateX(2500)
-
-            // get the legend (only possible after setting data)
-            val l = getLegend()
-
-            // modify the legend ...
-            l.setForm(LegendForm.LINE)
-            // l.setTypeface(mTfLight)
-            l.setTextSize(11f)
-            l.setTextColor(Color.WHITE)
-            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM)
-            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT)
-            l.setOrientation(Legend.LegendOrientation.HORIZONTAL)
-            l.setDrawInside(false)
-//        l.setYOffset(11f);
-
-            val xAxis = getXAxis()
-            //xAxis.setTypeface(mTfLight)
-            xAxis.setTextSize(11f)
-            xAxis.setTextColor(Color.WHITE)
-            xAxis.setDrawGridLines(false)
-            xAxis.setDrawAxisLine(false)
-
-            val leftAxis = getAxisLeft()
-            // leftAxis.setTypeface(mTfLight)
-            leftAxis.setTextColor(ColorTemplate.getHoloBlue())
-            leftAxis.setAxisMaximum(200f)
-            leftAxis.setAxisMinimum(0f)
-            leftAxis.setDrawGridLines(true)
-            leftAxis.setGranularityEnabled(true)
-
-            val rightAxis = getAxisRight()
-            // rightAxis.setTypeface(mTfLight)
-            rightAxis.setTextColor(Color.RED)
-            rightAxis.setAxisMaximum(900f)
-            rightAxis.setAxisMinimum(-200f)
-            rightAxis.setDrawGridLines(false)
-            rightAxis.setDrawZeroLine(false)
-            rightAxis.setGranularityEnabled(false)
-        }
+        rating_chart.isInteractive = true
+        rating_chart.zoomType = ZoomType.HORIZONTAL
+        rating_chart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL)
     }
 
-    fun setChartData(arenaStats: List<CharacterArenaStats>) {
-        val characterStats = arenaStats.filter {
-            it.character.username == characterName
-                    && it.character.realm == characterRealm
+    private fun setChartData(stats: List<CharacterArenaStats>) {
+
+        val lines = ArrayList<Line>()
+        lines.add(createLine(stats.filter { it.vs2 != null }.map { it.vs2!! to it.timestamp }, ArenaBracket.BRACKET_2_VS_2))
+        lines.add(createLine(stats.filter { it.vs3 != null }.map { it.vs3!! to it.timestamp }, ArenaBracket.BRACKET_3_VS_3))
+        lines.add(createLine(stats.filter { it.rbg != null }.map { it.rbg!! to it.timestamp }, ArenaBracket.RBG))
+        val data = LineChartData(lines)
+
+        data.baseValue = 0F
+        val axisX = Axis().setName("Time")
+        val axisY = Axis().setHasLines(true).setName("Rating")
+        data.axisXBottom = axisX
+        data.axisYLeft = axisY.setHasTiltedLabels(false)
+        rating_chart.lineChartData = data
+    }
+
+    private fun createLine(info: List<Pair<ArenaInfo, Long>>, bracket: ArenaBracket): Line {
+        val values = ArrayList<PointValue>()
+        val filteredValues = info.distinctBy { it.second }
+            .filter { it.first.rating > 0 }
+            .sortedBy { it.first.rating }
+            .distinctBy { it.first.rating }
+
+        filteredValues.mapTo(values) {
+            PointValue(it.second.toFloat(), it.first.rating.toFloat())
         }
+        return Line(values).apply {
+            color = when(bracket){
+                ArenaBracket.BRACKET_2_VS_2 -> ChartUtils.COLORS[0]
+                ArenaBracket.BRACKET_3_VS_3 -> ChartUtils.COLORS[1]
+                ArenaBracket.RBG -> ChartUtils.COLORS[2]
+            }
 
-        val vs2Stats = characterStats.filter { it.vs2 != null }.map { it.vs2 to it.timestamp }
-        val vs3Stats = characterStats.filter { it.vs3 != null }.map { it.vs3 to it.timestamp }
-        val rbgStats = characterStats.filter { it.vs3 != null }.map { it.rbg to it.timestamp }
+            shape = shape
+            isCubic = isCubic
+            isFilled = isFilled
 
-        val vs2 = ArrayList<Entry>()
-        vs2Stats.forEach {
-            vs2.add(Entry())
+            setHasLabels(true)
+            setHasLines(true)
+            setHasPoints(true)
         }
-        val vs3 = ArrayList<Entry>()
-        val rbg = ArrayList<Entry>()
-
     }
 }
