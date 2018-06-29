@@ -13,6 +13,10 @@ import mini.Grove
 import mini.MiniActionReducer
 import org.jetbrains.annotations.TestOnly
 import kotlin.properties.Delegates
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
+
+
 
 /**
  * Created by fragarsie on 12/18/17.
@@ -53,8 +57,7 @@ class App : DaggerApplication() {
 
         if (BuildConfig.DEBUG) Grove.plant(DebugTree(true))
 
-        val stores = component.stores()
-        //FluxUtil.initStores(stores.values.toList())
+        Fabric.with(this, Crashlytics())
 
         val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
         exceptionHandlers.add(exceptionHandler)
