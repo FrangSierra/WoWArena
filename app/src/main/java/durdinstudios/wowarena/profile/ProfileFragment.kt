@@ -12,16 +12,16 @@ import android.widget.TextView
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.flux.NavigationFragment
 import durdinstudios.wowarena.data.models.common.Region
-import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import durdinstudios.wowarena.data.models.warcraft.pvp.BracketInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.getRenderUrl
 import durdinstudios.wowarena.domain.arena.ArenaStore
-import durdinstudios.wowarena.domain.arena.model.ArenaInfo
 import durdinstudios.wowarena.domain.arena.model.CharacterArenaStats
+import durdinstudios.wowarena.domain.arena.model.filterData
 import durdinstudios.wowarena.domain.user.LoadUserDataAction
 import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.misc.*
+import durdinstudios.wowarena.misc.LineChartUtils.prepareChartData
 import durdinstudios.wowarena.navigation.HomeActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.player_bracket_info.view.*
@@ -29,14 +29,9 @@ import kotlinx.android.synthetic.main.profile_fragment.*
 import kotlinx.android.synthetic.main.toolbar.*
 import lecho.lib.hellocharts.gesture.ContainerScrollType
 import lecho.lib.hellocharts.gesture.ZoomType
-import lecho.lib.hellocharts.model.Axis
-import lecho.lib.hellocharts.model.Line
-import lecho.lib.hellocharts.model.LineChartData
-import lecho.lib.hellocharts.model.PointValue
-import lecho.lib.hellocharts.util.ChartUtils
+import lecho.lib.hellocharts.model.Viewport
 import mini.Dispatcher
 import mini.select
-import java.util.*
 import javax.inject.Inject
 
 class ProfileFragment : NavigationFragment() {
@@ -58,6 +53,7 @@ class ProfileFragment : NavigationFragment() {
 
     companion object {
         val TAG = "profile_fragment"
+        const val GRAPH_VIEWPORT_DAYS = 7
         const val CHARACTER_NAME = "name"
         const val CHARACTER_REALM = "realm"
         const val CHARACTER_REGION = "region"
@@ -78,17 +74,24 @@ class ProfileFragment : NavigationFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = view
-        ?: inflater.inflate(R.layout.profile_fragment, container, false)
+            ?: inflater.inflate(R.layout.profile_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initializeInterface()
         listenStoreChanges()
         inflateChart()
-        arenaStore.state.arenaData.takeIf { it.isNotEmpty() }?.let { setChartData(it) }
+        arenaStore.state.arenaData.filterData(characterName, characterRealm)
+                .takeIf { it.isNotEmpty() }?.let { showChartIfPossible(it) }
         if (!userStore.state.playersInfo.containsKey(characterName to characterRealm)) {
             loading_progress.makeVisible()
         }
         reloadUserData()
+    }
+
+    private fun showChartIfPossible(it: List<CharacterArenaStats>) {
+        if (!prepareChartData(rating_chart, it)){
+            toast("not enought data")
+        }
     }
 
     private fun initializeInterface() {
@@ -97,13 +100,14 @@ class ProfileFragment : NavigationFragment() {
 
     private fun listenStoreChanges() {
         userStore.flowable()
-            .select { it.playersInfo[characterName to characterRealm] }
-            .subscribe { setUserData(it) }
-            .track()
+                .select { it.playersInfo[characterName to characterRealm] }
+                .subscribe { setUserData(it) }
+                .track()
         arenaStore.flowable()
-            .select { it.arenaData }
-            .subscribe { setChartData(it) }
-            .track()
+                .select { it.arenaData.filterData(characterName, characterRealm) }
+                .filter { it.isNotEmpty() }
+                .subscribe { prepareChartData(rating_chart, it) }
+                .track()
     }
 
     private fun setUserData(playerInfo: PlayerInfo) {
@@ -117,10 +121,12 @@ class ProfileFragment : NavigationFragment() {
             inflateBracket(pvp.brackets.arena3v3)
             inflateBracket(pvp.brackets.arenaRbg)
         }
+        change_user.makeVisible()
     }
 
     private fun inflateBracket(bracketInfo: BracketInfo?) {
         if (bracketInfo == null) return
+        if (bracketInfo.rating == 0) return
         val bracketView = inflater.inflate(R.layout.player_bracket_info, null)
         val bracketText = TextView(context)
 
@@ -144,63 +150,24 @@ class ProfileFragment : NavigationFragment() {
     private fun reloadUserData() {
         dispatcher.dispatchOnUi(LoadUserDataAction(characterName, characterRealm, region))
         userStore.flowable()
-            .observeOn(AndroidSchedulers.mainThread())
-            .select { it.loadUserTask }
-            .filterOne { it.isTerminal() }
-            .subscribe {
-                if (it.isFailure()) {
-                    //manage
-                }
-                loading_progress?.makeGone()
-            }.track()
+                .observeOn(AndroidSchedulers.mainThread())
+                .select { it.loadUserTask }
+                .filterOne { it.isTerminal() }
+                .subscribe {
+                    if (it.isFailure()) {
+                        //manage
+                    }
+                    loading_progress?.makeGone()
+                }.track()
     }
 
     private fun inflateChart() {
         rating_chart.isInteractive = true
         rating_chart.zoomType = ZoomType.HORIZONTAL
         rating_chart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL)
-    }
-
-    private fun setChartData(stats: List<CharacterArenaStats>) {
-
-        val lines = ArrayList<Line>()
-        lines.add(createLine(stats.filter { it.vs2 != null }.map { it.vs2!! to it.timestamp }, ArenaBracket.BRACKET_2_VS_2))
-        lines.add(createLine(stats.filter { it.vs3 != null }.map { it.vs3!! to it.timestamp }, ArenaBracket.BRACKET_3_VS_3))
-        lines.add(createLine(stats.filter { it.rbg != null }.map { it.rbg!! to it.timestamp }, ArenaBracket.RBG))
-        val data = LineChartData(lines)
-
-        data.baseValue = 0F
-        val axisX = Axis().setName("Time")
-        val axisY = Axis().setHasLines(true).setName("Rating")
-        data.axisXBottom = axisX
-        data.axisYLeft = axisY.setHasTiltedLabels(false)
-        rating_chart.lineChartData = data
-    }
-
-    private fun createLine(info: List<Pair<ArenaInfo, Long>>, bracket: ArenaBracket): Line {
-        val values = ArrayList<PointValue>()
-        val filteredValues = info.distinctBy { it.second }
-            .filter { it.first.rating > 0 }
-            .sortedBy { it.first.rating }
-            .distinctBy { it.first.rating }
-
-        filteredValues.mapTo(values) {
-            PointValue(it.second.toFloat(), it.first.rating.toFloat())
-        }
-        return Line(values).apply {
-            color = when(bracket){
-                ArenaBracket.BRACKET_2_VS_2 -> ChartUtils.COLORS[0]
-                ArenaBracket.BRACKET_3_VS_3 -> ChartUtils.COLORS[1]
-                ArenaBracket.RBG -> ChartUtils.COLORS[2]
-            }
-
-            shape = shape
-            isCubic = isCubic
-            isFilled = isFilled
-
-            setHasLabels(true)
-            setHasLines(true)
-            setHasPoints(true)
-        }
+        rating_chart.isHorizontalScrollBarEnabled = true
+        val v = Viewport(rating_chart.maximumViewport)
+        v.left = v.right - GRAPH_VIEWPORT_DAYS
+        rating_chart.currentViewport = v
     }
 }

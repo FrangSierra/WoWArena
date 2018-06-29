@@ -10,6 +10,7 @@ import durdinstudios.wowarena.profile.Character
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import mini.Dispatcher
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -38,7 +39,7 @@ class ArenaControllerImpl @Inject constructor(private val dispatcher: Dispatcher
                         val stats = CharacterArenaStats(character, playerInfo.pvp.brackets.arena2v2?.toArenaInfo(),
                                 playerInfo.pvp.brackets.arena3v3?.toArenaInfo(),
                                 playerInfo.pvp.brackets.arenaRbg?.toArenaInfo(),
-                                System.currentTimeMillis())
+                                System.currentTimeMillis() + TimeUnit.DAYS.toMillis(2))
                         saveArenaStats(stats)
                     }
                     dispatcher.dispatchOnUi(DownloadArenaStatsComplete(taskSuccess()))
