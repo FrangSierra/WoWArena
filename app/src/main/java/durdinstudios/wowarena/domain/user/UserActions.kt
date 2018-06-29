@@ -15,5 +15,7 @@ data class LoadUserDataCompleteAction(val info: PlayerInfo?,
                                       val character: Character?,
                                       val task: Task) : Action
 
-data class DeleteUserAction(val nick: String,
-                            val realm: String) : Action
+data class DeleteUserAction(val character: Character) : Action
+
+data class DeleteUserCompleteAction(val character: Character,
+                                    val task: Task) : Action

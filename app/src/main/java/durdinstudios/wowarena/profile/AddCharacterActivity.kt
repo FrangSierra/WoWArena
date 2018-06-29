@@ -6,9 +6,13 @@ import android.os.Bundle
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.dagger.BaseActivity
 import durdinstudios.wowarena.data.models.common.Region
+import durdinstudios.wowarena.domain.arena.ArenaStore
 import durdinstudios.wowarena.domain.user.LoadUserDataAction
 import durdinstudios.wowarena.domain.user.UserStore
+import durdinstudios.wowarena.error.ErrorHandler
 import durdinstudios.wowarena.misc.filterOne
+import durdinstudios.wowarena.misc.hideKeyboard
+import durdinstudios.wowarena.misc.toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.add_character_activity.*
 import mini.Dispatcher
@@ -22,8 +26,9 @@ class AddCharacterActivity : BaseActivity() {
     lateinit var dispatcher: Dispatcher
     @Inject
     lateinit var userStore: UserStore
+    @Inject
+    lateinit var errorHandler: ErrorHandler
 
-    private val adapter = CharacterAdapter(::onCharacterClick)
     private val regions = Region.values().toList()
 
     companion object {
@@ -35,14 +40,6 @@ class AddCharacterActivity : BaseActivity() {
 
         setContentView(R.layout.add_character_activity)
         initializeInterface()
-        listenStoreChanges()
-    }
-
-    private fun listenStoreChanges() {
-        userStore.flowable()
-                .select { it.currentCharacters }
-                .subscribe { adapter.updateCharacters(it) }
-                .track()
     }
 
     private fun initializeInterface() {
@@ -51,6 +48,8 @@ class AddCharacterActivity : BaseActivity() {
     }
 
     private fun addCharacter() {
+        hideKeyboard()
+        add_user.isEnabled = false
         dispatcher.dispatchOnUi(LoadUserDataAction(username.text.toString(), realm.text.toString(), regions[nice_spinner.selectedIndex]))
         userStore.flowable()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -58,14 +57,11 @@ class AddCharacterActivity : BaseActivity() {
                 .filterOne { it.isTerminal() }
                 .subscribe {
                     if (it.isFailure()) {
-                        //manage
+                        toast(errorHandler.getMessageForError(it.error!!))
                     } else {
                         finish()
                     }
+                    add_user.isEnabled = true
                 }.track()
-    }
-
-    private fun onCharacterClick(info: Character) {
-
     }
 }

@@ -48,8 +48,20 @@ class UserStore @Inject constructor(private val userController: UserController,
 
     @Reducer
     fun deleteUser(action: DeleteUserAction, userState: UserState): UserState {
-        return userState
-        //TODO
+        if (state.deleteTask.isRunning()) return state
+        userController.deleteCharacter(action.character)
+        return state.copy(deleteTask = taskRunning())
+    }
+
+    @Reducer
+    fun userDeleted(action: DeleteUserCompleteAction, userState: UserState): UserState {
+        if (!state.deleteTask.isRunning()) return state
+        val newChars =
+                if (action.task.isSuccessful()) state.currentCharacters.filterNot {
+                    it.username == action.character.username && it.realm == action.character.realm
+                }
+                else state.currentCharacters
+        return state.copy(deleteTask = taskRunning(), currentCharacters = newChars)
     }
 
 }

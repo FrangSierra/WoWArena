@@ -3,7 +3,6 @@ package durdinstudios.wowarena.domain.user
 import com.bq.masmov.reflux.dagger.AppScope
 import durdinstudios.wowarena.data.WarcraftAPIInstances
 import durdinstudios.wowarena.data.models.common.Region
-import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.misc.taskFailure
 import durdinstudios.wowarena.misc.taskSuccess
 import durdinstudios.wowarena.profile.Character
@@ -25,22 +24,31 @@ interface UserController {
 
     fun getUsers(): List<Character>
 
-    fun logout(user: Character)
+    fun deleteCharacter(user: Character)
 
     fun shouldSetupArenaJob(): Boolean
 }
+
+class LowLevelCharacterException : Throwable()
 
 @AppScope
 class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
                                              private val userRepository: UserRepository,
                                              private val warcraftApi: WarcraftAPIInstances) : UserController {
+    companion object {
+        const val MAX_LEVEL = 110
+    }
 
     override fun getUserData(username: String, realm: String, region: Region) {
         warcraftApi.apis[region]!!.getPlayerPvpInfo(username, realm)
                 .subscribeOn(Schedulers.io())
                 .subscribe({ user ->
-                    userRepository.saveUser(user.toCharacter(region))
-                    dispatcher.dispatchOnUi(LoadUserDataCompleteAction(user, user.toCharacter(region), taskSuccess()))
+                    if (user.level < MAX_LEVEL) {
+                        dispatcher.dispatchOnUi(LoadUserDataCompleteAction(null, null, taskFailure(LowLevelCharacterException())))
+                    } else {
+                        userRepository.saveUser(user.toCharacter(region))
+                        dispatcher.dispatchOnUi(LoadUserDataCompleteAction(user, user.toCharacter(region), taskSuccess()))
+                    }
                 }, { error ->
                     dispatcher.dispatchOnUi(LoadUserDataCompleteAction(null, null, taskFailure(error)))
                 })
@@ -58,8 +66,13 @@ class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
         return userRepository.getUsers()
     }
 
-    override fun logout(user: Character) {
-        userRepository.removeUser(user)
+    override fun deleteCharacter(user: Character) {
+        try {
+            userRepository.removeUser(user)
+            dispatcher.dispatchOnUi(DeleteUserCompleteAction(user, taskSuccess()))
+        } catch (e : Exception){
+            dispatcher.dispatchOnUi(DeleteUserCompleteAction(user, taskFailure(e)))
+        }
     }
 
     override fun shouldSetupArenaJob(): Boolean {
