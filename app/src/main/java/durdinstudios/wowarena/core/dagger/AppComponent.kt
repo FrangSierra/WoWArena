@@ -23,6 +23,7 @@ import durdinstudios.wowarena.domain.arena.ArenaRepositoryModule
 import durdinstudios.wowarena.domain.leaderboard.LeaderboardModule
 import durdinstudios.wowarena.domain.user.UserModule
 import durdinstudios.wowarena.domain.user.UserRepositoryModule
+import durdinstudios.wowarena.error.ErrorHandlingModule
 import durdinstudios.wowarena.navigation.HomeActivity
 import durdinstudios.wowarena.profile.AddCharacterActivity
 import durdinstudios.wowarena.profile.CharacterListActivity
@@ -38,6 +39,7 @@ import mini.Dispatcher
 @Component(modules = [
     AndroidInjectionModule::class,
     ActivityBindingsModule::class,
+    ErrorHandlingModule::class,
     AndroidSupportInjectionModule::class,
     UserModule::class,
     ArenaModule::class,

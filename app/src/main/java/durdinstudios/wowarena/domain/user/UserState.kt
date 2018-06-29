@@ -12,6 +12,7 @@ data class UserState(
         val selectedCharacter: Character?,
         val currentCharacters: List<Character> = emptyList(),
         val currentRegion: Region = Region.EU,
-        val loadUserTask: Task = taskIdle())
+        val loadUserTask: Task = taskIdle(),
+        val deleteTask: Task = taskIdle())
 
 typealias CharacterInfo = Pair<String,String>

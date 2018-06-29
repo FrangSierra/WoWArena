@@ -8,4 +8,11 @@
     <string name="navigation_ranking">Ranking</string>
     <string name="navigation_profile">Profile</string>
     <string name="navigation_settings">Settings</string>
+
+    <string name="error_low_level">El personaje seleccionado no tiene nivel suficiente</string>
+    <string name="error_unexpected">Ha ocurrido un error inesperado en el servidor, por favor inténtalo más tarde.</string>
+    <string name="error_internal">Ha ocurrido un error interno en el servidor, por favor inténtalo más tarde. (%1$d)</string>
+    <string name="error_app_unexpected">Error inesparado, inténtalo de nuevo.</string>
+    <string name="error_no_connection">Parece que no tienes conexión, inténtalo de nuevo.</string>
+    <string name="error_invalid_certificate">No podemos establecer una conexión segura con el servidor, inténtalo más tarde</string>
 </resources>

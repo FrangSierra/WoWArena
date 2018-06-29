@@ -122,6 +122,10 @@ class ProfileFragment : NavigationFragment() {
             inflateBracket(pvp.brackets.arenaRbg)
         }
         change_user.makeVisible()
+        if (rating_chart.lineChartData.lines.isNotEmpty()) {
+            rating_chart.makeVisible()
+            rating_chart.startDataAnimation()
+        }
     }
 
     private fun inflateBracket(bracketInfo: BracketInfo?) {
@@ -169,5 +173,6 @@ class ProfileFragment : NavigationFragment() {
         val v = Viewport(rating_chart.maximumViewport)
         v.left = v.right - GRAPH_VIEWPORT_DAYS
         rating_chart.currentViewport = v
+        rating_chart.lineChartData.lines = emptyList()
     }
 }

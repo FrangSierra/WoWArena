@@ -16,7 +16,8 @@ import durdinstudios.wowarena.misc.setCircularImage
 import kotlinx.android.synthetic.main.player_item.view.*
 
 
-class CharacterAdapter(private val onPlayerclick: (info: Character) -> Unit) : RecyclerView.Adapter<CharacterAdapter.ViewHolder>() {
+class CharacterAdapter(private val onPlayerClick: (info: Character) -> Unit,
+                       private val onDeleteClick: (info: Character) -> Unit) : RecyclerView.Adapter<CharacterAdapter.ViewHolder>() {
     private val characters: MutableList<Character> = ArrayList()
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
@@ -33,7 +34,8 @@ class CharacterAdapter(private val onPlayerclick: (info: Character) -> Unit) : R
             nick.setTextColor(context.colorCompat(info.klass.getClassColor()))
             data.text = "${info.level} ${info.race.name} ${info.klass.name}"
             realm.text = info.realm
-            itemView.setOnClickListener { onPlayerclick(info) }
+            clear.setOnClickListener { onDeleteClick(info) }
+            itemView.setOnClickListener { onPlayerClick(info) }
         }
     }
 
@@ -47,6 +49,7 @@ class CharacterAdapter(private val onPlayerclick: (info: Character) -> Unit) : R
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val avatar: ImageView = itemView.avatar
+        val clear: ImageView = itemView.clear_character
         val nick: TextView = itemView.username
         val data: TextView = itemView.character_data
         val realm: TextView = itemView.realm

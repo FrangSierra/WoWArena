@@ -39,8 +39,6 @@ object LineChartUtils {
                 .setHasTiltedLabels(true)
 
         chart.lineChartData = data
-        chart.makeVisible()
-        chart.startDataAnimation()
         return true
     }
 
