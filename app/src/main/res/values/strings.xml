@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">WoW Arena</string>
+    <string name="com.crashlytics.useFirebaseAppId">true</string>
 
     <string name="bracket_2vs2">2 VS 2</string>
     <string name="bracket_3vs3">3 VS 3</string>

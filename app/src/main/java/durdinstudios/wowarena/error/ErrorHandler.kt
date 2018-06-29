@@ -2,6 +2,7 @@ package durdinstudios.wowarena.error
 
 import android.content.Context
 import com.bq.masmov.reflux.dagger.AppScope
+import com.crashlytics.android.Crashlytics
 import dagger.Binds
 import dagger.Module
 import durdinstudios.wowarena.R
@@ -79,7 +80,7 @@ class DefaultErrorHandler @Inject constructor(private val context: Context,
     @Suppress("UndocumentedPublicFunction")
     override fun handle(e: Throwable?) {
         val exception = e as? Exception ?: Exception(e)
-
+        Crashlytics.logException(exception)
         val errorCode = unwrapCode(e)
         if (errorCode == 401) {
             // Unauthorized

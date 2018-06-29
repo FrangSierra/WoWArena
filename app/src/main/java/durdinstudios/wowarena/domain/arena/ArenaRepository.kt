@@ -3,6 +3,7 @@ package durdinstudios.wowarena.domain.arena
 import android.content.Context
 import android.content.SharedPreferences
 import com.bq.masmov.reflux.dagger.AppScope
+import com.crashlytics.android.Crashlytics
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -45,6 +46,7 @@ class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val 
             }
         } catch (ex: Throwable) {
             Grove.e { ex }
+            Crashlytics.logException(ex)
             prefs.edit()
                     .remove(ARENA_STATS)
                     .apply()
@@ -64,6 +66,7 @@ class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val 
                     .apply()
         } catch (ex: Throwable) {
             Grove.e { ex }
+            Crashlytics.logException(ex)
             prefs.edit()
                     .remove(ARENA_STATS)
                     .apply()
