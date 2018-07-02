@@ -9,10 +9,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.Module
 import dagger.Provides
-import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
-import durdinstudios.wowarena.domain.arena.model.ArenaInfo
 import durdinstudios.wowarena.domain.arena.model.CharacterArenaStats
-import durdinstudios.wowarena.domain.user.SharedPrefsUserPersistence
 import durdinstudios.wowarena.profile.Character
 import mini.Grove
 import javax.inject.Inject

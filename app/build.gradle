@@ -16,6 +16,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
 
 apply from: "../gradle/utils.gradle"
 
@@ -92,6 +93,11 @@ dependencies {
     implementation 'com.github.pabloogc:Mini:1.0.1'
     annotationProcessor 'com.github.pabloogc.Mini:mini-processor:1.0.1'
 
+//About
+    implementation('com.mikepenz:aboutlibraries:5.9.7@aar') {
+        transitive = true
+    }
+
 //Android charts
     implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
 
@@ -115,6 +121,7 @@ dependencies {
 
 repositories {
     mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 apply plugin: 'com.google.gms.google-services'

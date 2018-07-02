@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- <TextView
+         android:id="@+id/general_settings_label"
+         style="@style/ProfileSetting.Title.Text"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:gravity="center_vertical"
+         android:layout_marginTop="16dp"
+         android:text="General settings"
+         android:textStyle="bold"
+         android:textColor="@color/textColorPrimary"
+         app:layout_constraintEnd_toStartOf="@+id/settings_2vs2_stats"
+         app:layout_constraintHorizontal_chainStyle="spread_inside"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent" />-->
+
+    <TextView
+        android:id="@+id/settings_2vs2_stats_text"
+        style="@style/ProfileSetting.Title.Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:text="2vs2 Stats"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/settings_2vs2_stats"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/settings_2vs2_stats_description"
+        style="@style/ProfileSetting.Title.Description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp"
+        android:text="Shows 2vs2 stats on the profile screen"
+        app:layout_constraintEnd_toStartOf="@+id/settings_2vs2_stats"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_2vs2_stats_text" />
+
+    <Switch
+        android:id="@+id/settings_2vs2_stats"
+        style="@style/ProfileSetting.Title.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/settings_2vs2_stats_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/settings_2vs2_stats_text" />
+
+    <TextView
+        android:id="@+id/settings_3vs3_stats_text"
+        style="@style/ProfileSetting.Title.Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:text="3vs3 Stats"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/settings_3vs3_stats"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separator_2vs2" />
+
+    <TextView
+        android:id="@+id/settings_3vs3_stats_description"
+        style="@style/ProfileSetting.Title.Description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp"
+        android:text="Shows 3vs3 stats on the profile screen"
+        app:layout_constraintEnd_toStartOf="@+id/settings_3vs3_stats"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_3vs3_stats_text" />
+
+    <Switch
+        android:id="@+id/settings_3vs3_stats"
+        style="@style/ProfileSetting.Title.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/settings_3vs3_stats_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/settings_3vs3_stats_text" />
+
+    <TextView
+        android:id="@+id/settings_rbg_stats_text"
+        style="@style/ProfileSetting.Title.Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:text="RBG Stats"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/settings_rbg_stats"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separator_3vs3" />
+
+    <TextView
+        android:id="@+id/settings_rbg_stats_description"
+        style="@style/ProfileSetting.Title.Description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp"
+        android:text="Shows RBG stats on the profile screen"
+        app:layout_constraintEnd_toStartOf="@+id/settings_rbg_stats"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_rbg_stats_text" />
+
+    <Switch
+        android:id="@+id/settings_rbg_stats"
+        style="@style/ProfileSetting.Title.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/settings_rbg_stats_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/settings_rbg_stats_text" />
+
+    <TextView
+        android:id="@+id/settings_contact_stats_text"
+        style="@style/ProfileSetting.Title.Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:text="Contact"
+        android:textStyle="bold"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separator_rbg" />
+
+    <TextView
+        android:id="@+id/settings_contact_stats_description"
+        style="@style/ProfileSetting.Title.Description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp"
+        android:text="Send feedback or requests"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_contact_stats_text" />
+    
+    <TextView
+        android:id="@+id/settings_about_stats_text"
+        style="@style/ProfileSetting.Title.Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:text="About"
+        android:textStyle="bold"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separator_contact" />
+
+    <TextView
+        android:id="@+id/settings_about_stats_description"
+        style="@style/ProfileSetting.Title.Description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp"
+        android:text="Acknowledgments and libraries used"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_about_stats_text" />
+
+
+    <View
+        android:id="@+id/separator_2vs2"
+        style="@style/SimpleSeparator"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/settings_2vs2_stats_description" />
+
+    <View
+        android:id="@+id/separator_3vs3"
+        style="@style/SimpleSeparator"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/settings_3vs3_stats_description" />
+
+    <View
+        android:id="@+id/separator_rbg"
+        style="@style/SimpleSeparator"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/settings_rbg_stats_description" />
+
+    <View
+        android:id="@+id/separator_contact"
+        style="@style/SimpleSeparator"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/settings_contact_stats_description" />
+    
+    <View
+        android:id="@+id/separator_about"
+        style="@style/SimpleSeparator"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/settings_about_stats_description" />
+</android.support.constraint.ConstraintLayout>

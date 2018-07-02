@@ -10,6 +10,10 @@
     <string name="navigation_profile">Profile</string>
     <string name="navigation_settings">Settings</string>
 
+    <string name="settings_about_text">About</string>
+    <string name="settings_contact_subject">Subject</string>
+    <string name="settings_contact_action_title">Send to</string>
+
     <string name="error_low_level">El personaje seleccionado no tiene nivel suficiente</string>
     <string name="error_unexpected">Ha ocurrido un error inesperado en el servidor, por favor inténtalo más tarde.</string>
     <string name="error_internal">Ha ocurrido un error interno en el servidor, por favor inténtalo más tarde. (%1$d)</string>

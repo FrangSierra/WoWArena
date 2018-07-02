@@ -1,4 +1,4 @@
-package durdinstudios.wowarena.domain.user
+package durdinstudios.wowarena.domain.user.repository
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -103,11 +103,11 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val m
     }
 
     override fun shouldSetupArenaJob(): Boolean {
-        //val jobScheduled = prefs.getBoolean(JOB_SERVICE_ENABLE, true)
-        //if (!jobScheduled) {
-        //    prefs.edit().putBoolean(JOB_SERVICE_ENABLE, false).apply()
-        //}
-        return true
+        val jobScheduled = prefs.getBoolean(JOB_SERVICE_ENABLE, true)
+        if (!jobScheduled) {
+            prefs.edit().putBoolean(JOB_SERVICE_ENABLE, false).apply()
+        }
+        return jobScheduled
     }
 }
 

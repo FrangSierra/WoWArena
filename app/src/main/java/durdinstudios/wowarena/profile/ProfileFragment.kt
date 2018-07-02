@@ -89,7 +89,7 @@ class ProfileFragment : NavigationFragment() {
     }
 
     private fun showChartIfPossible(it: List<CharacterArenaStats>) {
-        if (!prepareChartData(rating_chart, it)){
+        if (!prepareChartData(rating_chart, it)) {
             toast("not enought data")
         }
     }
@@ -117,9 +117,12 @@ class ProfileFragment : NavigationFragment() {
             character_data.text = "$level ${race.name} ${gameClass.name}"
             //honor_kills.text = "${pvp.totalHonorableKills} Honorable Kills"
             avatar.setCircularImage(getRenderUrl(Region.EU))
-            inflateBracket(pvp.brackets.arena2v2)
-            inflateBracket(pvp.brackets.arena3v3)
-            inflateBracket(pvp.brackets.arenaRbg)
+            if (userStore.state.settings.show2vs2Stats)
+                inflateBracket(pvp.brackets.arena2v2)
+            if (userStore.state.settings.show3vs3Stats)
+                inflateBracket(pvp.brackets.arena3v3)
+            if (userStore.state.settings.showRbgStats)
+                inflateBracket(pvp.brackets.arenaRbg)
         }
         change_user.makeVisible()
         if (rating_chart.lineChartData.lines.isNotEmpty()) {
@@ -141,8 +144,8 @@ class ProfileFragment : NavigationFragment() {
 
         with(bracketView) {
             this.ranking.text = bracketInfo.rating.toString()
-            this.won_games.text = bracketInfo.weeklyWon.toString()
-            this.lose_games.text = bracketInfo.weeklyLost.toString()
+            this.won_games.text = bracketInfo.seasonWon.toString()
+            this.lose_games.text = bracketInfo.seasonLost.toString()
         }
 
         val textParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)

@@ -26,7 +26,7 @@ object LineChartUtils {
 
         val filteredDates = vs2Values.plus(vs3Values).plus(rbgValues).map { it.second }.distinct()
 
-        val axisXValues = getPossibleDatesvalues(filteredDates).map { AxisValue(it.first.toFloat()).setLabel(it.second) }
+        val axisXValues = getPossibleDatesValues(filteredDates).map { AxisValue(it.first.toFloat()).setLabel(it.second) }
 
         data.axisXBottom = Axis() //TIME
                 .setValues(axisXValues)
@@ -42,7 +42,7 @@ object LineChartUtils {
         return true
     }
 
-    private fun getPossibleDatesvalues(filteredDates: List<Long>): List<Pair<Long, String>> {
+    private fun getPossibleDatesValues(filteredDates: List<Long>): List<Pair<Long, String>> {
         return filteredDates.map {
             val date = Date(it)
             val cal = Calendar.getInstance()
@@ -57,7 +57,7 @@ object LineChartUtils {
         val values = ArrayList<PointValue>()
         val filteredValues = info.distinctBy { TimeUnit.MILLISECONDS.toDays(it.second) }
                 .filter { it.first.rating > 0 }
-                .sortedBy { it.first.rating }
+                .sortedBy { it.second }
 
         filteredValues.mapTo(values) {
             PointValue(it.second.toFloat(), it.first.rating.toFloat())
