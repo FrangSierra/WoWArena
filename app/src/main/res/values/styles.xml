@@ -22,4 +22,33 @@
         <item name="android:windowBackground">@drawable/wow_logo</item>
     </style>
 
+    <style name="DefaultAppText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:textSize">@dimen/default_text_size</item>
+        <item name="android:textColorHint">@color/textColorPrimary</item>
+    </style>
+
+    <!--Settings-->
+    <style name="ProfileSetting.Title.Text" parent="DefaultAppText">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_marginLeft">@dimen/settings_side_margin</item>
+        <item name="android:layout_marginRight">@dimen/settings_side_margin</item>
+    </style>
+
+    <!--Settings-->
+    <style name="ProfileSetting.Title.Description" parent="ProfileSetting.Title.Text">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginLeft">@dimen/settings_side_margin</item>
+        <item name="android:layout_marginRight">@dimen/settings_side_margin</item>
+    </style>
+
+    <!--Separator-->
+    <style name="SimpleSeparator">
+        <item name="android:layout_height">@dimen/settings_separator_height</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/default_separator_color</item>
+    </style>
+
 </resources>

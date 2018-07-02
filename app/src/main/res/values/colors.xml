@@ -26,4 +26,6 @@
     <color name="color_warlock">#9482C9</color>
     <color name="color_warrior">#C79C6E</color>
 
+    <!--Separator-->
+    <color name="default_separator_color">@color/colorPrimary</color>
 </resources>

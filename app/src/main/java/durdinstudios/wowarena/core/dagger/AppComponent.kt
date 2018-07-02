@@ -22,7 +22,9 @@ import durdinstudios.wowarena.domain.arena.ArenaModule
 import durdinstudios.wowarena.domain.arena.ArenaRepositoryModule
 import durdinstudios.wowarena.domain.leaderboard.LeaderboardModule
 import durdinstudios.wowarena.domain.user.UserModule
-import durdinstudios.wowarena.domain.user.UserRepositoryModule
+import durdinstudios.wowarena.domain.user.repository.SettingsRepository
+import durdinstudios.wowarena.domain.user.repository.SettingsRepositoryModule
+import durdinstudios.wowarena.domain.user.repository.UserRepositoryModule
 import durdinstudios.wowarena.error.ErrorHandlingModule
 import durdinstudios.wowarena.navigation.HomeActivity
 import durdinstudios.wowarena.profile.AddCharacterActivity
@@ -44,6 +46,7 @@ import mini.Dispatcher
     UserModule::class,
     ArenaModule::class,
     ArenaRepositoryModule::class,
+    SettingsRepositoryModule::class,
     UserRepositoryModule::class,
     LeaderboardModule::class,
     RepositoryModule::class,

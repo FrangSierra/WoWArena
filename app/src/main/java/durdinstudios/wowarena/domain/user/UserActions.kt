@@ -19,3 +19,9 @@ data class DeleteUserAction(val character: Character) : Action
 
 data class DeleteUserCompleteAction(val character: Character,
                                     val task: Task) : Action
+
+data class SetShow2vs2StatsSettingAction(val show: Boolean) : Action
+
+data class SetShow3vs3StatsSettingAction(val show: Boolean) : Action
+
+data class SetShowRbgStatsSettingAction(val show: Boolean) : Action

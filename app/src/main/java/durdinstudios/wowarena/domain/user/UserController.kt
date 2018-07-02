@@ -3,10 +3,13 @@ package durdinstudios.wowarena.domain.user
 import com.bq.masmov.reflux.dagger.AppScope
 import durdinstudios.wowarena.data.WarcraftAPIInstances
 import durdinstudios.wowarena.data.models.common.Region
+import durdinstudios.wowarena.domain.user.repository.SettingsRepository
+import durdinstudios.wowarena.domain.user.repository.UserRepository
 import durdinstudios.wowarena.misc.taskFailure
 import durdinstudios.wowarena.misc.taskSuccess
 import durdinstudios.wowarena.profile.Character
 import durdinstudios.wowarena.profile.toCharacter
+import durdinstudios.wowarena.settings.Settings
 import io.reactivex.schedulers.Schedulers
 import mini.Dispatcher
 import javax.inject.Inject
@@ -27,6 +30,14 @@ interface UserController {
     fun deleteCharacter(user: Character)
 
     fun shouldSetupArenaJob(): Boolean
+
+    fun getSettings(): Settings
+
+    fun set2vs2StatsSettings(newValue: Boolean)
+
+    fun set3vs3StatsSettings(newValue: Boolean)
+
+    fun setRbgStatsSettings(newValue: Boolean)
 }
 
 class LowLevelCharacterException : Throwable()
@@ -34,7 +45,9 @@ class LowLevelCharacterException : Throwable()
 @AppScope
 class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
                                              private val userRepository: UserRepository,
+                                             private val settingsRepository: SettingsRepository,
                                              private val warcraftApi: WarcraftAPIInstances) : UserController {
+
     companion object {
         const val MAX_LEVEL = 110
     }
@@ -70,7 +83,7 @@ class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
         try {
             userRepository.removeUser(user)
             dispatcher.dispatchOnUi(DeleteUserCompleteAction(user, taskSuccess()))
-        } catch (e : Exception){
+        } catch (e: Exception) {
             dispatcher.dispatchOnUi(DeleteUserCompleteAction(user, taskFailure(e)))
         }
     }
@@ -78,4 +91,23 @@ class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
     override fun shouldSetupArenaJob(): Boolean {
         return userRepository.shouldSetupArenaJob()
     }
+
+    override fun getSettings(): Settings {
+        return Settings(settingsRepository.getShow2vs2StatsSetting(),
+                settingsRepository.getShow3vs3StatsSetting(),
+                settingsRepository.getShowRbgStatsSetting())
+    }
+
+    override fun set2vs2StatsSettings(newValue: Boolean) {
+        settingsRepository.setShow2vs2StatsSetting(newValue)
+    }
+
+    override fun set3vs3StatsSettings(newValue: Boolean) {
+        settingsRepository.setShow3vs3StatsSetting(newValue)
+    }
+
+    override fun setRbgStatsSettings(newValue: Boolean) {
+        settingsRepository.setShowRbgStatsSetting(newValue)
+    }
+
 }

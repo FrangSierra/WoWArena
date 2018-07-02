@@ -21,7 +21,8 @@ class UserStore @Inject constructor(private val userController: UserController,
 
     override fun initialState(): UserState {
         return UserState(selectedCharacter = userController.restoreSession(),
-                currentCharacters = userController.getUsers())
+                currentCharacters = userController.getUsers(),
+                settings = userController.getSettings())
     }
 
     init {
@@ -62,6 +63,24 @@ class UserStore @Inject constructor(private val userController: UserController,
                 }
                 else state.currentCharacters
         return state.copy(deleteTask = taskRunning(), currentCharacters = newChars)
+    }
+
+    @Reducer
+    fun set2vs2Settings(action: SetShow2vs2StatsSettingAction, userState: UserState): UserState {
+        userController.set2vs2StatsSettings(action.show)
+        return state.copy(settings = state.settings.copy(show2vs2Stats = action.show))
+    }
+
+    @Reducer
+    fun set3vs3Settings(action: SetShow3vs3StatsSettingAction, userState: UserState): UserState {
+        userController.set3vs3StatsSettings(action.show)
+        return state.copy(settings = state.settings.copy(show3vs3Stats = action.show))
+    }
+
+    @Reducer
+    fun setRbgSettings(action: SetShowRbgStatsSettingAction, userState: UserState): UserState {
+        userController.setRbgStatsSettings(action.show)
+        return state.copy(settings = state.settings.copy(showRbgStats = action.show))
     }
 
 }
