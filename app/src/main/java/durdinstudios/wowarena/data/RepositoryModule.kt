@@ -47,7 +47,7 @@ class RepositoryModule {
                     .build()
         }
 
-        return OkHttpClient.Builder()
+        return client
                 .addInterceptor(interceptor)
                 .build()
     }
