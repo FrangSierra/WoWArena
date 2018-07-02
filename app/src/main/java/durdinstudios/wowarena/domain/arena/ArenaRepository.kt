@@ -58,7 +58,7 @@ class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val 
             val list: List<CharacterArenaStats> = if (serializedMap == null) emptyList()
             else arenaAdapter.fromJson(serializedMap) ?: emptyList()
 
-            val playersList = list.plus(stats)
+            val playersList = list.plus(stats).distinctBy { it.timestamp }
             prefs.edit()
                     .putString(ARENA_STATS, arenaAdapter.toJson(playersList))
                     .apply()

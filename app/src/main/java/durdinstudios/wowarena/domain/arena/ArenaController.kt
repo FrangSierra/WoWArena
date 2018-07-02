@@ -39,7 +39,7 @@ class ArenaControllerImpl @Inject constructor(private val dispatcher: Dispatcher
                         val stats = CharacterArenaStats(character, playerInfo.pvp.brackets.arena2v2?.toArenaInfo(),
                                 playerInfo.pvp.brackets.arena3v3?.toArenaInfo(),
                                 playerInfo.pvp.brackets.arenaRbg?.toArenaInfo(),
-                                System.currentTimeMillis() + TimeUnit.DAYS.toMillis(2))
+                                playerInfo.lastModified)
                         saveArenaStats(stats)
                     }
                     dispatcher.dispatchOnUi(DownloadArenaStatsComplete(taskSuccess()))

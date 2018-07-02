@@ -12,6 +12,7 @@ import durdinstudios.wowarena.domain.arena.DownloadArenaStats
 import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.misc.filterOne
 import mini.Grove
+import java.util.concurrent.TimeUnit
 
 
 class ArenaJobService : JobService() {
@@ -22,7 +23,7 @@ class ArenaJobService : JobService() {
     override fun onStartJob(params: JobParameters): Boolean {
         Grove.d { "Arena Service job called $params" }
         if (userStore.state.currentCharacters.isEmpty()) {
-            jobFinished(params, false)
+            jobFinished(params, true)
             return true
         }
         dispatcher.dispatchOnUi(DownloadArenaStats(userStore.state.currentCharacters))
@@ -45,11 +46,11 @@ class ArenaJobService : JobService() {
 fun scheduleJob(context: Context) {
     val serviceComponent = ComponentName(context, ArenaJobService::class.java)
     val builder = JobInfo.Builder(1, serviceComponent).apply {
-        //setPeriodic(10000) //Periodic every 20h
+        setPeriodic(TimeUnit.DAYS.toMillis(1)) //Periodic every 20h
         setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED) // require unmetered network
-        //setPersisted(true)
-        setOverrideDeadline(1000)
-        setBackoffCriteria(60 * 1000, JobInfo.BACKOFF_POLICY_LINEAR).build()
+        setPersisted(true)
+        //setOverrideDeadline(1000)
+        //setBackoffCriteria(60 * 1000, JobInfo.BACKOFF_POLICY_LINEAR).build()
         setRequiresCharging(false) // we don't care if the device is charging or not
     }
     val jobScheduler: JobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler

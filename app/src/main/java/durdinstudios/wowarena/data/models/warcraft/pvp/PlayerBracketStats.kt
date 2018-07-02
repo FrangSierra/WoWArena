@@ -15,7 +15,7 @@ data class PlayerBracketStats(
         val realmId: Int,
         val realmName: String,
         val realmSlug: String,
-        @Json(name = "raceId") val race: Race,
+        val race: Race?,
         @Json(name = "classId") val gameClass: WoWClass,
         val specId: Int,
         @Json(name = "factionId") val faction: Faction,
