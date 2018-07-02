@@ -1,5 +1,6 @@
 package durdinstudios.wowarena.core
 
+import com.crashlytics.android.Crashlytics
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import durdinstudios.wowarena.BuildConfig
@@ -8,14 +9,12 @@ import durdinstudios.wowarena.core.dagger.AppModule
 import durdinstudios.wowarena.core.dagger.DaggerAppComponent
 import durdinstudios.wowarena.core.flux.CustomLoggerInterceptor
 import durdinstudios.wowarena.data.RepositoryModule
+import io.fabric.sdk.android.Fabric
 import mini.DebugTree
 import mini.Grove
 import mini.MiniActionReducer
 import org.jetbrains.annotations.TestOnly
 import kotlin.properties.Delegates
-import com.crashlytics.android.Crashlytics
-import io.fabric.sdk.android.Fabric
-
 
 
 /**
@@ -44,7 +43,7 @@ class App : DaggerApplication() {
                         .appModule(AppModule(app))
                         .repositoryModule(RepositoryModule())
                         .build()
-                componentInstance!!.dispatcher().actionReducer = MiniActionReducer(stores = componentInstance!!.stores())
+                componentInstance!!.dispatcher().actionReducers.add(MiniActionReducer(stores = componentInstance!!.stores()))
                 componentInstance!!.dispatcher().addInterceptor(CustomLoggerInterceptor(componentInstance!!.stores().values))
             }
             return componentInstance!!

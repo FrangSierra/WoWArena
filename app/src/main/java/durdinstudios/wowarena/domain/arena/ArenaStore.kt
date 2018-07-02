@@ -23,20 +23,20 @@ class ArenaStore @Inject constructor(private val arenaController: ArenaControlle
     }
 
     @Reducer
-    fun loadUserComplete(action: LoadUserDataCompleteAction, arenaState: ArenaState): ArenaState {
+    fun loadUserComplete(action: LoadUserDataCompleteAction): ArenaState {
         if (action.task.isFailure()) return state
         return state.copy(arenaData = arenaController.getArenaStats())
     }
 
     @Reducer
-    fun downloadArenaData(action: DownloadArenaStats, arenaState: ArenaState): ArenaState {
+    fun downloadArenaData(action: DownloadArenaStats): ArenaState {
         if (state.downloadArenaStatsTask.isRunning()) return state
         arenaController.downloadArenaStats(action.currentCharacters)
         return state.copy(downloadArenaStatsTask = taskRunning())
     }
 
     @Reducer
-    fun downloadArenaDataComplete(action: DownloadArenaStatsComplete, arenaState: ArenaState): ArenaState {
+    fun downloadArenaDataComplete(action: DownloadArenaStatsComplete): ArenaState {
         if (!state.downloadArenaStatsTask.isRunning()) return state
         return state.copy(downloadArenaStatsTask = action.task, arenaData = arenaController.getArenaStats())
     }

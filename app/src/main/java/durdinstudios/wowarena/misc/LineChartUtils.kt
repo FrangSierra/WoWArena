@@ -3,6 +3,7 @@ package durdinstudios.wowarena.misc
 import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import durdinstudios.wowarena.domain.arena.model.ArenaInfo
 import durdinstudios.wowarena.domain.arena.model.CharacterArenaStats
+import durdinstudios.wowarena.settings.Settings
 import lecho.lib.hellocharts.model.*
 import lecho.lib.hellocharts.util.ChartUtils
 import lecho.lib.hellocharts.view.LineChartView
@@ -12,19 +13,19 @@ import java.util.concurrent.TimeUnit
 
 object LineChartUtils {
 
-    fun prepareChartData(chart: LineChartView?, stats: List<CharacterArenaStats>) : Boolean{
+    fun prepareChartData(chart: LineChartView?, stats: List<CharacterArenaStats>, settings : Settings) : Boolean{
 
         val lines = ArrayList<Line>()
         val vs2Values = stats.filter { it.vs2 != null }.map { it.vs2!! to it.timestamp }
-        createLine(vs2Values, ArenaBracket.BRACKET_2_VS_2)?.let { lines.add(it) }
+        createLine(vs2Values, ArenaBracket.BRACKET_2_VS_2)?.takeIf { settings.show2vs2Stats }?.let { lines.add(it) }
         val vs3Values = stats.filter { it.vs3 != null }.map { it.vs3!! to it.timestamp }
-        createLine(vs3Values, ArenaBracket.BRACKET_3_VS_3)?.let { lines.add(it) }
+        createLine(vs3Values, ArenaBracket.BRACKET_3_VS_3)?.takeIf { settings.show3vs3Stats }?.let { lines.add(it) }
         val rbgValues = stats.filter { it.rbg != null }.map { it.rbg!! to it.timestamp }
-        createLine(rbgValues, ArenaBracket.RBG)?.let { lines.add(it) }
+        createLine(rbgValues, ArenaBracket.RBG)?.takeIf { settings.showRbgStats }?.let { lines.add(it) }
         if (lines.isEmpty()) return false
         val data = LineChartData(lines)
 
-        val filteredDates = vs2Values.plus(vs3Values).plus(rbgValues).map { it.second }.distinct()
+        val filteredDates = vs2Values.plus(vs3Values).plus(rbgValues).map { it.second }.distinct().sorted()
 
         val axisXValues = getPossibleDatesValues(filteredDates).map { AxisValue(it.first.toFloat()).setLabel(it.second) }
 
@@ -42,7 +43,7 @@ object LineChartUtils {
         return true
     }
 
-    private fun getPossibleDatesValues(filteredDates: List<Long>): List<Pair<Long, String>> {
+    private fun getPossibleDatesValues(filteredDates: List<Long>): List<Pair<Int, String>> {
         return filteredDates.map {
             val date = Date(it)
             val cal = Calendar.getInstance()
@@ -50,7 +51,7 @@ object LineChartUtils {
             val month = cal.get(Calendar.MONTH).plus(1)
             val day = cal.get(Calendar.DAY_OF_MONTH)
             it to "$day/$month"
-        }.distinctBy { it.second }
+        }.distinctBy { it.second }.mapIndexed { index, pair -> index to pair.second }
     }
 
     private fun createLine(info: List<Pair<ArenaInfo, Long>>, bracket: ArenaBracket): Line? {
@@ -59,8 +60,8 @@ object LineChartUtils {
                 .filter { it.first.rating > 0 }
                 .sortedBy { it.second }
 
-        filteredValues.mapTo(values) {
-            PointValue(it.second.toFloat(), it.first.rating.toFloat())
+        filteredValues.mapIndexedTo(values) { index, data ->
+            PointValue(index.toFloat(), data.first.rating.toFloat())
         }
 
         if (values.size <= 1) return null

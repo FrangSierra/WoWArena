@@ -19,14 +19,14 @@ class LeaderboardStore @Inject constructor(private val leaderboardController: Le
                                            private val userStore: UserStore) : Store<LeaderboardState>() {
 
     @Reducer
-    fun loadStats(action: LoadLeaderboardAction, state: LeaderboardState): LeaderboardState {
+    fun loadStats(action: LoadLeaderboardAction): LeaderboardState {
         leaderboardController.getLeaderboardInfo(action.bracket, userStore.state.currentRegion)
         return state.copy(loadRankingTask = state.loadRankingTask.plus(action.bracket to taskRunning()),
                 rankingStats = state.rankingStats.plus(action.bracket to emptyList()))
     }
 
     @Reducer
-    fun statsLoaded(action: LoadLeaderboardCompleteAction, state: LeaderboardState): LeaderboardState {
+    fun statsLoaded(action: LoadLeaderboardCompleteAction): LeaderboardState {
         return state.copy(loadRankingTask = state.loadRankingTask.plus(action.bracket to action.task),
                 rankingStats = state.rankingStats.plus(action.bracket to action.stats))
     }

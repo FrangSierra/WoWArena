@@ -90,8 +90,8 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
 //Mini
-    implementation 'com.github.pabloogc:Mini:1.0.1'
-    annotationProcessor 'com.github.pabloogc.Mini:mini-processor:1.0.1'
+    implementation 'com.github.pabloogc:Mini:1.0.5'
+    annotationProcessor 'com.github.pabloogc.Mini:mini-processor:1.0.5'
 
 //About
     implementation('com.mikepenz:aboutlibraries:5.9.7@aar') {

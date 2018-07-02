@@ -30,14 +30,14 @@ class UserStore @Inject constructor(private val userController: UserController,
     }
 
     @Reducer
-    fun loadUser(action: LoadUserDataAction, userState: UserState): UserState {
+    fun loadUser(action: LoadUserDataAction): UserState {
         if (state.loadUserTask.isRunning()) return state
         userController.getUserData(action.nick, action.realm, state.currentRegion)
         return state.copy(loadUserTask = taskRunning())
     }
 
     @Reducer
-    fun loadUserComplete(action: LoadUserDataCompleteAction, userState: UserState): UserState {
+    fun loadUserComplete(action: LoadUserDataCompleteAction): UserState {
         if (!state.loadUserTask.isRunning()) return state
         if (action.task.isSuccessful()) {
             val playersInfo = state.playersInfo.plus((action.info!!.name to action.info.realm) to action.info)
@@ -48,14 +48,14 @@ class UserStore @Inject constructor(private val userController: UserController,
     }
 
     @Reducer
-    fun deleteUser(action: DeleteUserAction, userState: UserState): UserState {
+    fun deleteUser(action: DeleteUserAction): UserState {
         if (state.deleteTask.isRunning()) return state
         userController.deleteCharacter(action.character)
         return state.copy(deleteTask = taskRunning())
     }
 
     @Reducer
-    fun userDeleted(action: DeleteUserCompleteAction, userState: UserState): UserState {
+    fun userDeleted(action: DeleteUserCompleteAction): UserState {
         if (!state.deleteTask.isRunning()) return state
         val newChars =
                 if (action.task.isSuccessful()) state.currentCharacters.filterNot {
@@ -66,19 +66,19 @@ class UserStore @Inject constructor(private val userController: UserController,
     }
 
     @Reducer
-    fun set2vs2Settings(action: SetShow2vs2StatsSettingAction, userState: UserState): UserState {
+    fun set2vs2Settings(action: SetShow2vs2StatsSettingAction): UserState {
         userController.set2vs2StatsSettings(action.show)
         return state.copy(settings = state.settings.copy(show2vs2Stats = action.show))
     }
 
     @Reducer
-    fun set3vs3Settings(action: SetShow3vs3StatsSettingAction, userState: UserState): UserState {
+    fun set3vs3Settings(action: SetShow3vs3StatsSettingAction): UserState {
         userController.set3vs3StatsSettings(action.show)
         return state.copy(settings = state.settings.copy(show3vs3Stats = action.show))
     }
 
     @Reducer
-    fun setRbgSettings(action: SetShowRbgStatsSettingAction, userState: UserState): UserState {
+    fun setRbgSettings(action: SetShowRbgStatsSettingAction): UserState {
         userController.setRbgStatsSettings(action.show)
         return state.copy(settings = state.settings.copy(showRbgStats = action.show))
     }
