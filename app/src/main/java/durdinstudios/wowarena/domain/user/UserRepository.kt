@@ -3,6 +3,7 @@ package durdinstudios.wowarena.domain.user
 import android.content.Context
 import android.content.SharedPreferences
 import com.bq.masmov.reflux.dagger.AppScope
+import com.crashlytics.android.Crashlytics
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -58,6 +59,7 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val m
         return try {
             characterListAdapter.fromJson(serialized) ?: emptyList()
         } catch (ex: Throwable) {
+            Crashlytics.logException(ex)
             //Remove if parsing fails (essentially forced logout)
             prefs.edit().remove(USER_LIST_KEY).apply()
             emptyList()
@@ -69,6 +71,7 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val m
         return try {
             characterAdapter.fromJson(serialized)
         } catch (ex: Throwable) {
+            Crashlytics.logException(ex)
             //Remove if parsing fails (essentially forced logout)
             prefs.edit().remove(CURRENT_USER_KEY).apply()
             null
