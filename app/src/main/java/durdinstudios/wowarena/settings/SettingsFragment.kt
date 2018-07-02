@@ -105,8 +105,8 @@ class SettingsFragment : NavigationFragment() {
     }
 
     private fun updateSettings(settings: Settings) {
-        settings_2vs2_stats?.isSelected = settings.show2vs2Stats
-        settings_3vs3_stats?.isSelected = settings.show3vs3Stats
-        settings_rbg_stats?.isSelected = settings.showRbgStats
+        settings_2vs2_stats?.isChecked = settings.show2vs2Stats
+        settings_3vs3_stats?.isChecked = settings.show3vs3Stats
+        settings_rbg_stats?.isChecked = settings.showRbgStats
     }
 }

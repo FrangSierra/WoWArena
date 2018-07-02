@@ -139,6 +139,7 @@
         android:layout_marginTop="16dp"
         android:text="Contact"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/separator_rbg" />
@@ -152,10 +153,11 @@
         android:gravity="center_vertical"
         android:layout_marginTop="4dp"
         android:text="Send feedback or requests"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settings_contact_stats_text" />
-    
+
     <TextView
         android:id="@+id/settings_about_stats_text"
         style="@style/ProfileSetting.Title.Text"
@@ -165,6 +167,7 @@
         android:layout_marginTop="16dp"
         android:text="About"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/separator_contact" />
@@ -177,7 +180,9 @@
         android:alpha="0.5"
         android:gravity="center_vertical"
         android:layout_marginTop="4dp"
+
         android:text="Acknowledgments and libraries used"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settings_about_stats_text" />
@@ -206,7 +211,7 @@
         style="@style/SimpleSeparator"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@+id/settings_contact_stats_description" />
-    
+
     <View
         android:id="@+id/separator_about"
         style="@style/SimpleSeparator"
