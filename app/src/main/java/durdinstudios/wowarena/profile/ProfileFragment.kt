@@ -106,7 +106,7 @@ class ProfileFragment : NavigationFragment() {
         arenaStore.flowable()
                 .select { it.arenaData.filterData(characterName, characterRealm) }
                 .filter { it.isNotEmpty() }
-                .subscribe { prepareChartData(rating_chart, it) }
+                .subscribe { showChartIfPossible(it) }
                 .track()
     }
 
