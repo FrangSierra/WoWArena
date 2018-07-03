@@ -11,6 +11,7 @@ import durdinstudios.wowarena.settings.Settings
 data class UserState(
         val playersInfo: Map<CharacterInfo, PlayerInfo> = emptyMap(),
         val selectedCharacter: Character?,
+        val tutorialShown : Boolean,
         val settings: Settings = Settings(),
         val currentCharacters: List<Character> = emptyList(),
         val currentRegion: Region = Region.EU,

@@ -33,6 +33,8 @@ interface UserController {
 
     fun getSettings(): Settings
 
+    fun shouldShowTutorial(): Boolean
+
     fun set2vs2StatsSettings(newValue: Boolean)
 
     fun set3vs3StatsSettings(newValue: Boolean)
@@ -108,6 +110,10 @@ class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
 
     override fun setRbgStatsSettings(newValue: Boolean) {
         settingsRepository.setShowRbgStatsSetting(newValue)
+    }
+
+    override fun shouldShowTutorial(): Boolean {
+        return userRepository.shouldShowTutorial()
     }
 
 }

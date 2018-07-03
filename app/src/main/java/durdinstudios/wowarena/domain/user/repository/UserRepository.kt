@@ -20,6 +20,7 @@ interface UserPersistence {
     fun getCurrentUser(): Character?
     fun deleteUser(user: Character)
     fun shouldSetupArenaJob(): Boolean
+    fun shouldShowTutorial(): Boolean
 }
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
@@ -28,6 +29,7 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val m
         const val FILE = "user_prefs"
         const val USER_LIST_KEY = "users"
         const val JOB_SERVICE_ENABLE = "job_enabled"
+        const val TUTORIAL_SHOWN = "tutorial_shown"
         const val CURRENT_USER_KEY = "current_user"
     }
 
@@ -109,6 +111,14 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val m
         }
         return jobScheduled
     }
+
+    override fun shouldShowTutorial(): Boolean {
+        val jobScheduled = prefs.getBoolean(TUTORIAL_SHOWN, true)
+        if (!jobScheduled) {
+            prefs.edit().putBoolean(TUTORIAL_SHOWN, false).apply()
+        }
+        return jobScheduled
+    }
 }
 
 /**
@@ -134,6 +144,10 @@ class UserRepository(private val userPersistence: UserPersistence) {
 
     fun shouldSetupArenaJob(): Boolean {
         return userPersistence.shouldSetupArenaJob()
+    }
+
+    fun shouldShowTutorial(): Boolean {
+        return userPersistence.shouldShowTutorial()
     }
 
 }

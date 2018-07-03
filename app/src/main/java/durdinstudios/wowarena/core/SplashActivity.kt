@@ -20,11 +20,17 @@ class SplashActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (userStore.state.selectedCharacter != null) {
-            goToHome()
-        } else {
-            goToCharacterList()
+        when {
+            !userStore.state.tutorialShown -> goToOnBoarding()
+            userStore.state.selectedCharacter != null -> goToHome()
+            else -> goToCharacterList()
         }
+    }
+
+    private fun goToOnBoarding() {
+        val intent = OnBoardingActivity.newIntent(this)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
     private fun goToHome() {
