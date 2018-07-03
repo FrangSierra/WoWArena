@@ -22,7 +22,8 @@ class UserStore @Inject constructor(private val userController: UserController,
     override fun initialState(): UserState {
         return UserState(selectedCharacter = userController.restoreSession(),
                 currentCharacters = userController.getUsers(),
-                settings = userController.getSettings())
+                settings = userController.getSettings(),
+                tutorialShown = userController.shouldShowTutorial())
     }
 
     init {

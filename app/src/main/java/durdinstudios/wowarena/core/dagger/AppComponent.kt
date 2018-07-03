@@ -14,6 +14,7 @@ import dagger.android.AndroidInjector
 import dagger.android.ContributesAndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import durdinstudios.wowarena.core.App
+import durdinstudios.wowarena.core.OnBoardingActivity
 import durdinstudios.wowarena.core.SplashActivity
 import durdinstudios.wowarena.core.flux.StoreHolderComponent
 import durdinstudios.wowarena.data.RepositoryModule
@@ -65,6 +66,10 @@ interface ActivityBindingsModule {
     @ActivityScope
     @ContributesAndroidInjector
     fun mainActivity(): HomeActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector
+    fun onBoarding(): OnBoardingActivity
 
     @ActivityScope
     @ContributesAndroidInjector

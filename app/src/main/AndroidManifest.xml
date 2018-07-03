@@ -24,6 +24,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".core.OnBoardingActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".navigation.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
