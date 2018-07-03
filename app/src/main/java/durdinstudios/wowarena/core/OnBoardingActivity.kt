@@ -32,7 +32,7 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
                 .apply {
                     setTitleColor(R.color.white)
                     setDescriptionColor(R.color.grey_200)
-                    setBackgroundColor(R.color.black_transparent)
+                    setBackgroundColor(android.R.color.transparent)
                     setTitleTextSize(dpToPixels(10, this@OnBoardingActivity))
                     setDescriptionTextSize(dpToPixels(8, this@OnBoardingActivity))
                 }
@@ -42,7 +42,7 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
                 .apply {
                     setTitleColor(R.color.white)
                     setDescriptionColor(R.color.grey_200)
-                    setBackgroundColor(R.color.black_transparent)
+                    setBackgroundColor(android.R.color.transparent)
                     setTitleTextSize(dpToPixels(10, this@OnBoardingActivity))
                     setDescriptionTextSize(dpToPixels(8, this@OnBoardingActivity))
                 }
@@ -52,7 +52,7 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
                 .apply {
                     setTitleColor(R.color.white)
                     setDescriptionColor(R.color.grey_200)
-                    setBackgroundColor(R.color.black_transparent)
+                    setBackgroundColor(android.R.color.transparent)
                     setTitleTextSize(dpToPixels(10, this@OnBoardingActivity))
                     setDescriptionTextSize(dpToPixels(8, this@OnBoardingActivity))
                 }
@@ -62,7 +62,7 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
                 .apply {
                     setTitleColor(R.color.white)
                     setDescriptionColor(R.color.grey_200)
-                    setBackgroundColor(R.color.black_transparent)
+                    setBackgroundColor(android.R.color.transparent)
                     setTitleTextSize(dpToPixels(10, this@OnBoardingActivity))
                     setDescriptionTextSize(dpToPixels(8, this@OnBoardingActivity))
                 }
