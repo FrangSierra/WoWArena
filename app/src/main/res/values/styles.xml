@@ -7,6 +7,8 @@
         <item name="colorPrimaryDark">@color/wow_brown</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:windowBackground">@drawable/background_gradient</item>
+        <item name="android:itemBackground">@color/wow_brown</item>
+        <item name="android:itemTextAppearance">@style/DefaultAppText</item>
     </style>
 
     <!--toolbar-->
@@ -27,6 +29,10 @@
         <item name="android:textColor">@color/textColorPrimary</item>
         <item name="android:textSize">@dimen/default_text_size</item>
         <item name="android:textColorHint">@color/textColorPrimary</item>
+    </style>
+
+    <style name="DefaultAppText.White">
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <!--Settings-->

@@ -7,6 +7,7 @@ import dagger.Binds
 import dagger.Module
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.domain.user.LowLevelCharacterException
+import durdinstudios.wowarena.domain.user.NoPvPDataException
 import mini.Dispatcher
 import mini.Grove
 import org.json.JSONObject
@@ -67,6 +68,7 @@ class DefaultErrorHandler @Inject constructor(private val context: Context,
                 }
             }
             is LowLevelCharacterException -> context.getString(R.string.error_low_level)
+            is NoPvPDataException -> context.getString(R.string.error_pvp_data)
             is GenericError -> e.message ?: context.getString(R.string.error_unexpected)
             is UnknownHostException -> context.getString(R.string.error_no_connection)
             is SSLPeerUnverifiedException -> context.getString(R.string.error_invalid_certificate)

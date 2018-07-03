@@ -90,7 +90,9 @@ class ProfileFragment : NavigationFragment() {
 
     private fun showChartIfPossible(it: List<CharacterArenaStats>) {
         if (!prepareChartData(rating_chart, it, userStore.state.settings)) {
-            toast("not enought data")
+            no_data_text.makeVisible()
+        } else {
+            no_data_text.makeGone()
         }
     }
 

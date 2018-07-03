@@ -26,8 +26,8 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
     }
 
     private fun initializeOnBoarding() {
-        val introCard = AhoyOnboarderCard("Welcome",
-                "Welcome to Gladius!\nThe best application to keep track of your pvp performance on World of Warcraft!",
+        val introCard = AhoyOnboarderCard(getString(R.string.onboarding_welcome_title),
+                getString(R.string.onboarding_welcome_description),
                 R.drawable.ic_ranking_cup)
                 .apply {
                     setTitleColor(R.color.white)
@@ -36,8 +36,8 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
                     setTitleTextSize(dpToPixels(10, this@OnBoardingActivity))
                     setDescriptionTextSize(dpToPixels(8, this@OnBoardingActivity))
                 }
-        val charactersCard = AhoyOnboarderCard("Characters",
-                "Add characters to your list to save and store the pvp data of multiple characters",
+        val charactersCard = AhoyOnboarderCard(getString(R.string.onboarding_characters_title),
+                getString(R.string.onboarding_characters_description),
                 R.drawable.ic_group_24dp)
                 .apply {
                     setTitleColor(R.color.white)
@@ -46,8 +46,8 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
                     setTitleTextSize(dpToPixels(10, this@OnBoardingActivity))
                     setDescriptionTextSize(dpToPixels(8, this@OnBoardingActivity))
                 }
-        val trackDataCard = AhoyOnboarderCard("Track your rating",
-                "Gladius will fetch every day the data of your selected characters to bring you stats, metrics and information regarding your pvp performance",
+        val trackDataCard = AhoyOnboarderCard(getString(R.string.onboarding_track_title),
+                getString(R.string.onboarding_track_description),
                 R.drawable.ic_insert_chart_24dp)
                 .apply {
                     setTitleColor(R.color.white)
@@ -56,8 +56,8 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
                     setTitleTextSize(dpToPixels(10, this@OnBoardingActivity))
                     setDescriptionTextSize(dpToPixels(8, this@OnBoardingActivity))
                 }
-        val rankingCard = AhoyOnboarderCard("Ranking",
-                "Check the ranking of each bracket and region to see the best pvp players of the world",
+        val rankingCard = AhoyOnboarderCard(getString(R.string.onboarding_rating_title),
+                getString(R.string.onboarding_rating_description),
                 R.drawable.ic_ranking_cup)
                 .apply {
                     setTitleColor(R.color.white)
@@ -71,7 +71,7 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
         setInactiveIndicatorColor(R.color.grey_600)
         setActiveIndicatorColor(R.color.white)
         setImageBackground(R.drawable.characters_bg)
-        setFinishButtonTitle("Get Started")
+        setFinishButtonTitle(getString(R.string.onboarding_finish_button_text))
         val pages = listOf(introCard, charactersCard, trackDataCard, rankingCard)
         setOnboardPages(pages)
     }

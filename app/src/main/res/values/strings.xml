@@ -1,23 +1,73 @@
 <resources>
-    <string name="app_name">WoW Arena</string>
+    <string name="app_name">Gladius</string>
     <string name="com.crashlytics.useFirebaseAppId">true</string>
 
+    <!--Brackets-->
     <string name="bracket_2vs2">2 VS 2</string>
     <string name="bracket_3vs3">3 VS 3</string>
     <string name="bracket_rbg">RBG</string>
 
+    <!--Navigation-->
     <string name="navigation_ranking">Ranking</string>
     <string name="navigation_profile">Profile</string>
+    <string name="navigation_characters">Characters</string>
+    <string name="navigation_characters_create">New Character</string>
     <string name="navigation_settings">Settings</string>
 
+    <!--Settings-->
     <string name="settings_about_text">About</string>
     <string name="settings_contact_subject">Subject</string>
     <string name="settings_contact_action_title">Send to</string>
 
-    <string name="error_low_level">El personaje seleccionado no tiene nivel suficiente</string>
-    <string name="error_unexpected">Ha ocurrido un error inesperado en el servidor, por favor inténtalo más tarde.</string>
-    <string name="error_internal">Ha ocurrido un error interno en el servidor, por favor inténtalo más tarde. (%1$d)</string>
-    <string name="error_app_unexpected">Error inesparado, inténtalo de nuevo.</string>
-    <string name="error_no_connection">Parece que no tienes conexión, inténtalo de nuevo.</string>
-    <string name="error_invalid_certificate">No podemos establecer una conexión segura con el servidor, inténtalo más tarde</string>
+    <!--Errors-->
+    <string name="error_required_data_name">Name cannot be empty</string>
+    <string name="error_required_data_realm">Realm cannot be empty</string>
+    <string name="error_character_exist">You are already tracking this character</string>
+    <string name="error_low_level">This character doesn\'t have enought level</string>
+    <string name="error_pvp_data">There is no PvP data for this character</string>
+    <string name="error_unexpected">There was an unexpected error with the server. Try again later</string>
+    <string name="error_internal">There was an unexpected internal error with the server. Try again later</string>
+    <string name="error_app_unexpected">There was an unexpected error. Try again later.</string>
+    <string name="error_no_connection">It looks that there is no connection. Try again later</string>
+    <string name="error_invalid_certificate">We can not establish a secure connection to the server. Try again later</string>
+
+
+    <!--Character list-->
+    <string name="character_list_choose_label">Choose a character to check his PvP stats</string>
+    <string name="character_adapter_menu_delete">Delete</string>
+
+    <!--Character add-->
+    <string name="add_character_button_text">Search user</string>
+    <string name="add_character_realm_hint">Realm</string>
+    <string name="add_character_name_hint">Character name</string>
+
+    <!--Brackets-->
+    <string name="bracket_info_losses_label">Losses</string>
+    <string name="bracket_info_wins_label">Wins</string>
+
+    <!--Profile-->
+    <string name="profile_no_data_label">Gladius fetch your pvp data daily. At least 2 registers are necessary to draw your performance chart.  Come back later!</string>
+
+    <!--Settings-->
+    <string name="settings_2vs2_stats">2vs2 Stats</string>
+    <string name="settings_2vs2_stats_description">Shows 2vs2 stats on the profile screen</string>
+    <string name="settings_3vs3_stats_description">Shows 3vs3 stats on the profile screen</string>
+    <string name="settings_3vs3_stats">3vs3 Stats</string>
+    <string name="settings_rbg_stats">RBG Stats</string>
+    <string name="settings_rbg_stats_description">Shows RBG stats on the profile screen</string>
+    <string name="settings_contact">Contact</string>
+    <string name="settings_contact_description">Send feedback or requests</string>
+    <string name="settings_about">About</string>
+    <string name="settings_about_description">Acknowledgments and libraries used</string>
+
+    <!--OnBoarding-->
+    <string name="onboarding_welcome_title">Welcome</string>
+    <string name="onboarding_welcome_description">Welcome to Gladius! The best application to keep track of your pvp performance in World of Warcraft!</string>
+    <string name="onboarding_characters_title">Characters</string>
+    <string name="onboarding_characters_description">Add characters to your list, saving and storing the pvp data of multiple characters</string>
+    <string name="onboarding_track_title">Track your rating</string>
+    <string name="onboarding_track_description">Gladius will daily fetch the data of your selected characters to bring you stats, metrics and information regarding your pvp performance</string>
+    <string name="onboarding_rating_title">Ranking</string>
+    <string name="onboarding_rating_description">Check the ranking of each bracket and region to see the best pvp players of the world</string>
+    <string name="onboarding_finish_button_text">Get Started</string>
 </resources>

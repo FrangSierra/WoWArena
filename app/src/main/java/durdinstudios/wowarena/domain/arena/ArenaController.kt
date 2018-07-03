@@ -35,7 +35,7 @@ class ArenaControllerImpl @Inject constructor(private val dispatcher: Dispatcher
                 .subscribe({ data ->
                     data.forEach { playerInfo ->
                         val character = currentCharacters
-                                .first { it.username == playerInfo.name && it.realm == playerInfo.realm }
+                                .first { it.characterEqualsTo(playerInfo.name, playerInfo.realm) }
                         val stats = CharacterArenaStats(character, playerInfo.pvp.brackets.arena2v2?.toArenaInfo(),
                                 playerInfo.pvp.brackets.arena3v3?.toArenaInfo(),
                                 playerInfo.pvp.brackets.arenaRbg?.toArenaInfo(),

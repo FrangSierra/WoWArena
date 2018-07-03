@@ -39,6 +39,6 @@ fun CharacterArenaStats.hasData() : Boolean{
 }
 
 fun List<CharacterArenaStats>.filterData(name: String, realm: String): List<CharacterArenaStats> =
-        this.filter { it.character.username == name && it.character.realm == realm }
+        this.filter { it.character.characterEqualsTo(name, realm) }
                 .filterNot { it.isEmpty() }
                 .filter { it.hasData() }

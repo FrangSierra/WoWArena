@@ -75,8 +75,7 @@ class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val 
         val arenaMap: List<CharacterArenaStats> = if (serializedMap == null) emptyList()
         else arenaAdapter.fromJson(serializedMap) ?: emptyList()
         val deletedList = arenaMap.filterNot {
-            it.character.username == character.username &&
-                    it.character.realm == character.realm
+            it.character.characterEqualsTo(character.username, character.realm)
         }
 
         prefs.edit()
