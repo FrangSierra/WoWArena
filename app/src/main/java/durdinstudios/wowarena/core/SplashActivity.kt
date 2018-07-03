@@ -19,7 +19,7 @@ class SplashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        
         when {
             !userStore.state.tutorialShown -> goToOnBoarding()
             userStore.state.selectedCharacter != null -> goToHome()
