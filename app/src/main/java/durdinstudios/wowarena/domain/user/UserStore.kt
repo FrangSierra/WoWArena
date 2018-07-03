@@ -23,7 +23,7 @@ class UserStore @Inject constructor(private val userController: UserController,
         return UserState(selectedCharacter = userController.restoreSession(),
                 currentCharacters = userController.getUsers(),
                 settings = userController.getSettings(),
-                tutorialShown = userController.shouldShowTutorial())
+                tutorialShown = !userController.shouldShowTutorial())
     }
 
     init {
