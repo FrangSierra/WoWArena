@@ -44,6 +44,8 @@ interface UserController {
 
 class LowLevelCharacterException : Throwable()
 
+class NoPvPDataException : Throwable()
+
 @AppScope
 class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
                                              private val userRepository: UserRepository,
@@ -58,11 +60,13 @@ class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
         warcraftApi.apis[region]!!.getPlayerPvpInfo(username, realm)
                 .subscribeOn(Schedulers.io())
                 .subscribe({ user ->
-                    if (user.level < MAX_LEVEL) {
-                        dispatcher.dispatchOnUi(LoadUserDataCompleteAction(null, null, taskFailure(LowLevelCharacterException())))
-                    } else {
-                        userRepository.saveUser(user.toCharacter(region))
-                        dispatcher.dispatchOnUi(LoadUserDataCompleteAction(user, user.toCharacter(region), taskSuccess()))
+                    when {
+                        user.level < MAX_LEVEL -> dispatcher.dispatchOnUi(LoadUserDataCompleteAction(null, null, taskFailure(LowLevelCharacterException())))
+                        !user.hasPvpInfo() -> dispatcher.dispatchOnUi(LoadUserDataCompleteAction(null, null, taskFailure(NoPvPDataException())))
+                        else -> {
+                            userRepository.saveUser(user.toCharacter(region))
+                            dispatcher.dispatchOnUi(LoadUserDataCompleteAction(user, user.toCharacter(region), taskSuccess()))
+                        }
                     }
                 }, { error ->
                     dispatcher.dispatchOnUi(LoadUserDataCompleteAction(null, null, taskFailure(error)))

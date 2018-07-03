@@ -24,35 +24,37 @@
         android:id="@+id/avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/brown_gradient" />
 
     <ImageView
         android:id="@+id/change_user"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_margin="16dp"
-        android:layout_marginRight="16dp"
-        android:src="@drawable/ic_exchange"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_swap_vertical_circle_24dp"
         android:tint="@color/colorPrimary"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/username"
+        app:layout_constraintBottom_toBottomOf="@+id/avatar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/username" />
+        app:layout_constraintTop_toTopOf="@+id/avatar" />
 
     <TextView
         android:id="@+id/username"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/change_user"
         app:layout_constraintStart_toEndOf="@id/avatar"
         app:layout_constraintTop_toTopOf="@+id/avatar"
         tools:text="Soulex"
@@ -82,6 +84,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/avatar" />
+
+    <TextView
+        android:id="@+id/no_data_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="16dp"
+        android:text="@string/profile_no_data_label"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bracket_container" />
 
     <lecho.lib.hellocharts.view.LineChartView
         android:id="@+id/rating_chart"

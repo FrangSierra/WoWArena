@@ -11,7 +11,10 @@ data class Character(val username: String,
                      val klass: WoWClass,
                      val race: Race,
                      val level: Int,
-                     val thumbnail: String)
+                     val thumbnail: String) {
+    fun characterEqualsTo(username: String, realm: String) =
+            this.username == username && this.realm == realm
+}
 
 fun PlayerInfo.toCharacter(region: Region) = Character(username = name,
         realm = realm,
