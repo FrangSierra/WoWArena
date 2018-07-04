@@ -1,86 +1,59 @@
 package durdinstudios.wowarena.domain.arena
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.bq.masmov.reflux.dagger.AppScope
 import com.crashlytics.android.Crashlytics
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
-import durdinstudios.wowarena.domain.arena.model.CharacterArenaStats
+import durdinapps.rxfirebase2.RxFirestore
+import durdinstudios.wowarena.core.firebase.*
+import durdinstudios.wowarena.domain.arena.model.ArenaStats
+import durdinstudios.wowarena.domain.user.LoadUserArenaDataCompleteAction
+import durdinstudios.wowarena.misc.taskFailure
+import durdinstudios.wowarena.misc.taskSuccess
 import durdinstudios.wowarena.profile.Character
-import mini.Grove
+import durdinstudios.wowarena.profile.CharacterInfo
+import durdinstudios.wowarena.profile.toCharacterInfo
+import io.reactivex.schedulers.Schedulers
+import mini.Dispatcher
 import javax.inject.Inject
 
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
 interface ArenaPersistence {
-    fun getArenaStats(): List<CharacterArenaStats>
-    fun saveArenaStats(stats: CharacterArenaStats)
-    fun deleteCharacterArenaInfo(character: Character)
+    fun getArenaStats(characterInfo: CharacterInfo)
+    fun saveArenaStats(stats: ArenaStats)
 }
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
-class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val moshi: Moshi) : ArenaPersistence {
+class SharedPrefsArenaPersistence @Inject constructor(val context: Context,
+                                                      val dispatcher : Dispatcher,
+                                                      val firestore: FirebaseFirestore) : ArenaPersistence {
 
-    companion object {
-        const val FILE = "arena_prefs"
-        const val ARENA_STATS = "arena_stats"
+
+    override fun getArenaStats(characterInfo: CharacterInfo) {
+        RxFirestore.getCollection(firestore.character(characterInfo))
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    val data = it.toObjects(FirebaseArenaStats::class.java)
+                    dispatcher.dispatchOnUi(LoadUserArenaDataCompleteAction(characterInfo, data.map { it.toArenaStats() }, taskSuccess()))
+                }, { error ->
+                    dispatcher.dispatchOnUi(LoadUserArenaDataCompleteAction(characterInfo, emptyList(), taskFailure(error)))
+                }, {
+                    dispatcher.dispatchOnUi(LoadUserArenaDataCompleteAction(characterInfo, emptyList(), taskSuccess()))
+                })
     }
 
-    private val prefs: SharedPreferences by lazy { context.getSharedPreferences(FILE, Context.MODE_PRIVATE) }
-    private val arenaAdapter: JsonAdapter<List<CharacterArenaStats>> =
-            moshi.adapter(Types.newParameterizedType(List::class.java, CharacterArenaStats::class.java))
-
-    override fun getArenaStats(): List<CharacterArenaStats> {
-        val serializedMap = prefs.getString(ARENA_STATS, null)
-        return try {
-            if (serializedMap == null) emptyList()
-            else {
-                arenaAdapter.fromJson(serializedMap) ?: emptyList()
-            }
-        } catch (ex: Throwable) {
-            Grove.e { ex }
-            Crashlytics.logException(ex)
-            prefs.edit()
-                    .remove(ARENA_STATS)
-                    .apply()
-            emptyList()
-        }
-    }
-
-    override fun saveArenaStats(stats: CharacterArenaStats) {
-        val serializedMap = prefs.getString(ARENA_STATS, null)
-        try {
-            val list: List<CharacterArenaStats> = if (serializedMap == null) emptyList()
-            else arenaAdapter.fromJson(serializedMap) ?: emptyList()
-
-            val playersList = list.plus(stats).distinctBy { it.timestamp }
-            prefs.edit()
-                    .putString(ARENA_STATS, arenaAdapter.toJson(playersList))
-                    .apply()
-        } catch (ex: Throwable) {
-            Grove.e { ex }
-            Crashlytics.logException(ex)
-            prefs.edit()
-                    .remove(ARENA_STATS)
-                    .apply()
-        }
-    }
-
-    override fun deleteCharacterArenaInfo(character: Character) {
-        val serializedMap = prefs.getString(ARENA_STATS, null)
-        val arenaMap: List<CharacterArenaStats> = if (serializedMap == null) emptyList()
-        else arenaAdapter.fromJson(serializedMap) ?: emptyList()
-        val deletedList = arenaMap.filterNot {
-            it.character.characterEqualsTo(character.username, character.realm)
-        }
-
-        prefs.edit()
-                .putString(ARENA_STATS, arenaAdapter.toJson(deletedList))
-                .apply()
+    override fun saveArenaStats(stats: ArenaStats) {
+        val pojo = stats.toFirebaseArenaStats()
+        RxFirestore.setDocument(firestore.characterData(stats.character.toCharacterInfo(), stats.timestamp), pojo)
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                //Do nothing
+            }, { error ->
+                Crashlytics.logException(error)
+            })
     }
 
 }
@@ -89,16 +62,12 @@ class SharedPrefsArenaPersistence @Inject constructor(val context: Context, val 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
 class ArenaRepository(private val arenaPersistence: ArenaPersistence) {
 
-    fun getArenaStats(): List<CharacterArenaStats> {
-        return arenaPersistence.getArenaStats()
+    fun getArenaStats(characterInfo: CharacterInfo) {
+        arenaPersistence.getArenaStats(characterInfo)
     }
 
-    fun saveArenaStats(stats: CharacterArenaStats) {
+    fun saveArenaStats(stats: ArenaStats) {
         arenaPersistence.saveArenaStats(stats)
-    }
-
-    fun deleteCharacterArenaInfo(character: Character) {
-        arenaPersistence.deleteCharacterArenaInfo(character)
     }
 }
 

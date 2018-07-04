@@ -5,6 +5,7 @@ import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.misc.Task
 import durdinstudios.wowarena.misc.taskIdle
 import durdinstudios.wowarena.profile.Character
+import durdinstudios.wowarena.profile.CharacterInfo
 import durdinstudios.wowarena.settings.Settings
 
 @Suppress("UndocumentedPublicClass")
@@ -17,5 +18,3 @@ data class UserState(
         val currentRegion: Region = Region.EU,
         val loadUserTask: Task = taskIdle(),
         val deleteTask: Task = taskIdle())
-
-typealias CharacterInfo = Pair<String,String>

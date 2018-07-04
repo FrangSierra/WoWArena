@@ -4,11 +4,11 @@ import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import durdinstudios.wowarena.data.models.warcraft.pvp.BracketInfo
 import durdinstudios.wowarena.profile.Character
 
-data class CharacterArenaStats(val character: Character,
-                               val vs2: ArenaInfo?,
-                               val vs3: ArenaInfo?,
-                               val rbg: ArenaInfo?,
-                               val timestamp: Long)
+data class ArenaStats(val character: Character,
+                      val vs2: ArenaInfo?,
+                      val vs3: ArenaInfo?,
+                      val rbg: ArenaInfo?,
+                      val timestamp: Long)
 
 data class ArenaInfo(val bracket: ArenaBracket,
                      val rating: Int,
@@ -28,17 +28,17 @@ fun BracketInfo.toArenaInfo() = ArenaInfo(bracket = ArenaBracket.values().toList
         seasonLost = seasonLost,
         seasonWon = seasonWon)
 
-fun CharacterArenaStats.isEmpty(): Boolean {
+fun ArenaStats.isEmpty(): Boolean {
     return vs2 == null
             && vs3 == null
             && rbg == null
 }
 
-fun CharacterArenaStats.hasData() : Boolean{
+fun ArenaStats.hasData() : Boolean{
     return vs2!!.rating > 0 || vs3!!.rating > 0 || rbg!!.rating > 0
 }
 
-fun List<CharacterArenaStats>.filterData(name: String, realm: String): List<CharacterArenaStats> =
+fun List<ArenaStats>.filterData(name: String, realm: String): List<ArenaStats> =
         this.filter { it.character.characterEqualsTo(name, realm) }
                 .filterNot { it.isEmpty() }
                 .filter { it.hasData() }

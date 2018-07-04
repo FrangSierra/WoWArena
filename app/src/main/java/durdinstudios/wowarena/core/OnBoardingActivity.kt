@@ -33,8 +33,8 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
                     setTitleColor(R.color.white)
                     setDescriptionColor(R.color.grey_200)
                     setBackgroundColor(android.R.color.transparent)
-                    setTitleTextSize(dpToPixels(10, this@OnBoardingActivity))
-                    setDescriptionTextSize(dpToPixels(8, this@OnBoardingActivity))
+                    setTitleTextSize(dpToPixels(8, this@OnBoardingActivity))
+                    setDescriptionTextSize(dpToPixels(6, this@OnBoardingActivity))
                 }
         val charactersCard = AhoyOnboarderCard(getString(R.string.onboarding_characters_title),
                 getString(R.string.onboarding_characters_description),
@@ -43,8 +43,8 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
                     setTitleColor(R.color.white)
                     setDescriptionColor(R.color.grey_200)
                     setBackgroundColor(android.R.color.transparent)
-                    setTitleTextSize(dpToPixels(10, this@OnBoardingActivity))
-                    setDescriptionTextSize(dpToPixels(8, this@OnBoardingActivity))
+                    setTitleTextSize(dpToPixels(8, this@OnBoardingActivity))
+                    setDescriptionTextSize(dpToPixels(6, this@OnBoardingActivity))
                 }
         val trackDataCard = AhoyOnboarderCard(getString(R.string.onboarding_track_title),
                 getString(R.string.onboarding_track_description),
@@ -53,8 +53,8 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
                     setTitleColor(R.color.white)
                     setDescriptionColor(R.color.grey_200)
                     setBackgroundColor(android.R.color.transparent)
-                    setTitleTextSize(dpToPixels(10, this@OnBoardingActivity))
-                    setDescriptionTextSize(dpToPixels(8, this@OnBoardingActivity))
+                    setTitleTextSize(dpToPixels(8, this@OnBoardingActivity))
+                    setDescriptionTextSize(dpToPixels(6, this@OnBoardingActivity))
                 }
         val rankingCard = AhoyOnboarderCard(getString(R.string.onboarding_rating_title),
                 getString(R.string.onboarding_rating_description),
@@ -63,8 +63,8 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
                     setTitleColor(R.color.white)
                     setDescriptionColor(R.color.grey_200)
                     setBackgroundColor(android.R.color.transparent)
-                    setTitleTextSize(dpToPixels(10, this@OnBoardingActivity))
-                    setDescriptionTextSize(dpToPixels(8, this@OnBoardingActivity))
+                    setTitleTextSize(dpToPixels(8, this@OnBoardingActivity))
+                    setDescriptionTextSize(dpToPixels(6, this@OnBoardingActivity))
                 }
 
         showNavigationControls(true)

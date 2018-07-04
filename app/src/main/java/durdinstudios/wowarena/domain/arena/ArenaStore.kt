@@ -5,7 +5,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
-import durdinstudios.wowarena.domain.user.LoadUserDataCompleteAction
+import durdinstudios.wowarena.domain.user.LoadUserArenaDataCompleteAction
+import durdinstudios.wowarena.domain.user.LoadUserDataAction
 import durdinstudios.wowarena.misc.taskRunning
 import mini.Reducer
 import mini.Store
@@ -18,14 +19,18 @@ import javax.inject.Inject
 @AppScope
 class ArenaStore @Inject constructor(private val arenaController: ArenaController) : Store<ArenaState>() {
 
-    override fun initialState(): ArenaState {
-        return ArenaState(arenaData = arenaController.getArenaStats())
+    @Reducer
+    fun loadUserArenaData(action : LoadUserDataAction) : ArenaState{
+        if (state.loadArenaDataTasks[action.characterInfo]?.isRunning() == true) return state
+        arenaController.getArenaStats(action.characterInfo)
+        return state.copy(loadArenaDataTasks = state.loadArenaDataTasks.plus(action.characterInfo to taskRunning()))
     }
 
     @Reducer
-    fun loadUserComplete(action: LoadUserDataCompleteAction): ArenaState {
-        if (action.task.isFailure()) return state
-        return state.copy(arenaData = arenaController.getArenaStats())
+    fun loadUserArenaDataComplete(action: LoadUserArenaDataCompleteAction): ArenaState {
+        if (state.loadArenaDataTasks[action.characterInfo]?.isRunning() == false) return state
+        return state.copy(arenaData = state.arenaData.plus(action.characterInfo to action.arenaStats),
+                loadArenaDataTasks = state.loadArenaDataTasks.plus(action.characterInfo to action.task))
     }
 
     @Reducer
@@ -38,7 +43,7 @@ class ArenaStore @Inject constructor(private val arenaController: ArenaControlle
     @Reducer
     fun downloadArenaDataComplete(action: DownloadArenaStatsComplete): ArenaState {
         if (!state.downloadArenaStatsTask.isRunning()) return state
-        return state.copy(downloadArenaStatsTask = action.task, arenaData = arenaController.getArenaStats())
+        return state.copy(downloadArenaStatsTask = action.task)
     }
 }
 

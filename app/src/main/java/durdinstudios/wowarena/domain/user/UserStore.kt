@@ -8,6 +8,7 @@ import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
 import durdinstudios.wowarena.domain.arena.service.scheduleJob
 import durdinstudios.wowarena.misc.taskRunning
+import durdinstudios.wowarena.profile.toCharacterInfo
 import mini.Reducer
 import mini.Store
 import javax.inject.Inject
@@ -33,7 +34,7 @@ class UserStore @Inject constructor(private val userController: UserController,
     @Reducer
     fun loadUser(action: LoadUserDataAction): UserState {
         if (state.loadUserTask.isRunning()) return state
-        userController.getUserData(action.nick, action.realm, state.currentRegion)
+        userController.getUserData(action.characterInfo.username, action.characterInfo.realm, state.currentRegion)
         return state.copy(loadUserTask = taskRunning())
     }
 
@@ -41,8 +42,8 @@ class UserStore @Inject constructor(private val userController: UserController,
     fun loadUserComplete(action: LoadUserDataCompleteAction): UserState {
         if (!state.loadUserTask.isRunning()) return state
         if (action.task.isSuccessful()) {
-            val playersInfo = state.playersInfo.plus((action.info!!.name to action.info.realm) to action.info)
-            val characters = state.currentCharacters.plus(action.character!!).distinct()
+            val playersInfo = state.playersInfo.plus(action.character!!.toCharacterInfo() to action.playerInfo!!)
+            val characters = state.currentCharacters.plus(action.character).distinct()
             return state.copy(playersInfo = playersInfo, loadUserTask = action.task, currentCharacters = characters)
         }
         return state.copy(loadUserTask = action.task)

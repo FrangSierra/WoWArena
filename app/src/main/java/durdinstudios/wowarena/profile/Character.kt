@@ -5,6 +5,10 @@ import durdinstudios.wowarena.data.models.common.Region
 import durdinstudios.wowarena.data.models.common.WoWClass
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 
+data class CharacterInfo(val username: String,
+                         val realm: String,
+                         val region: Region)
+
 data class Character(val username: String,
                      val realm: String,
                      val region: Region,
@@ -15,6 +19,9 @@ data class Character(val username: String,
     fun characterEqualsTo(username: String, realm: String) =
             this.username == username && this.realm == realm
 }
+fun Character.toCharacterInfo() = CharacterInfo(username = username,
+        realm = realm,
+        region = region)
 
 fun PlayerInfo.toCharacter(region: Region) = Character(username = name,
         realm = realm,

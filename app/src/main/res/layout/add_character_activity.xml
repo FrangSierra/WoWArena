@@ -8,12 +8,12 @@
 
     <TextView
         android:id="@+id/textView"
+        style="@style/DefaultAppText.White"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="Choose a region"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/default_text_size"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
@@ -27,6 +27,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         app:arrowTint="@android:color/white"
+        app:autoSizeMaxTextSize="16sp"
         app:backgroundSelector="@color/app_background_light"
         app:layout_constraintBottom_toTopOf="@+id/username"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,13 +37,13 @@
 
     <EditText
         android:id="@+id/username"
+        style="@style/DefaultAppText.White"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/add_character_name_hint"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
-        android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/character_icon"
@@ -50,13 +51,13 @@
 
     <EditText
         android:id="@+id/realm"
+        style="@style/DefaultAppText.White"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/add_character_realm_hint"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
-        android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/realm_icon"
@@ -103,7 +104,7 @@
     <TextView
         android:id="@+id/add_user"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="40dp"
         android:gravity="center"
         android:layout_marginEnd="16dp"
         android:text="@string/add_character_button_text"
