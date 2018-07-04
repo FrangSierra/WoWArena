@@ -28,8 +28,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_swap_vertical_circle_24dp" />
-                            <entry key="sourceFile" value="$APPLICATION_HOME_DIR$/bin/C:\Users\Durdin\Downloads\exchange.svg" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="app_icon" />
+                            <entry key="sourceFile" value="$USER_HOME$/Downloads/Recurso 2@2x.svg" />
                           </map>
                         </option>
                       </PersistentState>
