@@ -16,6 +16,7 @@ import dagger.android.support.AndroidSupportInjectionModule
 import durdinstudios.wowarena.core.App
 import durdinstudios.wowarena.core.OnBoardingActivity
 import durdinstudios.wowarena.core.SplashActivity
+import durdinstudios.wowarena.core.firebase.FirebaseModule
 import durdinstudios.wowarena.core.flux.StoreHolderComponent
 import durdinstudios.wowarena.data.RepositoryModule
 import durdinstudios.wowarena.data.models.common.*
@@ -51,6 +52,7 @@ import mini.Dispatcher
     UserRepositoryModule::class,
     LeaderboardModule::class,
     RepositoryModule::class,
+    FirebaseModule::class,
     AppModule::class
 ])
 @AppScope

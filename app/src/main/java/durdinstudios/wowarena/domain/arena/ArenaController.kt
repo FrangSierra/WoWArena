@@ -2,23 +2,22 @@ package durdinstudios.wowarena.domain.arena
 
 import com.bq.masmov.reflux.dagger.AppScope
 import durdinstudios.wowarena.data.WarcraftAPIInstances
-import durdinstudios.wowarena.domain.arena.model.CharacterArenaStats
+import durdinstudios.wowarena.domain.arena.model.ArenaStats
 import durdinstudios.wowarena.domain.arena.model.toArenaInfo
 import durdinstudios.wowarena.misc.taskFailure
 import durdinstudios.wowarena.misc.taskSuccess
 import durdinstudios.wowarena.profile.Character
+import durdinstudios.wowarena.profile.CharacterInfo
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import mini.Dispatcher
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
 interface ArenaController {
 
-    fun getArenaStats(): List<CharacterArenaStats>
-    fun saveArenaStats(stats: CharacterArenaStats)
-    fun deleteCharacterArenaInfo(character: Character)
+    fun getArenaStats(characterInfo: CharacterInfo)
+    fun saveArenaStats(stats: ArenaStats)
     fun downloadArenaStats(currentCharacters: List<Character>)
 }
 
@@ -36,7 +35,7 @@ class ArenaControllerImpl @Inject constructor(private val dispatcher: Dispatcher
                     data.forEach { playerInfo ->
                         val character = currentCharacters
                                 .first { it.characterEqualsTo(playerInfo.name, playerInfo.realm) }
-                        val stats = CharacterArenaStats(character, playerInfo.pvp.brackets.arena2v2?.toArenaInfo(),
+                        val stats = ArenaStats(character, playerInfo.pvp.brackets.arena2v2?.toArenaInfo(),
                                 playerInfo.pvp.brackets.arena3v3?.toArenaInfo(),
                                 playerInfo.pvp.brackets.arenaRbg?.toArenaInfo(),
                                 playerInfo.lastModified)
@@ -48,15 +47,11 @@ class ArenaControllerImpl @Inject constructor(private val dispatcher: Dispatcher
                 })
     }
 
-    override fun getArenaStats(): List<CharacterArenaStats> {
-        return arenaRepository.getArenaStats()
+    override fun getArenaStats(characterInfo: CharacterInfo) {
+        arenaRepository.getArenaStats(characterInfo)
     }
 
-    override fun saveArenaStats(stats: CharacterArenaStats) {
+    override fun saveArenaStats(stats: ArenaStats) {
         arenaRepository.saveArenaStats(stats)
-    }
-
-    override fun deleteCharacterArenaInfo(character: Character) {
-        arenaRepository.deleteCharacterArenaInfo(character)
     }
 }

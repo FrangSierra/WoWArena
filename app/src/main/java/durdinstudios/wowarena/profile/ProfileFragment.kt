@@ -16,8 +16,7 @@ import durdinstudios.wowarena.data.models.warcraft.pvp.BracketInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.getRenderUrl
 import durdinstudios.wowarena.domain.arena.ArenaStore
-import durdinstudios.wowarena.domain.arena.model.CharacterArenaStats
-import durdinstudios.wowarena.domain.arena.model.filterData
+import durdinstudios.wowarena.domain.arena.model.ArenaStats
 import durdinstudios.wowarena.domain.user.LoadUserDataAction
 import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.misc.*
@@ -50,6 +49,7 @@ class ProfileFragment : NavigationFragment() {
     private val characterRealm by argument<String>(CHARACTER_REALM)
     private val characterRegion by argument<String>(CHARACTER_REGION)
     private val region by lazy { Region.valueOf(characterRegion) }
+    private lateinit var characterInfo: CharacterInfo
 
     companion object {
         val TAG = "profile_fragment"
@@ -77,18 +77,18 @@ class ProfileFragment : NavigationFragment() {
             ?: inflater.inflate(R.layout.profile_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        characterInfo = CharacterInfo(characterName, characterRealm, region)
         initializeInterface()
         listenStoreChanges()
         inflateChart()
-        arenaStore.state.arenaData.filterData(characterName, characterRealm)
-                .takeIf { it.isNotEmpty() }?.let { showChartIfPossible(it) }
-        if (!userStore.state.playersInfo.containsKey(characterName to characterRealm)) {
+        arenaStore.state.arenaData[characterInfo]?.takeIf { it.isNotEmpty() }?.let { showChartIfPossible(it) }
+        if (!userStore.state.playersInfo.containsKey(characterInfo))
             loading_progress.makeVisible()
-        }
+
         reloadUserData()
     }
 
-    private fun showChartIfPossible(it: List<CharacterArenaStats>) {
+    private fun showChartIfPossible(it: List<ArenaStats>) {
         if (!prepareChartData(rating_chart, it, userStore.state.settings)) {
             no_data_text.makeVisible()
         } else {
@@ -102,11 +102,12 @@ class ProfileFragment : NavigationFragment() {
 
     private fun listenStoreChanges() {
         userStore.flowable()
-                .select { it.playersInfo[characterName to characterRealm] }
+                .select { it.playersInfo[characterInfo] }
                 .subscribe { setUserData(it) }
                 .track()
+
         arenaStore.flowable()
-                .select { it.arenaData.filterData(characterName, characterRealm) }
+                .select { it.arenaData[characterInfo] }
                 .filter { it.isNotEmpty() }
                 .subscribe { showChartIfPossible(it) }
                 .track()
@@ -119,6 +120,7 @@ class ProfileFragment : NavigationFragment() {
             character_data.text = "$level ${race.name} ${gameClass.name}"
             //honor_kills.text = "${pvp.totalHonorableKills} Honorable Kills"
             avatar.setCircularImage(getRenderUrl(Region.EU))
+
             if (userStore.state.settings.show2vs2Stats)
                 inflateBracket(pvp.brackets.arena2v2)
             if (userStore.state.settings.show3vs3Stats)
@@ -126,6 +128,7 @@ class ProfileFragment : NavigationFragment() {
             if (userStore.state.settings.showRbgStats)
                 inflateBracket(pvp.brackets.arenaRbg)
         }
+        loading_progress.makeGone()
         change_user.makeVisible()
         if (rating_chart.lineChartData.lines.isNotEmpty()) {
             rating_chart.makeVisible()
@@ -157,7 +160,7 @@ class ProfileFragment : NavigationFragment() {
     }
 
     private fun reloadUserData() {
-        dispatcher.dispatchOnUi(LoadUserDataAction(characterName, characterRealm, region))
+        dispatcher.dispatchOnUi(LoadUserDataAction(characterInfo))
         userStore.flowable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .select { it.loadUserTask }
@@ -166,7 +169,6 @@ class ProfileFragment : NavigationFragment() {
                     if (it.isFailure()) {
                         //manage
                     }
-                    loading_progress?.makeGone()
                 }.track()
     }
 

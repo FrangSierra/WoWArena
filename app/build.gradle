@@ -72,11 +72,13 @@ dependencies {
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
 
     //Firebase
+    implementation 'com.github.FrangSierra:RxFirebase:1.5.0'
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.4') {
         transitive = true
     }
 
+    implementation 'com.google.firebase:firebase-firestore:17.0.2'
     implementation 'com.google.firebase:firebase-perf:16.0.0'
 
     //BottomBar

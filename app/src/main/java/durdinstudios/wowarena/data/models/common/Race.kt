@@ -22,7 +22,31 @@ enum class Race(val value: Int) {
     NIGHTBORNE(27),
     HIGHMOUNTAIN_TAUREN(28),
     VOID_ELF(29),
-    LIGHTFORGED_DRAENEI(30),
+    LIGHTFORGED_DRAENEI(30);
+
+    fun getTextId(){
+        when(this){
+            Race.HUMAN -> TODO()
+            Race.ORC -> TODO()
+            Race.DWARF -> TODO()
+            Race.NIGHT_ELF -> TODO()
+            Race.UNDEAD -> TODO()
+            Race.TAUREN -> TODO()
+            Race.GNOME -> TODO()
+            Race.TROLL -> TODO()
+            Race.GOBLIN -> TODO()
+            Race.BLOOD_ELF -> TODO()
+            Race.DRAENEI -> TODO()
+            Race.WORGEN -> TODO()
+            Race.PANDAREN_N -> TODO()
+            Race.PANDAREN_A -> TODO()
+            Race.PANDAREN_H -> TODO()
+            Race.NIGHTBORNE -> TODO()
+            Race.HIGHMOUNTAIN_TAUREN -> TODO()
+            Race.VOID_ELF -> TODO()
+            Race.LIGHTFORGED_DRAENEI -> TODO()
+        }
+    }
 }
 
 

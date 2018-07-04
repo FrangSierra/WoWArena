@@ -57,7 +57,8 @@ class AddCharacterActivity : BaseActivity() {
         if (!isValidCharacterData()) return
 
         add_user.isEnabled = false
-        dispatcher.dispatchOnUi(LoadUserDataAction(username.text.toString(), realm.text.toString(), regions[nice_spinner.selectedIndex]))
+        val characterInfo = CharacterInfo(username.text.toString(), realm.text.toString(), regions[nice_spinner.selectedIndex])
+        dispatcher.dispatchOnUi(LoadUserDataAction(characterInfo))
         userStore.flowable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .select { it.loadUserTask }

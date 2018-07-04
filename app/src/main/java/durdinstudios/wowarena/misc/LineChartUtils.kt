@@ -2,7 +2,7 @@ package durdinstudios.wowarena.misc
 
 import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import durdinstudios.wowarena.domain.arena.model.ArenaInfo
-import durdinstudios.wowarena.domain.arena.model.CharacterArenaStats
+import durdinstudios.wowarena.domain.arena.model.ArenaStats
 import durdinstudios.wowarena.settings.Settings
 import lecho.lib.hellocharts.model.*
 import lecho.lib.hellocharts.util.ChartUtils
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 object LineChartUtils {
 
-    fun prepareChartData(chart: LineChartView?, stats: List<CharacterArenaStats>, settings : Settings) : Boolean{
+    fun prepareChartData(chart: LineChartView?, stats: List<ArenaStats>, settings : Settings) : Boolean{
 
         val lines = ArrayList<Line>()
         val vs2Values = stats.filter { it.vs2 != null }.map { it.vs2!! to it.timestamp }
