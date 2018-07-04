@@ -28,7 +28,7 @@ class OnBoardingActivity : AhoyOnboarderActivity() {
     private fun initializeOnBoarding() {
         val introCard = AhoyOnboarderCard(getString(R.string.onboarding_welcome_title),
                 getString(R.string.onboarding_welcome_description),
-                R.drawable.ic_ranking_cup)
+                R.drawable.app_icon_white)
                 .apply {
                     setTitleColor(R.color.white)
                     setDescriptionColor(R.color.grey_200)

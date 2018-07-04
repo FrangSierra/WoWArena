@@ -46,7 +46,7 @@ class ArenaJobService : JobService() {
 fun scheduleJob(context: Context) {
     val serviceComponent = ComponentName(context, ArenaJobService::class.java)
     val builder = JobInfo.Builder(1, serviceComponent).apply {
-        setPeriodic(TimeUnit.DAYS.toMillis(1)) //Periodic every 20h
+        setPeriodic(TimeUnit.HOURS.toMillis(12)) //Periodic every 20h
         setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED) // require unmetered network
         setPersisted(true)
         //setOverrideDeadline(1000)
