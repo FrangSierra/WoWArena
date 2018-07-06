@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="region_values" translatable="false">
+        <item>Europe</item>
+        <item>USA</item>
+    </string-array>
+</resources>

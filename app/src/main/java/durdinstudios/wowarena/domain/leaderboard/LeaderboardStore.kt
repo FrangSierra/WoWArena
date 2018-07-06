@@ -28,7 +28,8 @@ class LeaderboardStore @Inject constructor(private val leaderboardController: Le
     @Reducer
     fun statsLoaded(action: LoadLeaderboardCompleteAction): LeaderboardState {
         return state.copy(loadRankingTask = state.loadRankingTask.plus(action.bracket to action.task),
-                rankingStats = state.rankingStats.plus(action.bracket to action.stats))
+                rankingStats = state.rankingStats.plus(action.bracket to action.stats),
+                arenaCutoffs = state.arenaCutoffs.plus(action.bracket to action.arenaCutoffs))
     }
 }
 

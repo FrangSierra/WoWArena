@@ -9,4 +9,10 @@ import mini.SubscriptionTracker
 @SuppressLint("Registered")
 abstract class BaseActivity :
     DaggerAppCompatActivity(),
-    SubscriptionTracker by DefaultSubscriptionTracker()
+    SubscriptionTracker by DefaultSubscriptionTracker(){
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cancelSubscriptions()
+    }
+}

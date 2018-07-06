@@ -4,6 +4,7 @@ import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
 
 enum class Race(val value: Int) {
+    UNKNOWN(0),
     HUMAN(1),
     ORC(2),
     DWARF(3),
@@ -26,6 +27,7 @@ enum class Race(val value: Int) {
 
     fun getTextId(){
         when(this){
+            Race.UNKNOWN -> TODO()
             Race.HUMAN -> TODO()
             Race.ORC -> TODO()
             Race.DWARF -> TODO()

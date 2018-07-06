@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 object LineChartUtils {
 
-    fun prepareChartData(chart: LineChartView?, stats: List<ArenaStats>, settings : Settings) : Boolean{
+    fun prepareChartData(chart: LineChartView?, stats: List<ArenaStats>, settings: Settings): Boolean {
 
         val lines = ArrayList<Line>()
         val vs2Values = stats.filter { it.vs2 != null }.map { it.vs2!! to it.timestamp }
@@ -23,6 +23,7 @@ object LineChartUtils {
         val rbgValues = stats.filter { it.rbg != null }.map { it.rbg!! to it.timestamp }
         createLine(rbgValues, ArenaBracket.RBG)?.takeIf { settings.showRbgStats }?.let { lines.add(it) }
         if (lines.isEmpty()) return false
+        if (lines.all { line -> line.values.all { value -> value.y == line.values[0].y } }) return false
         val data = LineChartData(lines)
 
         val filteredDates = vs2Values.plus(vs3Values).plus(rbgValues).map { it.second }.distinct().sorted()

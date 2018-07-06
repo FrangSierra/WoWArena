@@ -46,7 +46,7 @@
     <string name="bracket_info_wins_label">Wins</string>
 
     <!--Profile-->
-    <string name="profile_no_data_label">Gladius fetch your pvp data daily. At least 2 registers are necessary to draw your performance chart.  Come back later!</string>
+    <string name="profile_no_data_label">Gladius fetch your pvp data daily. At least 2 different registers are necessary to draw your performance chart. Come back later!</string>
 
     <!--Settings-->
     <string name="settings_2vs2_stats">2vs2 Stats</string>
@@ -70,4 +70,5 @@
     <string name="onboarding_rating_title">Ranking</string>
     <string name="onboarding_rating_description">Check the ranking of each bracket and region to see the best pvp players of the world</string>
     <string name="onboarding_finish_button_text">Get Started</string>
+    <string name="menu_item_region">Region</string>
 </resources>

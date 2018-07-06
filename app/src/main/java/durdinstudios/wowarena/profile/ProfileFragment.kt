@@ -50,6 +50,7 @@ class ProfileFragment : NavigationFragment() {
     private val characterRegion by argument<String>(CHARACTER_REGION)
     private val region by lazy { Region.valueOf(characterRegion) }
     private lateinit var characterInfo: CharacterInfo
+    private var chartFilled = false
 
     companion object {
         val TAG = "profile_fragment"
@@ -89,11 +90,12 @@ class ProfileFragment : NavigationFragment() {
     }
 
     private fun showChartIfPossible(it: List<ArenaStats>) {
-        if (!prepareChartData(rating_chart, it, userStore.state.settings)) {
-            no_data_text.makeVisible()
-        } else {
+        chartFilled = prepareChartData(rating_chart, it, userStore.state.settings)
+        if (userStore.state.playersInfo[characterInfo] == null) return
+        if (chartFilled) {
             no_data_text.makeGone()
-        }
+            rating_chart.makeVisible()
+        } else no_data_text.makeVisible()
     }
 
     private fun initializeInterface() {
@@ -132,7 +134,6 @@ class ProfileFragment : NavigationFragment() {
         change_user.makeVisible()
         if (rating_chart.lineChartData.lines.isNotEmpty()) {
             rating_chart.makeVisible()
-            rating_chart.startDataAnimation()
         }
     }
 

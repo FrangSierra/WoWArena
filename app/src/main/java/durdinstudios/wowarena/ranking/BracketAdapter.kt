@@ -27,7 +27,7 @@ class BracketAdapter(private val onPlayerclick: (stats: PlayerBracketStats) -> U
         with(holder) {
             this.position.text = statsItem.ranking.toString()
             player.text = statsItem.name
-            player.setTextColor(context.colorCompat(statsItem.gameClass.getClassColor()))
+            statsItem.wowClass?.let { player.setTextColor(context.colorCompat(it.getClassColor())) }
             //realm.text = statsItem.realmName
             faction.setImageDrawable(context.drawableCompat(statsItem.faction.getFactionIcon()))
             faction.setColorFilter(context.colorCompat(statsItem.faction.getFactionTint()))

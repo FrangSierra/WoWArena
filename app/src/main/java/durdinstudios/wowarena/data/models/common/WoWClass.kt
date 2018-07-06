@@ -22,6 +22,7 @@ class ClassAdapter {
 }
 
 enum class WoWClass(val value: Int) {
+    UNKNOWN(0),
     WARRIOR(1),
     PALADIN(2),
     HUNTER(3),
@@ -36,6 +37,7 @@ enum class WoWClass(val value: Int) {
     DEMON_HUNTER(12);
 
     fun getClassColor() = when (this) {
+        UNKNOWN -> R.color.colorPrimary
         WARRIOR -> R.color.color_warrior
         PALADIN -> R.color.color_paladin
         HUNTER -> R.color.color_hunter
@@ -49,4 +51,5 @@ enum class WoWClass(val value: Int) {
         DRUID -> R.color.color_druid
         DEMON_HUNTER -> R.color.color_dh
     }
+
 }
