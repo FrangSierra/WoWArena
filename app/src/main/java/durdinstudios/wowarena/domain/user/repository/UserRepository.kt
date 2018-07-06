@@ -113,11 +113,10 @@ class SharedPrefsUserPersistence @Inject constructor(val context: Context, val m
     }
 
     override fun shouldShowTutorial(): Boolean {
-        val jobScheduled = prefs.getBoolean(TUTORIAL_SHOWN, true)
-        if (!jobScheduled) {
+        val showTutorial = prefs.getBoolean(TUTORIAL_SHOWN, true)
+        if (showTutorial)
             prefs.edit().putBoolean(TUTORIAL_SHOWN, false).apply()
-        }
-        return jobScheduled
+        return showTutorial
     }
 }
 

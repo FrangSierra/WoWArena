@@ -1,9 +1,9 @@
 package durdinstudios.wowarena.ranking
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.dagger.BaseFragment
 import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.bracket_fragment.*
 import mini.Dispatcher
 import mini.select
 import javax.inject.Inject
+
 
 class BracketFragment : BaseFragment() {
 
@@ -44,6 +45,7 @@ class BracketFragment : BaseFragment() {
             ?: inflater.inflate(R.layout.bracket_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setHasOptionsMenu(true)
         initializeInterface()
         listenStoreChanges()
         if (leaderboardStore.state.rankingStats[currentBracket] == null
@@ -77,12 +79,29 @@ class BracketFragment : BaseFragment() {
                     if (it.isFailure()) {
                         //manage
                     }
-                    loading_progress?.makeGone()
-                    ranking_swipe?.takeIf { it.isRefreshing }?.isRefreshing = false
+                    loading_progress.makeGone()
+                    ranking_swipe.takeIf { it.isRefreshing }?.isRefreshing = false
                 }.track()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.bracket_menu, menu)
+
+        val item = menu.findItem(R.id.region_spinner)
+        val spinner = item.actionView as Spinner
+
+        val adapter = ArrayAdapter.createFromResource(context,
+                R.array.region_values, android.R.layout.simple_spinner_item)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        spinner.adapter = adapter
+        spinner.setOnItemClickListener { parent, view, position, id ->
+            reloadRanking(currentBracket)
+        }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
     private fun onPlayerClick(data: PlayerBracketStats) {
-        //TODO do something?
+        //TODO do something
     }
 }

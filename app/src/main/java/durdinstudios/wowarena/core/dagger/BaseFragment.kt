@@ -10,4 +10,10 @@ import mini.SubscriptionTracker
 @SuppressLint("Registered")
 abstract class BaseFragment :
     DaggerFragment(),
-    SubscriptionTracker by DefaultSubscriptionTracker()
+    SubscriptionTracker by DefaultSubscriptionTracker(){
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        cancelSubscriptions()
+    }
+}
