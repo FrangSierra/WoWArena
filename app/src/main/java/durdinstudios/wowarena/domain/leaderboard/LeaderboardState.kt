@@ -8,4 +8,10 @@ import durdinstudios.wowarena.misc.Task
 
 data class LeaderboardState(val rankingStats: Map<ArenaBracket, List<PlayerBracketStats>> = emptyMap(),
                             val arenaCutoffs: Map<ArenaBracket, Map<Faction, ArenaCutoffs>> = emptyMap(),
-                            val loadRankingTask: Map<ArenaBracket, Task> = emptyMap())
+                            val loadRankingTask: Map<ArenaBracket, Task> = emptyMap()) {
+    override fun toString(): String {
+        return """rankingSize = ${rankingStats.size},
+           arenaCutoffs = $arenaCutoffs,
+           loadRankingTask = $loadRankingTask"""
+    }
+}

@@ -30,6 +30,7 @@ import lecho.lib.hellocharts.gesture.ContainerScrollType
 import lecho.lib.hellocharts.gesture.ZoomType
 import lecho.lib.hellocharts.model.Viewport
 import mini.Dispatcher
+import mini.Grove
 import mini.select
 import javax.inject.Inject
 
@@ -80,8 +81,8 @@ class ProfileFragment : NavigationFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         characterInfo = CharacterInfo(characterName, characterRealm, region)
         initializeInterface()
-        listenStoreChanges()
         inflateChart()
+        listenStoreChanges()
         arenaStore.state.arenaData[characterInfo]?.takeIf { it.isNotEmpty() }?.let { showChartIfPossible(it) }
         if (!userStore.state.playersInfo.containsKey(characterInfo))
             loading_progress.makeVisible()

@@ -15,12 +15,11 @@ import javax.inject.Inject
  * Store that keeps track of leaderboard' requests and data.
  */
 @AppScope
-class LeaderboardStore @Inject constructor(private val leaderboardController: LeaderboardController,
-                                           private val userStore: UserStore) : Store<LeaderboardState>() {
+class LeaderboardStore @Inject constructor(private val leaderboardController: LeaderboardController) : Store<LeaderboardState>() {
 
     @Reducer
     fun loadStats(action: LoadLeaderboardAction): LeaderboardState {
-        leaderboardController.getLeaderboardInfo(action.bracket, userStore.state.currentRegion)
+        leaderboardController.getLeaderboardInfo(action.bracket, action.region)
         return state.copy(loadRankingTask = state.loadRankingTask.plus(action.bracket to taskRunning()),
                 rankingStats = state.rankingStats.plus(action.bracket to emptyList()))
     }

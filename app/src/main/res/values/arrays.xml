@@ -3,5 +3,7 @@
     <string-array name="region_values" translatable="false">
         <item>Europe</item>
         <item>USA</item>
+        <item>Korea</item>
+        <item>Taiwan</item>
     </string-array>
 </resources>

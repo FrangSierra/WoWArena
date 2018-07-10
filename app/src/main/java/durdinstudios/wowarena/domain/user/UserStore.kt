@@ -85,6 +85,11 @@ class UserStore @Inject constructor(private val userController: UserController,
         return state.copy(settings = state.settings.copy(showRbgStats = action.show))
     }
 
+    @Reducer
+    fun setRegion(action: ChangeCurrentRegionAction): UserState {
+        return state.copy(currentRegion = action.region)
+    }
+
 }
 
 @Module

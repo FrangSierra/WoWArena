@@ -9,27 +9,28 @@ import android.widget.ImageView
 import android.widget.TextView
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerBracketStats
+import durdinstudios.wowarena.misc.QueueAdapter
 import durdinstudios.wowarena.misc.colorCompat
-import durdinstudios.wowarena.misc.drawableCompat
+import durdinstudios.wowarena.misc.setImage
 import kotlinx.android.synthetic.main.ranking_item.view.*
 
-class BracketAdapter(private val onPlayerclick: (stats: PlayerBracketStats) -> Unit) : RecyclerView.Adapter<BracketAdapter.ViewHolder>() {
-    private val rankingList: MutableList<PlayerBracketStats> = ArrayList()
+
+class BracketAdapter(private val onPlayerclick: (stats: PlayerBracketStats) -> Unit) : QueueAdapter<PlayerBracketStats, BracketAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
             ViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.ranking_item, viewGroup, false))
 
-    override fun getItemCount() = rankingList.size
+    override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val statsItem = rankingList[position]
+        val statsItem = items[position]
         val context = holder.itemView.context
         with(holder) {
             this.position.text = statsItem.ranking.toString()
             player.text = statsItem.name
             statsItem.wowClass?.let { player.setTextColor(context.colorCompat(it.getClassColor())) }
             //realm.text = statsItem.realmName
-            faction.setImageDrawable(context.drawableCompat(statsItem.faction.getFactionIcon()))
+            faction.setImage(statsItem.faction.getFactionIcon())
             faction.setColorFilter(context.colorCompat(statsItem.faction.getFactionTint()))
             victories.text = statsItem.seasonWins.toString()
             loses.text = statsItem.seasonLosses.toString()
@@ -37,12 +38,10 @@ class BracketAdapter(private val onPlayerclick: (stats: PlayerBracketStats) -> U
         }
     }
 
-    fun updateRanking(rankingList: List<PlayerBracketStats>) {
-        val newSortedUsers = rankingList.sortedBy { it.ranking }
-        val diffResult = DiffUtil.calculateDiff(RankingDiff(this.rankingList, newSortedUsers))
-        this.rankingList.clear()
-        this.rankingList.addAll(newSortedUsers)
-        diffResult.dispatchUpdatesTo(this)
+
+    fun updateRanking(bracketInfo: List<PlayerBracketStats>) {
+        val sortItems = bracketInfo.sortedBy { it.ranking }
+        updateItems(RankingDiff(items, sortItems), sortItems)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
