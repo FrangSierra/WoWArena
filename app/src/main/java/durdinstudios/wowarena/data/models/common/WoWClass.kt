@@ -52,4 +52,20 @@ enum class WoWClass(val value: Int) {
         DEMON_HUNTER -> R.color.color_dh
     }
 
+    fun getClassTextId() = when(this){
+        UNKNOWN -> R.string.class_unknown
+        WARRIOR -> R.string.class_warrior
+        PALADIN -> R.string.class_paladin
+        HUNTER -> R.string.class_hunter
+        ROGUE -> R.string.class_rogue
+        PRIEST -> R.string.class_priest
+        DEATH_KNIGHT -> R.string.class_dk
+        SHAMAN -> R.string.class_shaman
+        MAGE -> R.string.class_mage
+        WARLOCK -> R.string.class_warlock
+        MONK -> R.string.class_monk
+        DRUID -> R.string.class_druid
+        DEMON_HUNTER -> R.string.class_dh
+    }
+
 }

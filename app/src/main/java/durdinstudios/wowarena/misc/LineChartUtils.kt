@@ -45,19 +45,14 @@ object LineChartUtils {
     }
 
     private fun getPossibleDatesValues(filteredDates: List<Long>): List<Pair<Int, String>> {
-        return filteredDates.map {
-            val date = Date(it)
-            val cal = Calendar.getInstance()
-            cal.time = date
-            val month = cal.get(Calendar.MONTH).plus(1)
-            val day = cal.get(Calendar.DAY_OF_MONTH)
-            it to "$day/$month"
-        }.distinctBy { it.second }.mapIndexed { index, pair -> index to pair.second }
+        return filteredDates.mapToDate()
+                .distinctBy { it }
+                .mapIndexed { index, date -> index to date }
     }
 
     private fun createLine(info: List<Pair<ArenaInfo, Long>>, bracket: ArenaBracket): Line? {
         val values = ArrayList<PointValue>()
-        val filteredValues = info.distinctBy { TimeUnit.MILLISECONDS.toDays(it.second) }
+        val filteredValues = info.distinctBy { it.second.toMonthlyDay() }
                 .filter { it.first.rating > 0 }
                 .sortedBy { it.second }
 

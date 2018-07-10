@@ -71,4 +71,39 @@
     <string name="onboarding_rating_description">Check the ranking of each bracket and region to see the best pvp players of the world</string>
     <string name="onboarding_finish_button_text">Get Started</string>
     <string name="menu_item_region">Region</string>
+
+    <!--Races-->
+    <string name="race_unknown">Unknown</string>
+    <string name="race_human">Human</string>
+    <string name="race_orc">Orc</string>
+    <string name="race_dwarf">Dwarf</string>
+    <string name="race_night_elf">Night Elf</string>
+    <string name="race_undead">Undead</string>
+    <string name="race_tauren">Tauren</string>
+    <string name="race_gnome">Gnome</string>
+    <string name="race_troll">Troll</string>
+    <string name="race_goblin">Goblin</string>
+    <string name="race_blood_elf">Blood Elf</string>
+    <string name="race_draenei">Draenei</string>
+    <string name="race_worgen">Worgen</string>
+    <string name="race_pandaren">Pandaren</string>
+    <string name="race_nightborne">Nightborne</string>
+    <string name="race_highmountain_tauren">Highmountain Tauren</string>
+    <string name="race_void_elf">Void Elf</string>
+    <string name="race_lightforged_draenei">Lighforged Draenei</string>
+
+    <!--Classes-->
+    <string name="class_unknown">Unknown</string>
+    <string name="class_dk">Death Knight</string>
+    <string name="class_dh">Demon Hunter</string>
+    <string name="class_druid">Druid</string>
+    <string name="class_hunter">Hunter</string>
+    <string name="class_mage">Mage</string>
+    <string name="class_monk">Monk</string>
+    <string name="class_paladin">Paladin</string>
+    <string name="class_priest">Priest</string>
+    <string name="class_rogue">Rogue</string>
+    <string name="class_shaman">Shaman</string>
+    <string name="class_warlock">Warlock</string>
+    <string name="class_warrior">Warrior</string>
 </resources>

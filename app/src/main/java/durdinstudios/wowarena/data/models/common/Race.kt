@@ -2,6 +2,7 @@ package durdinstudios.wowarena.data.models.common
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
+import durdinstudios.wowarena.R
 
 enum class Race(val value: Int) {
     UNKNOWN(0),
@@ -25,29 +26,27 @@ enum class Race(val value: Int) {
     VOID_ELF(29),
     LIGHTFORGED_DRAENEI(30);
 
-    fun getTextId(){
-        when(this){
-            Race.UNKNOWN -> TODO()
-            Race.HUMAN -> TODO()
-            Race.ORC -> TODO()
-            Race.DWARF -> TODO()
-            Race.NIGHT_ELF -> TODO()
-            Race.UNDEAD -> TODO()
-            Race.TAUREN -> TODO()
-            Race.GNOME -> TODO()
-            Race.TROLL -> TODO()
-            Race.GOBLIN -> TODO()
-            Race.BLOOD_ELF -> TODO()
-            Race.DRAENEI -> TODO()
-            Race.WORGEN -> TODO()
-            Race.PANDAREN_N -> TODO()
-            Race.PANDAREN_A -> TODO()
-            Race.PANDAREN_H -> TODO()
-            Race.NIGHTBORNE -> TODO()
-            Race.HIGHMOUNTAIN_TAUREN -> TODO()
-            Race.VOID_ELF -> TODO()
-            Race.LIGHTFORGED_DRAENEI -> TODO()
-        }
+    fun getTextId() = when (this) {
+        Race.UNKNOWN -> R.string.race_unknown
+        Race.HUMAN -> R.string.race_human
+        Race.ORC -> R.string.race_orc
+        Race.DWARF -> R.string.race_dwarf
+        Race.NIGHT_ELF -> R.string.race_night_elf
+        Race.UNDEAD -> R.string.race_undead
+        Race.TAUREN -> R.string.race_tauren
+        Race.GNOME -> R.string.race_gnome
+        Race.TROLL -> R.string.race_troll
+        Race.GOBLIN -> R.string.race_goblin
+        Race.BLOOD_ELF -> R.string.race_blood_elf
+        Race.DRAENEI -> R.string.race_draenei
+        Race.WORGEN -> R.string.race_worgen
+        Race.PANDAREN_N -> R.string.race_pandaren
+        Race.PANDAREN_A -> R.string.race_pandaren
+        Race.PANDAREN_H -> R.string.race_pandaren
+        Race.NIGHTBORNE -> R.string.race_nightborne
+        Race.HIGHMOUNTAIN_TAUREN -> R.string.race_highmountain_tauren
+        Race.VOID_ELF -> R.string.race_void_elf
+        Race.LIGHTFORGED_DRAENEI -> R.string.race_lightforged_draenei
     }
 }
 

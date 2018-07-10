@@ -7,7 +7,6 @@ import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.IBinder
 import android.os.Parcelable
 import android.support.annotation.*
 import android.support.v4.app.Fragment
@@ -31,17 +30,13 @@ fun <T> Activity.argument(key: String): Lazy<T> = lazy { this.intent.extras[key]
 
 //Toasting
 
-fun Context.toast(message: String, duration: Int = Toast.LENGTH_SHORT)
-        = Toast.makeText(this, message, duration).show()
+fun Context.toast(message: String, duration: Int = Toast.LENGTH_SHORT) = Toast.makeText(this, message, duration).show()
 
-fun Context.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT)
-        = Toast.makeText(this, getString(message), duration).show()
+fun Context.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT) = Toast.makeText(this, getString(message), duration).show()
 
-fun Fragment.toast(message: String, duration: Int = Toast.LENGTH_SHORT)
-        = this.activity?.toast(message, duration)
+fun Fragment.toast(message: String, duration: Int = Toast.LENGTH_SHORT) = this.activity?.toast(message, duration)
 
-fun Fragment.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT)
-        = this.activity?.toast(message, duration)
+fun Fragment.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT) = this.activity?.toast(message, duration)
 
 //Bundle
 
@@ -114,3 +109,16 @@ fun Activity.hideKeyboard(focusView: View? = this.currentFocus, force: Boolean =
     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(focusView.windowToken, flags)
 }
+
+fun Long.toMonthlyDay(): String {
+    val date = Date(this)
+    val cal = Calendar.getInstance()
+    cal.time = date
+    val month = cal.get(Calendar.MONTH).plus(1)
+    val day = cal.get(Calendar.DAY_OF_MONTH)
+    return "$day/$month"
+}
+
+fun List<Long>.mapToDate() = this.map { it.toMonthlyDay() }
+
+fun List<Long>.mapToDateAndTime() = this.map { it.toMonthlyDay() to it }
