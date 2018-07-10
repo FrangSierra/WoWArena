@@ -36,7 +36,6 @@ class RepositoryModule {
                           dispatcher: Dispatcher): OkHttpClient {
         val interceptor = AuthorizationInterceptor(userStore, dispatcher)
         val client = OkHttpClient.Builder()
-        client.addInterceptor(interceptor)
         client.authenticator { route, response ->
             val clientId = app.getString(R.string.BATTLE_NET_KEY)
             val clientSecret = app.getString(R.string.BATTLE_NET_SECRET)
