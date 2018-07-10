@@ -13,8 +13,13 @@ import durdinstudios.wowarena.misc.argument
 import durdinstudios.wowarena.misc.colorCompat
 import durdinstudios.wowarena.misc.withFade
 import kotlinx.android.synthetic.main.home_navigation_activity.*
+import mini.Dispatcher
+import javax.inject.Inject
 
 class HomeActivity : BaseActivity() {
+
+    @Inject
+    lateinit var dispatcher: Dispatcher
 
     private val navAdapter by lazy { NavigationAdapter(characterName, characterRealm, region) }
     var currentTab: Int = MAIN_HOME_TAB_POSITION
@@ -34,9 +39,9 @@ class HomeActivity : BaseActivity() {
         const val TAB_SELECTED = "navigation_tab_selected"
         fun newIntent(context: Context, tabSelected: Int = MAIN_HOME_TAB_POSITION,
                       fromNotification: Boolean = false,
-                      name : String,
-                      realm : String,
-                      region : Region): Intent =
+                      name: String,
+                      realm: String,
+                      region: Region): Intent =
                 Intent(context, HomeActivity::class.java).apply {
                     putExtra(TAB_SELECTED, tabSelected)
                     putExtra(INTENT_FROM_NOTIFICATION, fromNotification)
@@ -95,4 +100,5 @@ class HomeActivity : BaseActivity() {
         currentTab = position
         return true
     }
+
 }

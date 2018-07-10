@@ -61,6 +61,7 @@ class RepositoryModule {
             map.plusAssign(region to Retrofit.Builder()
                     .baseUrl(getBaseUrl(region))
                     .client(client)
+                    .validateEagerly(true)
                     .addConverterFactory(MoshiConverterFactory.create(moshi))
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build())

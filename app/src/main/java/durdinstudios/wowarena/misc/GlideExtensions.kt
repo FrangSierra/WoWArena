@@ -39,6 +39,18 @@ fun ImageView.setThumnailImage(url: String) {
             .clearOnDetach()
 }
 
+
+fun ImageView.setImage(@DrawableRes id: Int) {
+    val requestOptions = RequestOptions()
+            .override(Target.SIZE_ORIGINAL)
+
+    Glide.with(context)
+            .load(id)
+            .apply(requestOptions)
+            .into(this)
+            .clearOnDetach()
+}
+
 fun ImageView.setImage(url: String?, onLoadError: () -> Unit = {}) {
     val requestOptions = RequestOptions
             .centerCropTransform()

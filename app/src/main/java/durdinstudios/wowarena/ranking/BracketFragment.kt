@@ -1,19 +1,24 @@
 package durdinstudios.wowarena.ranking
 
 import android.os.Bundle
-import android.view.*
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.crashlytics.android.Crashlytics
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.dagger.BaseFragment
+import durdinstudios.wowarena.data.models.common.Region
 import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerBracketStats
 import durdinstudios.wowarena.domain.leaderboard.LeaderboardStore
 import durdinstudios.wowarena.domain.leaderboard.LoadLeaderboardAction
+import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.misc.*
+import durdinstudios.wowarena.misc.TaskStatus.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.bracket_fragment.*
 import mini.Dispatcher
+import mini.Grove
 import mini.select
 import javax.inject.Inject
 
@@ -24,6 +29,8 @@ class BracketFragment : BaseFragment() {
     lateinit var dispatcher: Dispatcher
     @Inject
     lateinit var leaderboardStore: LeaderboardStore
+    @Inject
+    lateinit var userStore: UserStore
 
     private val bracket by argument<String>(BRACKET)
     private val currentBracket by lazy { ArenaBracket.valueOf(bracket) }
@@ -45,18 +52,16 @@ class BracketFragment : BaseFragment() {
             ?: inflater.inflate(R.layout.bracket_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setHasOptionsMenu(true)
         initializeInterface()
         listenStoreChanges()
         if (leaderboardStore.state.rankingStats[currentBracket] == null
                 || leaderboardStore.state.rankingStats[currentBracket]!!.isEmpty()) {
-            loading_progress?.makeVisible()
-            reloadRanking(currentBracket)
+            reloadRanking(currentBracket, userStore.state.currentRegion)
         }
     }
 
     private fun initializeInterface() {
-        ranking_swipe!!.setOnRefreshListener { reloadRanking(currentBracket) }
+        ranking_swipe!!.setOnRefreshListener { reloadRanking(currentBracket, userStore.state.currentRegion) }
         ranking_recycler.setLinearLayoutManager(context!!, reverseLayout = false, stackFromEnd = false)
         ranking_recycler.adapter = adapter
     }
@@ -64,13 +69,30 @@ class BracketFragment : BaseFragment() {
     private fun listenStoreChanges() {
         leaderboardStore.flowable()
                 .select { it.rankingStats[currentBracket] }
-                .filter { it.isNotEmpty() }
-                .subscribe { adapter.updateRanking(it) }
+                .subscribe {
+                    adapter.updateRanking(it)
+                }
                 .track()
+
+        leaderboardStore.flowable()
+                .select { it.loadRankingTask[currentBracket] }
+                .subscribe {
+                    when (it.status) {
+                        RUNNING -> if (!ranking_swipe.isRefreshing) loading_progress?.makeVisible()
+                        SUCCESS -> loading_progress?.makeGone()
+                        ERROR -> Crashlytics.logException(it.error!!)
+                    }
+                }.track()
+        userStore.flowable()
+                .select { it.currentRegion }
+                .skip(1) //Skip first
+                .subscribe {
+                    reloadRanking(currentBracket, it)
+                }.track()
     }
 
-    private fun reloadRanking(bracket: ArenaBracket) {
-        dispatcher.dispatchOnUi(LoadLeaderboardAction(true, bracket))
+    private fun reloadRanking(bracket: ArenaBracket, region: Region) {
+        dispatcher.dispatchOnUi(LoadLeaderboardAction(true, region, bracket))
         leaderboardStore.flowable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .select { it.loadRankingTask[bracket] }
@@ -79,26 +101,8 @@ class BracketFragment : BaseFragment() {
                     if (it.isFailure()) {
                         //manage
                     }
-                    loading_progress.makeGone()
                     ranking_swipe.takeIf { it.isRefreshing }?.isRefreshing = false
                 }.track()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.bracket_menu, menu)
-
-        val item = menu.findItem(R.id.region_spinner)
-        val spinner = item.actionView as Spinner
-
-        val adapter = ArrayAdapter.createFromResource(context,
-                R.array.region_values, android.R.layout.simple_spinner_item)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        spinner.adapter = adapter
-        spinner.setOnItemClickListener { parent, view, position, id ->
-            reloadRanking(currentBracket)
-        }
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun onPlayerClick(data: PlayerBracketStats) {

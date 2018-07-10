@@ -12,11 +12,11 @@ object UrlUtils {
     private val AUTHORIZE_URI_CN = "https://www.battlenet.com.cn/oauth/authorize"
 
     private fun getAuthorizeUri(region: Region): String = when (region) {
-        Region.EU, Region.US -> String.format(AUTHORIZE_URI, region.name.toLowerCase())
+        Region.EU, Region.US, Region.KR, Region.TW -> String.format(AUTHORIZE_URI, region.name.toLowerCase())
     }
 
     fun getBaseUrl(region: Region): String = when (region) {
-        Region.EU, Region.US -> String.format(BASE_URL, region.name.toLowerCase())
+        Region.EU, Region.US, Region.KR, Region.TW -> String.format(BASE_URL, region.name.toLowerCase())
     }
 
     fun getAuthorizationUrl(region: Region, clientId: String, redirectUri: String): String {
