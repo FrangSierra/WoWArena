@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "319787145791",
+    "firebase_url": "https://durdin-studios.firebaseio.com",
+    "project_id": "durdin-studios",
+    "storage_bucket": "durdin-studios.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319787145791:android:aa1c170212994444",
+        "android_client_info": {
+          "package_name": "durdinstudios.wowarena"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "319787145791-f2pdt8uj2o9u9hh9pq5eghook5q5ifca.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFl8RQxWeDtfqBJdDAQ2N6IoLtjw2a2_c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
