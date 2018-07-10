@@ -119,7 +119,7 @@ class ProfileFragment : NavigationFragment() {
         with(playerInfo) {
             username.text = name
             username.setTextColor(colorCompat(gameClass.getClassColor()))
-            character_data.text = "$level ${race.name} ${gameClass.name}"
+            character_data.text = "$level ${getString(race.getTextId())} ${getString(gameClass.getClassTextId())}"
             //honor_kills.text = "${pvp.totalHonorableKills} Honorable Kills"
             avatar.setCircularImage(getRenderUrl(Region.EU))
 
