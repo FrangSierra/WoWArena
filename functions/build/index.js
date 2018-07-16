@@ -6,6 +6,6 @@ const warcraftApi = require("./warcraft_service/WarcraftApi");
 admin.initializeApp();
 exports.firestoreInstance = admin.firestore();
 exports.fetchRankings = functions.https.onRequest((request, response) => {
-    return warcraftApi.retrieveLeaderboard("eu", "2v2");
+    return warcraftApi.retrieveLeaderboard("eu", "2v2", response);
 });
 //# sourceMappingURL=index.js.map
