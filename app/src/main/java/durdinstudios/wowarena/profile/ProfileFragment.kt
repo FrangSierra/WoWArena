@@ -30,7 +30,6 @@ import lecho.lib.hellocharts.gesture.ContainerScrollType
 import lecho.lib.hellocharts.gesture.ZoomType
 import lecho.lib.hellocharts.model.Viewport
 import mini.Dispatcher
-import mini.Grove
 import mini.select
 import javax.inject.Inject
 
@@ -51,7 +50,8 @@ class ProfileFragment : NavigationFragment() {
     private val characterRegion by argument<String>(CHARACTER_REGION)
     private val region by lazy { Region.valueOf(characterRegion) }
     private lateinit var characterInfo: CharacterInfo
-    private var chartFilled = false
+    private var userData: PlayerInfo? = null
+    private var arenaStats: List<ArenaStats>? = null
 
     companion object {
         val TAG = "profile_fragment"
@@ -91,11 +91,11 @@ class ProfileFragment : NavigationFragment() {
     }
 
     private fun showChartIfPossible(it: List<ArenaStats>) {
-        chartFilled = prepareChartData(rating_chart, it, userStore.state.settings)
+        val chartFilled = prepareChartData(rating_chart, it, userStore.state.settings)
         if (userStore.state.playersInfo[characterInfo] == null) return
         if (chartFilled) {
             no_data_text.makeGone()
-            rating_chart.makeVisible()
+            showChartAndAddInitialZoom()
         } else no_data_text.makeVisible()
     }
 
@@ -106,14 +106,26 @@ class ProfileFragment : NavigationFragment() {
     private fun listenStoreChanges() {
         userStore.flowable()
                 .select { it.playersInfo[characterInfo] }
-                .subscribe { setUserData(it) }
+                .subscribe {
+                    userData = it
+                    tryToShowProfile()
+                }
                 .track()
 
         arenaStore.flowable()
                 .select { it.arenaData[characterInfo] }
                 .filter { it.isNotEmpty() }
-                .subscribe { showChartIfPossible(it) }
+                .subscribe {
+                    arenaStats = it
+                    tryToShowProfile()
+                }
                 .track()
+    }
+
+    private fun tryToShowProfile() {
+        if (userData == null || arenaStats == null) return
+        setUserData(userData!!)
+        showChartIfPossible(arenaStats!!)
     }
 
     private fun setUserData(playerInfo: PlayerInfo) {
@@ -133,9 +145,13 @@ class ProfileFragment : NavigationFragment() {
         }
         loading_progress.makeGone()
         change_user.makeVisible()
-        if (rating_chart.lineChartData.lines.isNotEmpty()) {
-            rating_chart.makeVisible()
-        }
+    }
+
+    private fun showChartAndAddInitialZoom() {
+        val v = Viewport(rating_chart.maximumViewport)
+        v.left = v.right - GRAPH_VIEWPORT_DAYS
+        rating_chart.setCurrentViewportWithAnimation(v)
+        rating_chart.makeVisible()
     }
 
     private fun inflateBracket(bracketInfo: BracketInfo?) {
@@ -179,9 +195,6 @@ class ProfileFragment : NavigationFragment() {
         rating_chart.zoomType = ZoomType.HORIZONTAL
         rating_chart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL)
         rating_chart.isHorizontalScrollBarEnabled = true
-        val v = Viewport(rating_chart.maximumViewport)
-        v.left = v.right - GRAPH_VIEWPORT_DAYS
-        rating_chart.currentViewport = v
         rating_chart.lineChartData.lines = emptyList()
     }
 }
