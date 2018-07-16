@@ -15,10 +15,10 @@ import durdinstudios.wowarena.domain.leaderboard.LoadLeaderboardAction
 import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.misc.*
 import durdinstudios.wowarena.misc.TaskStatus.*
+import durdinstudios.wowarena.profile.ProfileFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.bracket_fragment.*
 import mini.Dispatcher
-import mini.Grove
 import mini.select
 import javax.inject.Inject
 
@@ -106,6 +106,12 @@ class BracketFragment : BaseFragment() {
     }
 
     private fun onPlayerClick(data: PlayerBracketStats) {
-        //TODO do something
+        activity!!.supportFragmentManager!!
+                .beginTransaction()
+                .withFade()
+                .replace(R.id.fragment_container, ProfileFragment.newInstance(data.name, data.realmName, userStore.state.currentRegion),
+                        ProfileFragment.TAG)
+                .addToBackStack(null)
+                .commit()
     }
 }

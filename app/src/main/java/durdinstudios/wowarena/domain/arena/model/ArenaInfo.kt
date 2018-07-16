@@ -1,6 +1,5 @@
 package durdinstudios.wowarena.domain.arena.model
 
-import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import durdinstudios.wowarena.data.models.warcraft.pvp.BracketInfo
 import durdinstudios.wowarena.profile.Character
 
@@ -10,8 +9,7 @@ data class ArenaStats(val character: Character,
                       val rbg: ArenaInfo?,
                       val timestamp: Long)
 
-data class ArenaInfo(val bracket: ArenaBracket,
-                     val rating: Int,
+data class ArenaInfo(val rating: Int,
                      val weeklyPlayed: Int,
                      val weeklyWon: Int,
                      val weeklyLost: Int,
@@ -19,8 +17,7 @@ data class ArenaInfo(val bracket: ArenaBracket,
                      val seasonWon: Int,
                      val seasonLost: Int)
 
-fun BracketInfo.toArenaInfo() = ArenaInfo(bracket = ArenaBracket.values().toList().first { it.value == slug },
-        rating = rating,
+fun BracketInfo.toArenaInfo() = ArenaInfo(rating = rating,
         weeklyPlayed = weeklyPlayed,
         weeklyWon = weeklyWon,
         weeklyLost = weeklyLost,
@@ -34,7 +31,7 @@ fun ArenaStats.isEmpty(): Boolean {
             && rbg == null
 }
 
-fun ArenaStats.hasData() : Boolean{
+fun ArenaStats.hasData(): Boolean {
     return vs2!!.rating > 0 || vs3!!.rating > 0 || rbg!!.rating > 0
 }
 

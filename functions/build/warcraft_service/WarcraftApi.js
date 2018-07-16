@@ -8,12 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const admin = require("firebase-admin");
 const _ = require("lodash");
 const index_1 = require("../index");
 const constants_1 = require("../constants");
-const fieldValue = admin.firestore.FieldValue;
-function retrieveLeaderboard(region, bracket, responsePetition) {
+function retrieveLeaderboard(region, bracket, firebaseResponse) {
     return __awaiter(this, void 0, void 0, function* () {
         let request = require("request");
         let uri = `https://${region}.api.battle.net/wow/leaderboard/${bracket}`;
@@ -26,13 +24,13 @@ function retrieveLeaderboard(region, bracket, responsePetition) {
             json: true
         }, function (error, response, body) {
             if (response.statusCode == 200) {
-                return serializeResponse(body, region, bracket, responsePetition);
+                return serializeResponse(body, region, bracket, firebaseResponse);
             }
             else {
                 console.log('error:', error); // Print the error if one occurred
                 console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
                 console.log('body:', body); // Print the HTML for the Google homepage.
-                return responsePetition.status(400).send("The petition to Battle.NET API has failed");
+                return firebaseResponse.status(400).send("The petition to Battle.NET API has failed");
             }
         });
     });
