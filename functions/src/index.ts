@@ -7,5 +7,5 @@ admin.initializeApp();
 export const firestoreInstance = admin.firestore();
 
 export const fetchRankings = functions.https.onRequest((request, response) => {
-    return warcraftApi.retrieveLeaderboard("eu", "2v2")
+    return warcraftApi.retrieveLeaderboard("eu", "2v2", response)
 });
