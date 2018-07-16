@@ -26,6 +26,7 @@ class BracketAdapter(private val onPlayerclick: (stats: PlayerBracketStats) -> U
         val statsItem = items[position]
         val context = holder.itemView.context
         with(holder) {
+            this.itemView.setOnClickListener { onPlayerclick(statsItem) }
             this.position.text = statsItem.ranking.toString()
             player.text = statsItem.name
             statsItem.wowClass?.let { player.setTextColor(context.colorCompat(it.getClassColor())) }

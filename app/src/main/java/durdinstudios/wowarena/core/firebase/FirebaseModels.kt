@@ -11,24 +11,24 @@ import durdinstudios.wowarena.profile.Character
 data class FirebaseCharacter(val username: String = "",
                              val realm: String = "",
                              val region: String = "",
-                             val classId: String = "",
-                             val raceId: String = "",
+                             val classId: Int = 0,
+                             val raceId: Int = 0,
                              val level: Int = 0,
                              val thumbnail: String = "")
 
 fun Character.toFirebaseCharacter() = FirebaseCharacter(username = username,
         realm = realm,
         region = region.name,
-        classId = klass.name,
-        raceId = race.name,
+        classId = klass.value,
+        raceId = race.value,
         level = level,
         thumbnail = thumbnail)
 
 fun FirebaseCharacter.toCharacter() = Character(username = username,
         realm = realm,
-        region = Region.valueOf(region),
-        klass = WoWClass.valueOf(classId),
-        race = Race.valueOf(raceId),
+        region = Region.valueOf(region.toUpperCase()),
+        klass = WoWClass.fromInt(classId),
+        race = Race.fromInt(raceId),
         level = level,
         thumbnail = thumbnail)
 
@@ -59,8 +59,7 @@ data class FirebaseArenaInfo(val bracket: String = "",
                              val seasonWon: Int = 0,
                              val seasonLost: Int = 0)
 
-fun ArenaInfo.toFirebaseArenaInfo() = FirebaseArenaInfo(bracket = bracket.name,
-        rating = rating,
+fun ArenaInfo.toFirebaseArenaInfo() = FirebaseArenaInfo(rating = rating,
         weeklyPlayed = weeklyPlayed,
         weeklyLost = weeklyLost,
         weeklyWon = weeklyWon,
@@ -68,8 +67,7 @@ fun ArenaInfo.toFirebaseArenaInfo() = FirebaseArenaInfo(bracket = bracket.name,
         seasonLost = seasonLost,
         seasonPlayed = seasonPlayed)
 
-fun FirebaseArenaInfo.toArenaInfo() = ArenaInfo(bracket = ArenaBracket.valueOf(bracket),
-        rating = rating,
+fun FirebaseArenaInfo.toArenaInfo() = ArenaInfo(rating = rating,
         weeklyPlayed = weeklyPlayed,
         weeklyLost = weeklyLost,
         weeklyWon = weeklyWon,

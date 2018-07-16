@@ -26,6 +26,12 @@ enum class Race(val value: Int) {
     VOID_ELF(29),
     LIGHTFORGED_DRAENEI(30);
 
+    companion object {
+        fun fromInt(value: Int): Race {
+            return Race.values().first { it.value == value }
+        }
+    }
+
     fun getTextId() = when (this) {
         Race.UNKNOWN -> R.string.race_unknown
         Race.HUMAN -> R.string.race_human

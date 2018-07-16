@@ -36,6 +36,12 @@ enum class WoWClass(val value: Int) {
     DRUID(11),
     DEMON_HUNTER(12);
 
+    companion object {
+        fun fromInt(value: Int): WoWClass {
+            return WoWClass.values().first { it.value == value }
+        }
+    }
+
     fun getClassColor() = when (this) {
         UNKNOWN -> R.color.colorPrimary
         WARRIOR -> R.color.color_warrior
@@ -52,7 +58,7 @@ enum class WoWClass(val value: Int) {
         DEMON_HUNTER -> R.color.color_dh
     }
 
-    fun getClassTextId() = when(this){
+    fun getClassTextId() = when (this) {
         UNKNOWN -> R.string.class_unknown
         WARRIOR -> R.string.class_warrior
         PALADIN -> R.string.class_paladin
