@@ -24,7 +24,6 @@ import durdinstudios.wowarena.domain.arena.ArenaModule
 import durdinstudios.wowarena.domain.arena.ArenaRepositoryModule
 import durdinstudios.wowarena.domain.leaderboard.LeaderboardModule
 import durdinstudios.wowarena.domain.user.UserModule
-import durdinstudios.wowarena.domain.user.repository.SettingsRepository
 import durdinstudios.wowarena.domain.user.repository.SettingsRepositoryModule
 import durdinstudios.wowarena.domain.user.repository.UserRepositoryModule
 import durdinstudios.wowarena.error.ErrorHandlingModule

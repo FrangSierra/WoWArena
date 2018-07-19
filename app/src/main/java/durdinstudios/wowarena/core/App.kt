@@ -7,12 +7,13 @@ import durdinstudios.wowarena.BuildConfig
 import durdinstudios.wowarena.core.dagger.AppComponent
 import durdinstudios.wowarena.core.dagger.AppModule
 import durdinstudios.wowarena.core.dagger.DaggerAppComponent
-import durdinstudios.wowarena.core.flux.CustomLoggerInterceptor
 import durdinstudios.wowarena.data.RepositoryModule
 import io.fabric.sdk.android.Fabric
 import mini.DebugTree
 import mini.Grove
 import mini.MiniActionReducer
+import mini.initStores
+import mini.log.LoggerInterceptor
 import org.jetbrains.annotations.TestOnly
 import kotlin.properties.Delegates
 
@@ -43,8 +44,6 @@ class App : DaggerApplication() {
                         .appModule(AppModule(app))
                         .repositoryModule(RepositoryModule())
                         .build()
-                componentInstance!!.dispatcher().actionReducers.add(MiniActionReducer(stores = componentInstance!!.stores()))
-                componentInstance!!.dispatcher().addInterceptor(CustomLoggerInterceptor(componentInstance!!.stores().values))
             }
             return componentInstance!!
         }
@@ -57,6 +56,12 @@ class App : DaggerApplication() {
         if (BuildConfig.DEBUG) Grove.plant(DebugTree(true))
 
         Fabric.with(this, Crashlytics())
+
+        val stores = componentInstance!!.stores()
+        componentInstance!!.dispatcher().actionReducers.add(MiniActionReducer(stores = stores))
+        componentInstance!!.dispatcher().addInterceptor(LoggerInterceptor(stores = stores.values, logInBackground = false))
+
+        initStores(componentInstance!!.stores().values)
 
         val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
         exceptionHandlers.add(exceptionHandler)
