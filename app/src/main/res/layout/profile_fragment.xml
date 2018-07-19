@@ -1,11 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_background_light"
-    android:layout_marginBottom="@dimen/bottom_bar_navigation_height">
+    android:gravity="center"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:id="@+id/profile_scrollview"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/app_background_light"
+            android:layout_marginBottom="@dimen/bottom_bar_navigation_height">
+
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/brown_gradient" />
+
+            <ImageView
+                android:id="@+id/change_user"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_swap_vertical_circle_24dp"
+                android:tint="@color/colorPrimary"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/avatar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/avatar" />
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/change_user"
+                app:layout_constraintStart_toEndOf="@id/avatar"
+                app:layout_constraintTop_toTopOf="@+id/avatar"
+                tools:text="Soulex"
+                tools:textColor="@color/color_mage" />
+
+            <TextView
+                android:id="@+id/character_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/avatar"
+                app:layout_constraintStart_toStartOf="@+id/username"
+                app:layout_constraintTop_toBottomOf="@+id/username"
+                tools:text="110 Undead Frost Mage" />
+
+            <LinearLayout
+                android:id="@+id/bracket_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/avatar" />
+
+            <lecho.lib.hellocharts.view.LineChartView
+                android:id="@+id/rating_chart"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:padding="16dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bracket_container" />
+
+            <TextView
+                android:id="@+id/no_data_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_margin="16dp"
+                android:text="@string/profile_no_data_label"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bracket_container" />
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 
     <ProgressBar
         android:id="@+id/loading_progress"
@@ -14,101 +123,38 @@
         android:indeterminate="true"
         android:indeterminateTint="@color/colorPrimary"
         android:layout_gravity="center"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:visibility="gone" />
 
-    <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/brown_gradient" />
-
-    <ImageView
-        android:id="@+id/change_user"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="16dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/ic_swap_vertical_circle_24dp"
-        android:tint="@color/colorPrimary"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/avatar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/avatar" />
 
     <TextView
-        android:id="@+id/username"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/change_user"
-        app:layout_constraintStart_toEndOf="@id/avatar"
-        app:layout_constraintTop_toTopOf="@+id/avatar"
-        tools:text="Soulex"
-        tools:textColor="@color/color_mage" />
-
-    <TextView
-        android:id="@+id/character_data"
+        android:id="@+id/error_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/avatar"
-        app:layout_constraintStart_toStartOf="@+id/username"
-        app:layout_constraintTop_toBottomOf="@+id/username"
-        tools:text="110 Undead Frost Mage" />
-
-    <LinearLayout
-        android:id="@+id/bracket_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="24dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/avatar" />
-
-    <TextView
-        android:id="@+id/no_data_text"
-        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_margin="16dp"
         android:text="@string/profile_no_data_label"
         android:textColor="@android:color/white"
         android:textSize="16sp"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/loading_retry_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/wow_brown"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:minHeight="44dp"
+        android:minWidth="88dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/retry"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        android:textColor="@color/colorPrimary"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bracket_container" />
+        app:layout_constraintTop_toBottomOf="@id/no_data_text" />
 
-    <lecho.lib.hellocharts.view.LineChartView
-        android:id="@+id/rating_chart"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="16dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bracket_container" />
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

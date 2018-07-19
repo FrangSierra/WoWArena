@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.crashlytics.android.Crashlytics
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.dagger.BaseFragment
 import durdinstudios.wowarena.data.models.common.Region
@@ -13,6 +12,7 @@ import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerBracketStats
 import durdinstudios.wowarena.domain.leaderboard.LeaderboardStore
 import durdinstudios.wowarena.domain.leaderboard.LoadLeaderboardAction
 import durdinstudios.wowarena.domain.user.UserStore
+import durdinstudios.wowarena.error.ErrorHandler
 import durdinstudios.wowarena.misc.*
 import durdinstudios.wowarena.misc.TaskStatus.*
 import durdinstudios.wowarena.profile.ProfileFragment
@@ -31,6 +31,8 @@ class BracketFragment : BaseFragment() {
     lateinit var leaderboardStore: LeaderboardStore
     @Inject
     lateinit var userStore: UserStore
+    @Inject
+    lateinit var errorHandler: ErrorHandler
 
     private val bracket by argument<String>(BRACKET)
     private val currentBracket by lazy { ArenaBracket.valueOf(bracket) }
@@ -64,6 +66,7 @@ class BracketFragment : BaseFragment() {
         ranking_swipe!!.setOnRefreshListener { reloadRanking(currentBracket, userStore.state.currentRegion) }
         ranking_recycler.setLinearLayoutManager(context!!, reverseLayout = false, stackFromEnd = false)
         ranking_recycler.adapter = adapter
+        loading_retry_button.setOnClickListener { reloadRanking(currentBracket, userStore.state.currentRegion) }
     }
 
     private fun listenStoreChanges() {
@@ -78,9 +81,13 @@ class BracketFragment : BaseFragment() {
                 .select { it.loadRankingTask[currentBracket] }
                 .subscribe {
                     when (it.status) {
-                        RUNNING -> if (!ranking_swipe.isRefreshing) loading_progress?.makeVisible()
+                        RUNNING -> if (!ranking_swipe.isRefreshing) {
+                            loading_progress?.makeVisible()
+                            no_data_text.makeGone()
+                            loading_retry_button.makeGone()
+                        }
                         SUCCESS -> loading_progress?.makeGone()
-                        ERROR -> Crashlytics.logException(it.error!!)
+                        ERROR -> manageError(it.error!!)
                     }
                 }.track()
         userStore.flowable()
@@ -98,9 +105,7 @@ class BracketFragment : BaseFragment() {
                 .select { it.loadRankingTask[bracket] }
                 .filterOne { it.isTerminal() }
                 .subscribe {
-                    if (it.isFailure()) {
-                        //manage
-                    }
+                    if (it.isFailure()) manageError(it.error!!)
                     ranking_swipe.takeIf { it.isRefreshing }?.isRefreshing = false
                 }.track()
     }
@@ -113,5 +118,13 @@ class BracketFragment : BaseFragment() {
                         ProfileFragment.TAG)
                 .addToBackStack(null)
                 .commit()
+    }
+
+    private fun manageError(error: Throwable) {
+        loading_progress.makeGone()
+        errorHandler.handle(error)
+        no_data_text.text = errorHandler.getMessageForError(error)
+        no_data_text.makeVisible()
+        loading_retry_button.makeVisible()
     }
 }
