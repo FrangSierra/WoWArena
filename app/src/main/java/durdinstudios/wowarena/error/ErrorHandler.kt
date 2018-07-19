@@ -59,9 +59,13 @@ class DefaultErrorHandler @Inject constructor(private val context: Context,
             is HttpException -> {
                 Grove.e { "${e.response().raw().request()}" }
                 when {
-                    e.response().errorBody() != null -> {
-                        val body = JSONObject(e.response().errorBody()!!.string())
-                        return body.getString("reason")
+                    e.response().errorBody() != null-> {
+                        return try {
+                            val body = JSONObject(e.response().errorBody()!!.string())
+                            body.getString("reason")
+                        } catch (e : Exception){
+                            e.message ?: context.getString(R.string.error_unexpected)
+                        }
                     }
                     e.code() in 500..999 -> context.getString(R.string.error_internal, e.code())
                     else -> context.getString(R.string.error_unexpected)

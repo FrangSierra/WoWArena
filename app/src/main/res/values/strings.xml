@@ -106,4 +106,6 @@
     <string name="class_shaman">Shaman</string>
     <string name="class_warlock">Warlock</string>
     <string name="class_warrior">Warrior</string>
+    <string name="retry">Retry</string>
+    <string name="choose_region_label">Choose a region</string>
 </resources>

@@ -12,6 +12,7 @@ import android.widget.TextView
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.flux.NavigationFragment
 import durdinstudios.wowarena.data.models.common.Region
+import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import durdinstudios.wowarena.data.models.warcraft.pvp.BracketInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.getRenderUrl
@@ -19,6 +20,7 @@ import durdinstudios.wowarena.domain.arena.ArenaStore
 import durdinstudios.wowarena.domain.arena.model.ArenaStats
 import durdinstudios.wowarena.domain.user.LoadUserDataAction
 import durdinstudios.wowarena.domain.user.UserStore
+import durdinstudios.wowarena.error.ErrorHandler
 import durdinstudios.wowarena.misc.*
 import durdinstudios.wowarena.misc.LineChartUtils.prepareChartData
 import durdinstudios.wowarena.navigation.HomeActivity
@@ -41,6 +43,8 @@ class ProfileFragment : NavigationFragment() {
     lateinit var userStore: UserStore
     @Inject
     lateinit var arenaStore: ArenaStore
+    @Inject
+    lateinit var errorHandler: ErrorHandler
 
     private val inflater: LayoutInflater by lazy {
         return@lazy activity!!.applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -84,9 +88,10 @@ class ProfileFragment : NavigationFragment() {
         inflateChart()
         listenStoreChanges()
         arenaStore.state.arenaData[characterInfo]?.takeIf { it.isNotEmpty() }?.let { showChartIfPossible(it) }
-        if (!userStore.state.playersInfo.containsKey(characterInfo))
+        if (!userStore.state.playersInfo.containsKey(characterInfo)) {
+            profile_scrollview.makeGone()
             loading_progress.makeVisible()
-
+        }
         reloadUserData()
     }
 
@@ -109,8 +114,7 @@ class ProfileFragment : NavigationFragment() {
                 .subscribe {
                     userData = it
                     tryToShowProfile()
-                }
-                .track()
+                }.track()
 
         arenaStore.flowable()
                 .select { it.arenaData[characterInfo] }
@@ -118,8 +122,7 @@ class ProfileFragment : NavigationFragment() {
                 .subscribe {
                     arenaStats = it
                     tryToShowProfile()
-                }
-                .track()
+                }.track()
     }
 
     private fun tryToShowProfile() {
@@ -136,15 +139,19 @@ class ProfileFragment : NavigationFragment() {
             //honor_kills.text = "${pvp.totalHonorableKills} Honorable Kills"
             avatar.setCircularImage(getRenderUrl(Region.EU))
 
-            if (userStore.state.settings.show2vs2Stats)
+            if (userStore.state.settings.show2vs2Stats) {
                 inflateBracket(pvp.brackets.arena2v2)
-            if (userStore.state.settings.show3vs3Stats)
+            }
+            if (userStore.state.settings.show3vs3Stats) {
                 inflateBracket(pvp.brackets.arena3v3)
-            if (userStore.state.settings.showRbgStats)
+            }
+            if (userStore.state.settings.showRbgStats) {
                 inflateBracket(pvp.brackets.arenaRbg)
+            }
         }
         loading_progress.makeGone()
         change_user.makeVisible()
+        profile_scrollview.makeVisible()
     }
 
     private fun showChartAndAddInitialZoom() {
@@ -183,11 +190,16 @@ class ProfileFragment : NavigationFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .select { it.loadUserTask }
                 .filterOne { it.isTerminal() }
-                .subscribe {
-                    if (it.isFailure()) {
-                        //manage
-                    }
-                }.track()
+                .subscribe { if (it.isFailure()) manageError(it.error!!) }
+                .track()
+    }
+
+    private fun manageError(error: Throwable) {
+        loading_progress.makeGone()
+        errorHandler.handle(error)
+        error_text.text = errorHandler.getMessageForError(error)
+        error_text.makeVisible()
+        loading_retry_button.makeVisible()
     }
 
     private fun inflateChart() {

@@ -63,12 +63,6 @@ class App : DaggerApplication() {
 
         initStores(componentInstance!!.stores().values)
 
-        val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
-        exceptionHandlers.add(exceptionHandler)
-        Thread.setDefaultUncaughtExceptionHandler { thread, error ->
-            exceptionHandlers.forEach { it.uncaughtException(thread, error) }
-        }
-
         component.inject(this)
     }
 
