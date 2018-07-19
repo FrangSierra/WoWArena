@@ -11,11 +11,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require("lodash");
 const index_1 = require("../index");
 const constants_1 = require("../constants");
-function retrieveLeaderboard(region, bracket, firebaseResponse) {
+function retrieveLeaderboard(region, bracket, firebaseRequest, firebaseResponse) {
     return __awaiter(this, void 0, void 0, function* () {
+        if (firebaseRequest.query.cron_secret != index_1.cronRequestSecret)
+            return firebaseResponse.status(403).send("Wrong cron token");
         let request = require("request");
         let uri = `https://${region}.api.battle.net/wow/leaderboard/${bracket}`;
-        let propertiesObject = { apikey: 'kr5ft58a2skpsgqgsyqj5646x58npmtk' };
+        let propertiesObject = { apikey: index_1.battleNetApiKey };
         console.log(uri);
         return request({
             uri: uri,
@@ -39,7 +41,7 @@ exports.retrieveLeaderboard = retrieveLeaderboard;
 function serializeResponse(body, region, bracket, response) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('Starting serialization');
+            console.log('Starting serialization for ', bracket, ' in region ', region);
             let mappedItems = body.rows.map(value => {
                 let character = {
                     classId: value.classId,
@@ -52,7 +54,7 @@ function serializeResponse(body, region, bracket, response) {
                 let timestamp = Date.now();
                 let seasonPlayed = parseInt(value.seasonWins) + parseInt(value.seasonLosses);
                 let weeklyPlayed = parseInt(value.weeklyLosses) + parseInt(value.weeklyWins);
-                let vs2 = {
+                let bracketData = {
                     rating: value.rating,
                     seasonLost: value.seasonLosses,
                     seasonPlayed: seasonPlayed,
@@ -61,14 +63,31 @@ function serializeResponse(body, region, bracket, response) {
                     weeklyPlayed: weeklyPlayed,
                     weeklyWon: value.weeklyWins
                 };
-                return {
-                    character: character,
-                    timestamp: timestamp,
-                    vs2: vs2
-                };
+                switch (bracket) {
+                    case "2vs2": {
+                        return {
+                            character: character,
+                            timestamp: timestamp,
+                            vs2: bracketData
+                        };
+                    }
+                    case "3vs3": {
+                        return {
+                            character: character,
+                            timestamp: timestamp,
+                            vs3: bracketData
+                        };
+                    }
+                    case "rbg": {
+                        return {
+                            character: character,
+                            timestamp: timestamp,
+                            rbg: bracketData
+                        };
+                    }
+                }
             });
-            console.log('serialization ended');
-            console.log('Starting Firestore');
+            console.log('Starting Firestore work for ', bracket, ' in region ', region);
             const batches = [];
             const serverRef = index_1.firestoreInstance.collection(region.toUpperCase()).doc(constants_1.SERVERS);
             //Generate the right amount of batches for each type of update
@@ -90,12 +109,12 @@ function serializeResponse(body, region, bracket, response) {
                 });
                 return writeBatch.commit();
             }));
-            console.log('Write batches ready, executing');
+            console.log('Write Batches ready for ', bracket, ' in region ', region);
             yield Promise.all(batches);
-            return response.status(200).send("The profiles for region', region, ' and bracket ', bracket, 'have been updated");
+            return response.status(200).send("The profiles for region", region, " and bracket ", bracket, "have been updated");
         }
         catch (err) {
-            return response.status(500).send('Failed serializing the body with error', err);
+            return response.status(500).send("Failed serializing the body for region", region, " and bracket ", bracket, "with error", err);
         }
     });
 }
