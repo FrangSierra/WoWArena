@@ -9,9 +9,7 @@ import durdinstudios.wowarena.data.models.common.Region
 import durdinstudios.wowarena.domain.user.LoadUserDataAction
 import durdinstudios.wowarena.domain.user.UserStore
 import durdinstudios.wowarena.error.ErrorHandler
-import durdinstudios.wowarena.misc.filterOne
-import durdinstudios.wowarena.misc.hideKeyboard
-import durdinstudios.wowarena.misc.toast
+import durdinstudios.wowarena.misc.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.add_character_activity.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -55,7 +53,7 @@ class AddCharacterActivity : BaseActivity() {
     private fun addCharacter() {
         hideKeyboard()
         if (!isValidCharacterData()) return
-
+        progressBar.makeVisible()
         add_user.isEnabled = false
         val characterInfo = CharacterInfo(username.text.toString(), realm.text.toString(), regions[nice_spinner.selectedIndex])
         dispatcher.dispatchOnUi(LoadUserDataAction(characterInfo))
@@ -69,6 +67,7 @@ class AddCharacterActivity : BaseActivity() {
                     } else {
                         finish()
                     }
+                    progressBar.makeGone()
                     add_user.isEnabled = true
                 }.track()
     }

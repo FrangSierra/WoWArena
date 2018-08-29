@@ -17,6 +17,13 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
+import android.widget.TextView
+import android.text.Spannable
+import android.icu.lang.UProperty.INT_START
+import android.support.annotation.ColorInt
+import android.support.annotation.ColorRes
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 
 private val DISPLAY_METRICS = DisplayMetrics()
 private val VISIBILITY_INTERPOLATOR = FastOutSlowInInterpolator()
@@ -146,3 +153,16 @@ fun getDisplayMetrics(context: Context): DisplayMetrics {
     wm.defaultDisplay.getRealMetrics(DISPLAY_METRICS)
     return DISPLAY_METRICS
 }
+
+fun String.bold(start : Int, end : Int): SpannableStringBuilder {
+    val str = SpannableStringBuilder(this)
+    str.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    return str
+}
+
+fun String.colorify(start : Int, end : Int, @ColorInt color : Int): SpannableStringBuilder {
+    val str = SpannableStringBuilder(this)
+    str.setSpan(ForegroundColorSpan(color), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    return str
+}
+

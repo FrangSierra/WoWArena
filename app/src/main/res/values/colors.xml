@@ -13,6 +13,13 @@
     <color name="color_alliance">#144587</color>
     <color name="color_horde">#8C1616</color>
 
+    <color name="color_2vs2">#a31ba4</color>
+    <color name="color_3vs3">#cf680e</color>
+    <color name="color_rbg">#4b8c16</color>
+
+    <color name="color_positive">@android:color/holo_green_dark</color>
+    <color name="color_negative">@android:color/holo_red_dark</color>
+
     <color name="color_dk">#C41F3B</color>
     <color name="color_dh">#A330C9</color>
     <color name="color_druid">#FF7D0A</color>
