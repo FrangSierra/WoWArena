@@ -63,19 +63,20 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginEnd="12dp"
-        android:textColor="@android:color/holo_green_dark"
+        android:textColor="@color/color_positive"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/loses"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="318" />
 
     <TextView
+
         android:id="@+id/loses"
         android:layout_width="32dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginEnd="12dp"
-        android:textColor="@android:color/holo_red_dark"
+        android:textColor="@color/color_negative"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/rating"
         app:layout_constraintTop_toTopOf="parent"

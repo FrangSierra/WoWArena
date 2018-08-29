@@ -1,19 +1,16 @@
 package durdinstudios.wowarena.profile
 
 import android.content.Context
-import android.graphics.Typeface
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.flux.NavigationFragment
+import durdinstudios.wowarena.data.MockData
 import durdinstudios.wowarena.data.models.common.Region
 import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
-import durdinstudios.wowarena.data.models.warcraft.pvp.BracketInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
 import durdinstudios.wowarena.data.models.warcraft.pvp.getRenderUrl
 import durdinstudios.wowarena.domain.arena.ArenaStore
@@ -25,7 +22,6 @@ import durdinstudios.wowarena.misc.*
 import durdinstudios.wowarena.misc.LineChartUtils.prepareChartData
 import durdinstudios.wowarena.navigation.HomeActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.player_bracket_info.view.*
 import kotlinx.android.synthetic.main.profile_fragment.*
 import kotlinx.android.synthetic.main.toolbar.*
 import lecho.lib.hellocharts.gesture.ContainerScrollType
@@ -55,7 +51,10 @@ class ProfileFragment : NavigationFragment() {
     private val region by lazy { Region.valueOf(characterRegion) }
     private lateinit var characterInfo: CharacterInfo
     private var userData: PlayerInfo? = null
+    private var currentBracket: ArenaBracket = ArenaBracket.BRACKET_3_VS_3
     private var arenaStats: List<ArenaStats>? = null
+
+    private val adapter = StatsAdapter()
 
     companion object {
         val TAG = "profile_fragment"
@@ -80,7 +79,7 @@ class ProfileFragment : NavigationFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = view
-            ?: inflater.inflate(R.layout.profile_fragment, container, false)
+                                                                                                                    ?: inflater.inflate(R.layout.profile_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         characterInfo = CharacterInfo(characterName, characterRealm, region)
@@ -96,37 +95,78 @@ class ProfileFragment : NavigationFragment() {
     }
 
     private fun showChartIfPossible(it: List<ArenaStats>) {
-        val chartFilled = prepareChartData(rating_chart, it, userStore.state.settings)
+        val chartFilled = prepareChartData(rating_chart, it, userStore.state.settings, context!!)
         if (userStore.state.playersInfo[characterInfo] == null) return
-        if (chartFilled) {
-            no_data_text.makeGone()
-            showChartAndAddInitialZoom()
-        } else no_data_text.makeVisible()
+        when {
+            chartFilled -> {
+                no_data_text.makeGone()
+                showChartAndAddInitialZoom()
+            }
+            it.isEmpty() -> {
+                no_data_text.makeVisible()
+                ranking_summary_recycler.makeGone()
+            }
+            else -> {
+                ranking_summary_recycler.makeVisible()
+                rating_chart.makeGone()
+            }
+        }
     }
 
     private fun initializeInterface() {
         change_user.setOnClickListener { startActivity(CharacterListActivity.newIntent(activity!!)) }
+        ranking_summary_recycler.setLinearLayoutManager(context!!, reverseLayout = true, stackFromEnd = false)
+        ranking_summary_recycler.adapter = adapter
+        ranking_3vs3.isSelected = true
+        ranking_3vs3.setBackgroundResource(R.drawable.rounded_corner_selected)
+        ranking_2vs2.onStatsClick {
+            currentBracket = ArenaBracket.BRACKET_2_VS_2
+            adapter.updateStats(arenaStats!!, currentBracket)
+            ranking_rbg.isSelected = false
+            ranking_rbg.setBackgroundResource(R.drawable.rounded_corner)
+            ranking_3vs3.isSelected = false
+            ranking_3vs3.setBackgroundResource(R.drawable.rounded_corner)
+        }
+        ranking_3vs3.onStatsClick {
+            currentBracket = ArenaBracket.BRACKET_3_VS_3
+            adapter.updateStats(arenaStats!!, currentBracket)
+            ranking_2vs2.isSelected = false
+            ranking_2vs2.setBackgroundResource(R.drawable.rounded_corner)
+            ranking_rbg.isSelected = false
+            ranking_rbg.setBackgroundResource(R.drawable.rounded_corner)
+        }
+        ranking_rbg.onStatsClick {
+            currentBracket = ArenaBracket.RBG
+            adapter.updateStats(arenaStats!!, currentBracket)
+            ranking_2vs2.isSelected = false
+            ranking_2vs2.setBackgroundResource(R.drawable.rounded_corner)
+            ranking_3vs3.isSelected = false
+            ranking_3vs3.setBackgroundResource(R.drawable.rounded_corner)
+        }
     }
 
     private fun listenStoreChanges() {
         userStore.flowable()
-                .select { it.playersInfo[characterInfo] }
-                .subscribe {
-                    userData = it
-                    tryToShowProfile()
-                }.track()
+            .select { it.playersInfo[characterInfo] }
+            .subscribe {
+                userData = it
+                tryToShowProfile()
+            }.track()
 
         arenaStore.flowable()
-                .select { it.arenaData[characterInfo] }
-                .filter { it.isNotEmpty() }
-                .subscribe {
-                    arenaStats = it
-                    tryToShowProfile()
-                }.track()
+            .select { it.arenaData[characterInfo] }
+            .filter { it.isNotEmpty() } //FIXME
+            .subscribe {
+               //val firstOrNull = it?.firstOrNull()
+               //val stats = if (firstOrNull == null) it else MockData.mockStats(firstOrNull.character)
+                arenaStats = it
+                tryToShowProfile()
+            }.track()
     }
 
     private fun tryToShowProfile() {
         if (userData == null || arenaStats == null) return
+        adapter.updateStats(arenaStats!!, currentBracket)
         setUserData(userData!!)
         showChartIfPossible(arenaStats!!)
     }
@@ -138,16 +178,9 @@ class ProfileFragment : NavigationFragment() {
             character_data.text = "$level ${getString(race.getTextId())} ${getString(gameClass.getClassTextId())}"
             //honor_kills.text = "${pvp.totalHonorableKills} Honorable Kills"
             avatar.setCircularImage(getRenderUrl(Region.EU))
-
-            if (userStore.state.settings.show2vs2Stats) {
-                inflateBracket(pvp.brackets.arena2v2)
-            }
-            if (userStore.state.settings.show3vs3Stats) {
-                inflateBracket(pvp.brackets.arena3v3)
-            }
-            if (userStore.state.settings.showRbgStats) {
-                inflateBracket(pvp.brackets.arenaRbg)
-            }
+            ranking_2vs2.text = "2v2\n${this.pvp.brackets.arena2v2?.rating}"
+            ranking_3vs3.text = "3v3\n${this.pvp.brackets.arena3v3?.rating}"
+            ranking_rbg.text = "RBG\n${this.pvp.brackets.arenaRbg?.rating}"
         }
         loading_progress.makeGone()
         change_user.makeVisible()
@@ -161,37 +194,14 @@ class ProfileFragment : NavigationFragment() {
         rating_chart.makeVisible()
     }
 
-    private fun inflateBracket(bracketInfo: BracketInfo?) {
-        if (bracketInfo == null) return
-        if (bracketInfo.rating == 0) return
-        val bracketView = inflater.inflate(R.layout.player_bracket_info, null)
-        val bracketText = TextView(context)
-
-        bracketText.text = bracketInfo.slug.toUpperCase()
-        bracketText.setTypeface(null, Typeface.BOLD)
-        bracketText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16F)
-        bracketText.setTextColor(colorCompat(android.R.color.white))
-
-        with(bracketView) {
-            this.ranking.text = bracketInfo.rating.toString()
-            this.won_games.text = bracketInfo.seasonWon.toString()
-            this.lose_games.text = bracketInfo.seasonLost.toString()
-        }
-
-        val textParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        bracket_container.addView(bracketText, bracket_container.childCount, textParams)
-        bracket_container.addView(bracketView, bracket_container.childCount, layoutParams)
-    }
-
     private fun reloadUserData() {
         dispatcher.dispatchOnUi(LoadUserDataAction(characterInfo))
         userStore.flowable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .select { it.loadUserTask }
-                .filterOne { it.isTerminal() }
-                .subscribe { if (it.isFailure()) manageError(it.error!!) }
-                .track()
+            .observeOn(AndroidSchedulers.mainThread())
+            .select { it.loadUserTask }
+            .filterOne { it.isTerminal() }
+            .subscribe { if (it.isFailure()) manageError(it.error!!) }
+            .track()
     }
 
     private fun manageError(error: Throwable) {
@@ -208,5 +218,13 @@ class ProfileFragment : NavigationFragment() {
         rating_chart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL)
         rating_chart.isHorizontalScrollBarEnabled = true
         rating_chart.lineChartData.lines = emptyList()
+    }
+
+    private fun TextView.onStatsClick(onClickSelected: (View) -> Unit) {
+        this.setOnClickListener {
+            this.isSelected = !this.isSelected
+            this.setBackgroundResource(if (this.isSelected) R.drawable.rounded_corner_selected else R.drawable.rounded_corner)
+            onClickSelected(this)
+        }
     }
 }

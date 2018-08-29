@@ -64,7 +64,7 @@ class UserStore @Inject constructor(private val userController: UserController,
                     it.characterEqualsTo(action.character.username, action.character.realm)
                 }
                 else state.currentCharacters
-        return state.copy(deleteTask = taskRunning(), currentCharacters = newChars)
+        return state.copy(deleteTask = action.task, currentCharacters = newChars)
     }
 
     @Reducer

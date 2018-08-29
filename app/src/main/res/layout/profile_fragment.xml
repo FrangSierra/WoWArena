@@ -5,13 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:animateLayoutChanges="true"
+    android:gravity="center"
+    android:layout_marginBottom="@dimen/bottom_bar_navigation_height"
     android:orientation="vertical">
 
     <ScrollView
-        android:layout_width="match_parent"
         android:id="@+id/profile_scrollview"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -74,29 +75,74 @@
                 app:layout_constraintTop_toBottomOf="@+id/username"
                 tools:text="110 Undead Frost Mage" />
 
-            <LinearLayout
-                android:id="@+id/bracket_container"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/ranking_2vs2"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="24dp"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/rounded_corner"
+                android:gravity="center"
+                android:layout_margin="16dp"
+                android:textColor="@color/color_2vs2"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/ranking_3vs3"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/avatar" />
+                app:layout_constraintTop_toBottomOf="@+id/avatar"
+                tools:text="2v2\n2121" />
+
+            <TextView
+                android:id="@+id/ranking_3vs3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corner"
+                android:gravity="center"
+                android:layout_margin="16dp"
+                android:textColor="@color/color_3vs3"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/ranking_2vs2"
+                app:layout_constraintEnd_toStartOf="@+id/ranking_rbg"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ranking_2vs2"
+                app:layout_constraintTop_toTopOf="@+id/ranking_2vs2"
+                tools:text="3v3\n2121" />
+
+            <TextView
+                android:id="@+id/ranking_rbg"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corner"
+                android:gravity="center"
+                android:layout_margin="16dp"
+                android:textColor="@color/color_rbg"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/ranking_3vs3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ranking_3vs3"
+                app:layout_constraintTop_toTopOf="@+id/ranking_3vs3"
+                tools:text="RGB\n2121" />
 
             <lecho.lib.hellocharts.view.LineChartView
                 android:id="@+id/rating_chart"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="300dp"
+                android:layout_marginTop="16dp"
                 android:padding="16dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bracket_container" />
+                app:layout_constraintTop_toBottomOf="@+id/ranking_2vs2" />
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/ranking_summary_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/rating_chart" />
 
             <TextView
                 android:id="@+id/no_data_text"
@@ -111,7 +157,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bracket_container" />
+                app:layout_constraintTop_toBottomOf="@+id/ranking_2vs2" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
@@ -124,7 +170,6 @@
         android:indeterminateTint="@color/colorPrimary"
         android:layout_gravity="center"
         android:visibility="gone" />
-
 
     <TextView
         android:id="@+id/error_text"
