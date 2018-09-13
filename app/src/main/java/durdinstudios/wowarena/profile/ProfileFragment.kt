@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import durdinstudios.wowarena.R
 import durdinstudios.wowarena.core.flux.NavigationFragment
-import durdinstudios.wowarena.data.MockData
 import durdinstudios.wowarena.data.models.common.Region
 import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
 import durdinstudios.wowarena.data.models.warcraft.pvp.PlayerInfo
@@ -42,9 +41,6 @@ class ProfileFragment : NavigationFragment() {
     @Inject
     lateinit var errorHandler: ErrorHandler
 
-    private val inflater: LayoutInflater by lazy {
-        return@lazy activity!!.applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    }
     private val characterName by argument<String>(CHARACTER_NAME)
     private val characterRealm by argument<String>(CHARACTER_REALM)
     private val characterRegion by argument<String>(CHARACTER_REGION)

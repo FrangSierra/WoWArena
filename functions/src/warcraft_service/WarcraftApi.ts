@@ -2,11 +2,11 @@ import * as _ from "lodash";
 import {battleNetApiKey, cronRequestSecret, firestoreInstance} from "../index";
 import {CHARACTERS, MAX_BATCH_SIZE, MAX_EXPANSION_LEVEL, SERVERS} from "../constants";
 
-export async function retrieveLeaderboard(region: String, bracket: String, firebaseRequest : any, firebaseResponse: any) {
+export async function retrieveLeaderboard(region: String, bracket: String, firebaseRequest : any, firebaseResponse: any, date : number) {
     if (firebaseRequest.query.cron_secret != cronRequestSecret) return firebaseResponse.status(403).send("Wrong cron token");
 
     let request = require("request");
-    let uri = `https://${region}.api.battle.net/wow/leaderboard/${bracket}`;
+    let uri = `https://${region}.api.battle.net/wow/leaderboard/${bracket}?locale=en_GB`;
 
     let propertiesObject = {apikey: battleNetApiKey};
 
@@ -19,7 +19,7 @@ export async function retrieveLeaderboard(region: String, bracket: String, fireb
         json: true
     }, function (error, response, body) {
         if (response.statusCode == 200) {
-            return serializeResponse(body, region, bracket, firebaseResponse)
+            return serializeResponse(body, region, bracket, firebaseResponse, date)
         } else {
             console.log('error:', error); // Print the error if one occurred
             console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
@@ -29,20 +29,21 @@ export async function retrieveLeaderboard(region: String, bracket: String, fireb
     });
 }
 
-async function serializeResponse(body: any, region: String, bracket: String, response: any) {
+async function serializeResponse(body: any, region: String, bracket: String, response: any, timestamp : number) {
     try {
-        console.log('Starting serialization for ', bracket, ' in region ', region);
+        console.log('Starting serialization for ', bracket, ' in region ', region, ' with ', body.rows.length, ' rows');
         let mappedItems = body.rows.map(value => {
+            //console.log('New row with data:', value);
             let character = {
                 classId: value.classId,
                 level: MAX_EXPANSION_LEVEL,
                 raceId: value.raceId,
                 realm: value.realmName,
                 region: region,
-                username: value.name
+                username: value.name,
+                tier: value.tier
             };
 
-            let timestamp = Date.now();
             let seasonPlayed = parseInt(value.seasonWins) + parseInt(value.seasonLosses);
             let weeklyPlayed = parseInt(value.weeklyLosses) + parseInt(value.weeklyWins);
             let bracketData = {
@@ -54,15 +55,16 @@ async function serializeResponse(body: any, region: String, bracket: String, res
                 weeklyPlayed: weeklyPlayed,
                 weeklyWon: value.weeklyWins
             };
+
             switch(bracket) {
-                case "2vs2" : {
+                case "2v2" : {
                     return {
                         character: character,
                         timestamp: timestamp,
                         vs2: bracketData
                     };
                 }
-                case "3vs3" : {
+                case "3v3" : {
                     return {
                         character: character,
                         timestamp: timestamp,
@@ -76,6 +78,9 @@ async function serializeResponse(body: any, region: String, bracket: String, res
                         rbg: bracketData
                     };
                 }
+                default: {
+                    return response.status(500).send('Wrong bracket');
+                }
             }
         });
 
@@ -84,6 +89,9 @@ async function serializeResponse(body: any, region: String, bracket: String, res
         const batches: Array<FirebaseFirestore.WriteBatch> = [];
         const serverRef = firestoreInstance.collection(region.toUpperCase()).doc(SERVERS);
 
+        if (mappedItems.length == 0){
+            return response.status(200).send('There is no registered data for this bracket');
+        }
         //Generate the right amount of batches for each type of update
         Array.prototype.push.apply(batches, _.chunk(mappedItems, MAX_BATCH_SIZE)
             .map(characters => {
@@ -108,8 +116,8 @@ async function serializeResponse(body: any, region: String, bracket: String, res
             }));
         console.log('Write Batches ready for ', bracket, ' in region ', region);
         await Promise.all(batches);
-        return response.status(200).send("The profiles for region", region, " and bracket ", bracket, "have been updated");
+        return response.status(200).send('The profiles for region', region, ' and bracket ', bracket, 'have been updated');
     } catch (err) {
-        return response.status(500).send("Failed serializing the body for region", region, " and bracket ", bracket, "with error", err);
+        return response.status(500).send('Failed serializing the body for region', region, ' and bracket ', bracket, 'with error', err);
     }
 }

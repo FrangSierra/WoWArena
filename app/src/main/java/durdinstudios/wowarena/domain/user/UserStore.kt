@@ -38,7 +38,7 @@ class UserStore @Inject constructor(private val userController: UserController,
         return state.copy(loadUserTask = taskRunning())
     }
 
-    @Reducer
+    @Reducer(priority = 50)
     fun loadUserComplete(action: LoadUserDataCompleteAction): UserState {
         if (!state.loadUserTask.isRunning()) return state
         if (action.task.isSuccessful()) {
