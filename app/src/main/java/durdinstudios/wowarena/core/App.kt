@@ -17,13 +17,11 @@ import mini.log.LoggerInterceptor
 import org.jetbrains.annotations.TestOnly
 import kotlin.properties.Delegates
 
-
 /**
  * Created by fragarsie on 12/18/17.
  */
 
 private var appInstance: App by Delegates.notNull()
-
 val app: App get() = appInstance
 
 /**
