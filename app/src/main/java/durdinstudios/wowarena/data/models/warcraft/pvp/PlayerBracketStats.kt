@@ -25,13 +25,3 @@ data class PlayerBracketStats(
         val seasonLosses: Int,
         val weeklyWins: Int,
         val weeklyLosses: Int)
-
-fun Ranking.getArenaCutoffs(): Map<Faction, ArenaCutoffs> {
-    return Faction.values().map { faction ->
-        faction to ArenaCutoffs(seasonGladiator = ArenaUtils.getSeasonGladiatorArenaCutoff(this, faction),
-                gladiator = ArenaUtils.getGladiatorArenaCutoff(this, faction),
-                duelist = ArenaUtils.getDuelistArenaCutoff(this, faction),
-                rival = ArenaUtils.getRivalArenaCutoff(this, faction),
-                challenger = ArenaUtils.getChallengerArenaCutoff(this, faction))
-    }.toMap()
-}

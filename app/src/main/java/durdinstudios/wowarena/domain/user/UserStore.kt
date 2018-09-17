@@ -34,7 +34,7 @@ class UserStore @Inject constructor(private val userController: UserController,
     @Reducer
     fun loadUser(action: LoadUserDataAction): UserState {
         if (state.loadUserTask.isRunning()) return state
-        userController.getUserData(action.characterInfo.username, action.characterInfo.realm, state.currentRegion)
+        userController.getUserData(action.characterInfo.username, action.characterInfo.realm, state.currentRegion, action.storeCharacter)
         return state.copy(loadUserTask = taskRunning())
     }
 

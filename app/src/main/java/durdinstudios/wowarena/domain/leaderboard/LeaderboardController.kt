@@ -4,12 +4,10 @@ import com.bq.masmov.reflux.dagger.AppScope
 import durdinstudios.wowarena.data.WarcraftAPIInstances
 import durdinstudios.wowarena.data.models.common.Region
 import durdinstudios.wowarena.data.models.warcraft.pvp.ArenaBracket
-import durdinstudios.wowarena.data.models.warcraft.pvp.getArenaCutoffs
 import durdinstudios.wowarena.misc.taskFailure
 import durdinstudios.wowarena.misc.taskSuccess
 import io.reactivex.schedulers.Schedulers
 import mini.Dispatcher
-import mini.Grove
 import javax.inject.Inject
 
 /**
@@ -28,12 +26,12 @@ class LeaderboardControllerImpl @Inject constructor(private val warcraftApi: War
                                                     private val dispatcher: Dispatcher) : LeaderboardController {
     override fun getLeaderboardInfo(bracket: ArenaBracket, region: Region) {
         warcraftApi.apis[region]!!.getPvPLeaderboard(bracket.value)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe({ ranking ->
-                    dispatcher.dispatchOnUi(LoadLeaderboardCompleteAction(bracket, ranking.ranking, emptyMap(), taskSuccess()))
-                }, { error ->
-                    dispatcher.dispatchOnUi(LoadLeaderboardCompleteAction(bracket, emptyList(), emptyMap(), taskFailure(error)))
-                })
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe({ ranking ->
+                dispatcher.dispatchOnUi(LoadLeaderboardCompleteAction(bracket, ranking.ranking, taskSuccess()))
+            }, { error ->
+                dispatcher.dispatchOnUi(LoadLeaderboardCompleteAction(bracket, emptyList(), taskFailure(error)))
+            })
     }
 }

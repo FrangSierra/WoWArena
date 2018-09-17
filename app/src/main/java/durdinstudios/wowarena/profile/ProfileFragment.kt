@@ -1,6 +1,5 @@
 package durdinstudios.wowarena.profile
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -74,8 +73,8 @@ class ProfileFragment : NavigationFragment() {
         activity!!.toolbar.title = getString(R.string.navigation_profile)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = view
-                                                                                                                    ?: inflater.inflate(R.layout.profile_fragment, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        view ?: inflater.inflate(R.layout.profile_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         characterInfo = CharacterInfo(characterName, characterRealm, region)
@@ -151,10 +150,10 @@ class ProfileFragment : NavigationFragment() {
 
         arenaStore.flowable()
             .select { it.arenaData[characterInfo] }
-            .filter { it.isNotEmpty() } //FIXME
+            //.filter { it.isNotEmpty() } //FIXME
             .subscribe {
-               //val firstOrNull = it?.firstOrNull()
-               //val stats = if (firstOrNull == null) it else MockData.mockStats(firstOrNull.character)
+                //val firstOrNull = it?.firstOrNull()
+                //val stats = if (firstOrNull == null) it else MockData.mockStats(firstOrNull.character)
                 arenaStats = it
                 tryToShowProfile()
             }.track()
@@ -173,7 +172,7 @@ class ProfileFragment : NavigationFragment() {
             username.setTextColor(colorCompat(gameClass.getClassColor()))
             character_data.text = "$level ${getString(race.getTextId())} ${getString(gameClass.getClassTextId())}"
             //honor_kills.text = "${pvp.totalHonorableKills} Honorable Kills"
-            avatar.setCircularImage(getRenderUrl(Region.EU))
+            avatar.setCircularImage(getRenderUrl(region))
             ranking_2vs2.text = "2v2\n${this.pvp.brackets.arena2v2?.rating}"
             ranking_3vs3.text = "3v3\n${this.pvp.brackets.arena3v3?.rating}"
             ranking_rbg.text = "RBG\n${this.pvp.brackets.arenaRbg?.rating}"
