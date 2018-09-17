@@ -8,6 +8,7 @@
     android:animateLayoutChanges="true"
     android:gravity="center"
     android:layout_marginBottom="@dimen/bottom_bar_navigation_height"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="vertical">
 
     <ScrollView
@@ -128,7 +129,7 @@
             <lecho.lib.hellocharts.view.LineChartView
                 android:id="@+id/rating_chart"
                 android:layout_width="0dp"
-                android:layout_height="300dp"
+                android:layout_height="240dp"
                 android:layout_marginTop="16dp"
                 android:padding="16dp"
                 android:visibility="visible"

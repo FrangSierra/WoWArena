@@ -9,7 +9,8 @@ import durdinstudios.wowarena.profile.CharacterInfo
 import mini.Action
 
 /** Action dispatched when we know if we have credentials or not */
-data class LoadUserDataAction(val characterInfo: CharacterInfo) : Action
+data class LoadUserDataAction(val characterInfo: CharacterInfo,
+                              val storeCharacter: Boolean = false) : Action
 
 data class ChangeCurrentRegionAction(val region : Region) : Action
 

@@ -13,6 +13,7 @@ data class FirebaseCharacter(val username: String = "",
                              val region: String = "",
                              val classId: Int = 0,
                              val raceId: Int = 0,
+                             val tier : String = "",
                              val level: Int = 0,
                              val thumbnail: String = "")
 

@@ -56,7 +56,7 @@ class AddCharacterActivity : BaseActivity() {
         progressBar.makeVisible()
         add_user.isEnabled = false
         val characterInfo = CharacterInfo(username.text.toString(), realm.text.toString(), regions[nice_spinner.selectedIndex])
-        dispatcher.dispatchOnUi(LoadUserDataAction(characterInfo))
+        dispatcher.dispatchOnUi(LoadUserDataAction(characterInfo, true))
         userStore.flowable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .select { it.loadUserTask }

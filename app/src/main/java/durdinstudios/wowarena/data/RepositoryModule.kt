@@ -73,7 +73,7 @@ class RepositoryModule {
     @JvmSuppressWildcards
     fun provideWarcraftApi(retrofitInstances: Map<Region, Retrofit>): WarcraftAPIInstances {
         val map = hashMapOf<Region, WarcraftApi>()
-        retrofitInstances.forEach { key, value -> map.plusAssign(key to value.create(WarcraftApi::class.java)) }
+        retrofitInstances.forEach { map.plusAssign(it.key to it.value.create(WarcraftApi::class.java)) }
         return WarcraftAPIInstances(map)
     }
 }

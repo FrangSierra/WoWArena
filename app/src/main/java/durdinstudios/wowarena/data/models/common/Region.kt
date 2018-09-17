@@ -9,8 +9,8 @@ import com.squareup.moshi.ToJson
 enum class Region(val value: Int) {
     EU(0),
     US(1),
-    KR(2),
-    TW(3);
+    //KR(2),
+    //TW(3);
 }
 
 class RegionAdapter {

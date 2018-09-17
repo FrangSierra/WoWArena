@@ -19,7 +19,7 @@ import javax.inject.Inject
  */
 interface UserController {
 
-    fun getUserData(username: String, realm: String, region: Region)
+    fun getUserData(username: String, realm: String, region: Region, storeCharacter : Boolean)
 
     fun saveSession(user: Character)
 
@@ -56,7 +56,7 @@ class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
         const val MAX_LEVEL = 110
     }
 
-    override fun getUserData(username: String, realm: String, region: Region) {
+    override fun getUserData(username: String, realm: String, region: Region, storeCharacter : Boolean) {
         warcraftApi.apis[region]!!.getPlayerPvpInfo(username, realm)
                 .subscribeOn(Schedulers.io())
                 .subscribe({ user ->
@@ -64,7 +64,7 @@ class UserControllerImpl @Inject constructor(private val dispatcher: Dispatcher,
                         user.level < MAX_LEVEL -> dispatcher.dispatchOnUi(LoadUserDataCompleteAction(null, null, taskFailure(LowLevelCharacterException())))
                         !user.hasPvpInfo() -> dispatcher.dispatchOnUi(LoadUserDataCompleteAction(null, null, taskFailure(NoPvPDataException())))
                         else -> {
-                            userRepository.saveUser(user.toCharacter(region))
+                            if (storeCharacter) userRepository.saveUser(user.toCharacter(region))
                             dispatcher.dispatchOnUi(LoadUserDataCompleteAction(user, user.toCharacter(region), taskSuccess()))
                         }
                     }

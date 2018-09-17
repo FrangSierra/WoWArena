@@ -17,16 +17,17 @@ data class Character(val username: String,
                      val level: Int,
                      val thumbnail: String) {
     fun characterEqualsTo(username: String, realm: String) =
-            this.username == username && this.realm == realm
+        this.username == username && this.realm == realm
 }
+
 fun Character.toCharacterInfo() = CharacterInfo(username = username,
-        realm = realm,
-        region = region)
+    realm = realm,
+    region = region)
 
 fun PlayerInfo.toCharacter(region: Region) = Character(username = name,
-        realm = realm,
-        region = region,
-        klass = gameClass,
-        level = level,
-        race = race,
-        thumbnail = thumbnail)
+    realm = realm,
+    region = region,
+    klass = gameClass,
+    level = level,
+    race = race,
+    thumbnail = thumbnail)
