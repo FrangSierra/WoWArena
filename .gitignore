@@ -20,6 +20,10 @@
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 
+# firebase functions
+**/node_modules/*
+**/.firebaserc
+
 # Sensitive or high-churn files:
 .idea/**/dataSources/
 .idea/**/dataSources.ids
@@ -55,6 +59,7 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+keystore.properties
 
 ### Intellij Patch ###
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
